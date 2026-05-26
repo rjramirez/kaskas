@@ -6,10 +6,10 @@
 - ✅ due-date tracking
 - ✅ subscription detection
 
-## V2
-- OCR support
-- PDF extraction
-- promo parsing
+## V2 ✅ COMPLETE
+- ✅ OCR support
+- ✅ PDF extraction
+- ✅ promo parsing
 
 ## V3
 - SQLite memory

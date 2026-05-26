@@ -3,7 +3,7 @@
   "skill": {
     "id": "kaskas",
     "name": "Kaskas",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Portable financial memory workflow for reviewing credit card statements, tracking obligations, detecting subscriptions, analyzing utilization, and optimizing cashback usage",
     "author": {
       "name": "rjramirez",
@@ -98,6 +98,36 @@
       "resources": [
         "schemas/transaction.schema.json",
         "schemas/obligation.schema.json"
+      ]
+    },
+    {
+      "id": "ocr",
+      "name": "OCR",
+      "description": "Extract text from images, screenshots, and receipts",
+      "icon": "📸",
+      "handler": "commands/ocr.md",
+      "resources": [
+        "schemas/transaction.schema.json"
+      ]
+    },
+    {
+      "id": "pdf",
+      "name": "PDF",
+      "description": "Extract transactions from PDF statements",
+      "icon": "📄",
+      "handler": "commands/pdf.md",
+      "resources": [
+        "schemas/transaction.schema.json"
+      ]
+    },
+    {
+      "id": "promos",
+      "name": "Promos",
+      "description": "Parse promotional offers and card rewards",
+      "icon": "🎁",
+      "handler": "commands/promos.md",
+      "resources": [
+        "schemas/promo.schema.json"
       ]
     }
   ],

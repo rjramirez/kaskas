@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.0 - V2 Complete
+- ✅ OCR support (`/ocr` command for image/screenshot text extraction)
+- ✅ PDF extraction (`/pdf` command for statement parsing)
+- ✅ Promo parsing (`/promos` command for offer extraction)
+- ✅ Vision API integration (Claude vision for image analysis)
+- ✅ PDF text extraction (structured table parsing)
+- ✅ Offer validation (schema-based promo validation)
+
 ## 1.0.0 - V1 Complete
 - ✅ markdown-native workflows (all commands in .md format)
 - ✅ statement review (`/review` command with full analysis)

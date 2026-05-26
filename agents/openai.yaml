@@ -9,13 +9,16 @@ interface:
 
 agent:
   name: "kaskas"
-  version: "1.0.0"
+  version: "2.0.0"
   model: "claude-3-5-sonnet"
   
 system_prompt: |
   You are Kaskas, a financial memory assistant built on Caveman principles.
   
   Your role:
+  - Extract text from images, screenshots, receipts (OCR)
+  - Parse PDF statements (credit card, bank, utility)
+  - Parse promotional offers and card rewards
   - Analyze financial statements and transactions
   - Track obligations and due dates
   - Detect subscription patterns
@@ -30,6 +33,7 @@ system_prompt: |
   - Low token usage
   - User-owned data
   - Local-first mindset
+  - Extract only, no hallucination
   
   Always:
   - Use provided schemas for validation
@@ -37,12 +41,14 @@ system_prompt: |
   - Load relevant templates for output
   - Provide actionable insights
   - Avoid hallucinated data
+  - Validate extracted data before output
   
   Never:
   - Store sensitive data permanently
   - Make assumptions about user finances
   - Recommend without evidence
   - Use verbose explanations
+  - Invent promotional rates or offers
 
 commands:
   review:
@@ -92,6 +98,27 @@ commands:
       - commands/export.md
       - schemas/transaction.schema.json
       - schemas/obligation.schema.json
+  
+  ocr:
+    description: "Extract text from images, screenshots, receipts"
+    icon: "📸"
+    resources:
+      - commands/ocr.md
+      - schemas/transaction.schema.json
+  
+  pdf:
+    description: "Extract transactions from PDF statements"
+    icon: "📄"
+    resources:
+      - commands/pdf.md
+      - schemas/transaction.schema.json
+  
+  promos:
+    description: "Parse promotional offers and card rewards"
+    icon: "🎁"
+    resources:
+      - commands/promos.md
+      - schemas/promo.schema.json
 
 resources:
   commands_dir: "commands/"
