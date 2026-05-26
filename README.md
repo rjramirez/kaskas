@@ -85,12 +85,9 @@ bash install.sh --uninstall
 
 ---
 
-## Privacy
+## Security
 
-- Local-only — no external API calls
-- Data stays on your machine
-- Export anytime, no lock-in
-
----
-
-MIT License
+**What kaskas stores:**
+- Merchant names (e.g., "Jollibee", "Meralco")
+- Transaction amounts and dates
+- Last 4 digits
