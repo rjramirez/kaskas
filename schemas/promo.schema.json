@@ -1,0 +1,5 @@
+{
+  "card": "string",
+  "reward": "string",
+  "category": "string"
+}

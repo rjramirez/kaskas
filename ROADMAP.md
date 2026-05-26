@@ -1,0 +1,22 @@
+# Roadmap
+
+## V1
+- markdown-native workflows
+- statement review
+- due-date tracking
+- subscription detection
+
+## V2
+- OCR support
+- PDF extraction
+- promo parsing
+
+## V3
+- SQLite memory
+- local embeddings
+- semantic financial memory
+
+## V4
+- local LLM support
+- proactive reminders
+- financial forecasting

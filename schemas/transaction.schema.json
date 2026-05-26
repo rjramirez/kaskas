@@ -1,0 +1,6 @@
+{
+  "merchant": "string",
+  "amount": "number",
+  "category": "string",
+  "date": "string"
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Kaskas"
+  short_description: "Portable financial memory workflow"
+  description: "Review statements, track obligations, detect subscriptions, and optimize card usage using local-first reusable workflows."
+  icon: "credit-card"
+  color: "#22c55e"
