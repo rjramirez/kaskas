@@ -1,73 +1,66 @@
+param(
+    [switch]$Help
+)
+
+if ($Help) {
+    Write-Host "Kaskas Installer for Windows"
+    Write-Host ""
+    Write-Host "Usage: irm https://raw.githubusercontent.com/rjramirez/kaskas/main/install.ps1 | iex"
+    exit 0
+}
+
 $SkillDir = "$env:APPDATA\Claude\skills\kaskas"
 $RepoUrl = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
-$TempDir = "$env:TEMP\kaskas-install"
 
 Write-Host "🚀 Installing Kaskas..." -ForegroundColor Cyan
 Write-Host ""
 
-# Create skill directory
-New-Item -ItemType Directory -Force -Path $SkillDir | Out-Null
-New-Item -ItemType Directory -Force -Path $TempDir | Out-Null
-
-# Function to download file
-function Download-File {
-    param(
-        [string]$Url,
-        [string]$OutPath
-    )
-    try {
-        Write-Host "  📥 Downloading $(Split-Path $OutPath -Leaf)..." -ForegroundColor Gray
-        Invoke-WebRequest -Uri $Url -OutFile $OutPath -ErrorAction Stop
-    }
-    catch {
-        Write-Host "  ❌ Failed to download $Url" -ForegroundColor Red
-        throw $_
-    }
-}
-
-# Function to download and extract directory
-function Download-Directory {
-    param(
-        [string]$DirName
-    )
-    $dirs = @("commands", "references", "templates", "schemas", "agents")
-    $files = @("SKILL.md")
-    
-    if ($DirName -in $files) {
-        $url = "$RepoUrl/$DirName"
-        $outPath = "$SkillDir\$DirName"
-        Download-File -Url $url -OutPath $outPath
-    }
-    elseif ($DirName -in $dirs) {
-        Write-Host "  📂 Setting up $DirName..." -ForegroundColor Gray
-        New-Item -ItemType Directory -Force -Path "$SkillDir\$DirName" | Out-Null
-        
-        # Download files from directory (simplified - downloads key files)
-        $files = @()
-        switch ($DirName) {
-            "commands" { $files = @("due.md", "export.md", "offers.md", "review.md", "safe.md", "subscriptions.md") }
-            "references" { $files = @("merchant-categories.md", "ph-cards.md", "recurring-patterns.md", "utilization-rules.md") }
-            "templates" { $files = @("obligations.md", "summary.md") }
-            "schemas" { $files = @("obligation.schema.json", "promo.schema.json", "transaction.schema.json") }
-            "agents" { $files = @("openai.yaml") }
-        }
-        
-        foreach ($file in $files) {
-            $url = "$RepoUrl/$DirName/$file"
-            $outPath = "$SkillDir\$DirName\$file"
-            Download-File -Url $url -OutPath $outPath
-        }
-    }
-}
-
 try {
-    # Download SKILL.md
-    Download-Directory -DirName "SKILL.md"
+    # Create skill directory
+    New-Item -ItemType Directory -Force -Path $SkillDir | Out-Null
+    Write-Host "✓ Created skill directory" -ForegroundColor Green
     
-    # Download directories
-    @("commands", "references", "templates", "schemas", "agents") | ForEach-Object {
-        Download-Directory -DirName $_
+    # Download SKILL.md
+    Write-Host "📥 Downloading SKILL.md..." -ForegroundColor Gray
+    $skillMdUrl = "$RepoUrl/SKILL.md"
+    Invoke-WebRequest -Uri $skillMdUrl -OutFile "$SkillDir\SKILL.md" -ErrorAction Stop
+    
+    # Download and setup commands
+    Write-Host "📂 Setting up commands..." -ForegroundColor Gray
+    New-Item -ItemType Directory -Force -Path "$SkillDir\commands" | Out-Null
+    $commandFiles = @("due.md", "export.md", "offers.md", "review.md", "safe.md", "subscriptions.md")
+    foreach ($file in $commandFiles) {
+        Invoke-WebRequest -Uri "$RepoUrl/commands/$file" -OutFile "$SkillDir\commands\$file" -ErrorAction Stop
     }
+    
+    # Download and setup references
+    Write-Host "📂 Setting up references..." -ForegroundColor Gray
+    New-Item -ItemType Directory -Force -Path "$SkillDir\references" | Out-Null
+    $refFiles = @("merchant-categories.md", "ph-cards.md", "recurring-patterns.md", "utilization-rules.md")
+    foreach ($file in $refFiles) {
+        Invoke-WebRequest -Uri "$RepoUrl/references/$file" -OutFile "$SkillDir\references\$file" -ErrorAction Stop
+    }
+    
+    # Download and setup templates
+    Write-Host "📂 Setting up templates..." -ForegroundColor Gray
+    New-Item -ItemType Directory -Force -Path "$SkillDir\templates" | Out-Null
+    $templateFiles = @("obligations.md", "summary.md")
+    foreach ($file in $templateFiles) {
+        Invoke-WebRequest -Uri "$RepoUrl/templates/$file" -OutFile "$SkillDir\templates\$file" -ErrorAction Stop
+    }
+    
+    # Download and setup schemas
+    Write-Host "📂 Setting up schemas..." -ForegroundColor Gray
+    New-Item -ItemType Directory -Force -Path "$SkillDir\schemas" | Out-Null
+    $schemaFiles = @("obligation.schema.json", "promo.schema.json", "transaction.schema.json")
+    foreach ($file in $schemaFiles) {
+        Invoke-WebRequest -Uri "$RepoUrl/schemas/$file" -OutFile "$SkillDir\schemas\$file" -ErrorAction Stop
+    }
+    
+    # Download and setup agents
+    Write-Host "📂 Setting up agents..." -ForegroundColor Gray
+    New-Item -ItemType Directory -Force -Path "$SkillDir\agents" | Out-Null
+    Invoke-WebRequest -Uri "$RepoUrl/agents/openai.yaml" -OutFile "$SkillDir\agents\openai.yaml" -ErrorAction Stop
     
     Write-Host ""
     Write-Host "✅ Kaskas installed successfully!" -ForegroundColor Green
@@ -82,12 +75,6 @@ try {
 catch {
     Write-Host ""
     Write-Host "❌ Installation failed!" -ForegroundColor Red
-    Write-Host "Error: $_" -ForegroundColor Red
+    Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
-}
-finally {
-    # Cleanup temp directory
-    if (Test-Path $TempDir) {
-        Remove-Item -Path $TempDir -Recurse -Force -ErrorAction SilentlyContinue
-    }
 }
