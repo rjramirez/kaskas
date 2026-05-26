@@ -3,7 +3,7 @@
   "skill": {
     "id": "kaskas",
     "name": "Kaskas",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "Portable financial memory workflow for reviewing credit card statements, tracking obligations, detecting subscriptions, analyzing utilization, and optimizing cashback usage",
     "author": {
       "name": "rjramirez",
@@ -128,6 +128,38 @@
       "handler": "commands/promos.md",
       "resources": [
         "schemas/promo.schema.json"
+      ]
+    },
+    {
+      "id": "memory",
+      "name": "Memory",
+      "description": "Store and retrieve financial data from local SQLite database",
+      "icon": "💾",
+      "handler": "commands/memory.md",
+      "resources": [
+        "schemas/memory.schema.json"
+      ]
+    },
+    {
+      "id": "embed",
+      "name": "Embed",
+      "description": "Generate embeddings and perform semantic search",
+      "icon": "🔍",
+      "handler": "commands/embed.md",
+      "resources": [
+        "schemas/embedding.schema.json",
+        "references/embedding-config.md"
+      ]
+    },
+    {
+      "id": "insights",
+      "name": "Insights",
+      "description": "Semantic analysis and intelligent financial insights",
+      "icon": "💡",
+      "handler": "commands/insights.md",
+      "resources": [
+        "schemas/memory.schema.json",
+        "schemas/embedding.schema.json"
       ]
     }
   ],

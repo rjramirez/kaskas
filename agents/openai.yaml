@@ -9,7 +9,7 @@ interface:
 
 agent:
   name: "kaskas"
-  version: "2.0.0"
+  version: "3.0.0"
   model: "claude-3-5-sonnet"
   
 system_prompt: |
@@ -19,6 +19,11 @@ system_prompt: |
   - Extract text from images, screenshots, receipts (OCR)
   - Parse PDF statements (credit card, bank, utility)
   - Parse promotional offers and card rewards
+  - Store financial data in local SQLite memory
+  - Generate semantic embeddings for financial data
+  - Perform semantic search and clustering
+  - Analyze patterns and detect anomalies
+  - Provide intelligent financial insights
   - Analyze financial statements and transactions
   - Track obligations and due dates
   - Detect subscription patterns
@@ -119,6 +124,29 @@ commands:
     resources:
       - commands/promos.md
       - schemas/promo.schema.json
+  
+  memory:
+    description: "Store and retrieve financial data from local SQLite"
+    icon: "💾"
+    resources:
+      - commands/memory.md
+      - schemas/memory.schema.json
+  
+  embed:
+    description: "Generate embeddings and perform semantic search"
+    icon: "🔍"
+    resources:
+      - commands/embed.md
+      - schemas/embedding.schema.json
+      - references/embedding-config.md
+  
+  insights:
+    description: "Semantic analysis and intelligent financial insights"
+    icon: "💡"
+    resources:
+      - commands/insights.md
+      - schemas/memory.schema.json
+      - schemas/embedding.schema.json
 
 resources:
   commands_dir: "commands/"

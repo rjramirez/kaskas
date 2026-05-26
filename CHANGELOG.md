@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.0.0 - V3 Complete
+- ✅ SQLite memory (`/memory` command for persistent local storage)
+- ✅ Local embeddings (`/embed` command for semantic vectors)
+- ✅ Semantic financial memory (`/insights` command for pattern analysis)
+- ✅ Vector similarity search (find similar merchants/transactions)
+- ✅ Anomaly detection (unusual spending patterns)
+- ✅ Semantic clustering (group similar transactions)
+- ✅ Pattern discovery (spending triggers, seasonal trends)
+- ✅ Intelligent recommendations (based on historical data)
+
 ## 2.0.0 - V2 Complete
 - ✅ OCR support (`/ocr` command for image/screenshot text extraction)
 - ✅ PDF extraction (`/pdf` command for statement parsing)

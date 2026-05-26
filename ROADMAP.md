@@ -11,10 +11,10 @@
 - ✅ PDF extraction
 - ✅ promo parsing
 
-## V3
-- SQLite memory
-- local embeddings
-- semantic financial memory
+## V3 ✅ COMPLETE
+- ✅ SQLite memory
+- ✅ local embeddings
+- ✅ semantic financial memory
 
 ## V4
 - local LLM support

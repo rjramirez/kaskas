@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Memory Record",
+  "type": "object",
+  "required": ["id", "type", "data", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique record ID (UUID)",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "type": {
+      "type": "string",
+      "description": "Record type",
+      "enum": ["transaction", "obligation", "subscription", "promo", "insight"]
+    },
+    "data": {
+      "type": "object",
+      "description": "Record data (transaction, obligation, etc.)"
+    },
+    "embedding": {
+      "type": "array",
+      "description": "Vector embedding for semantic search",
+      "items": {
+        "type": "number"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Source command (/review, /ocr, /pdf, etc.)"
+        },
+        "confidence": {
+          "type": "number",
+          "description": "Confidence score (0-1)",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "tags": {
+          "type": "array",
+          "description": "User-defined tags",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "description": "Creation timestamp (ISO 8601)",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "description": "Last update timestamp (ISO 8601)",
+      "format": "date-time"
+    },
+    "deleted_at": {
+      "type": "string",
+      "description": "Soft delete timestamp (ISO 8601)",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}
