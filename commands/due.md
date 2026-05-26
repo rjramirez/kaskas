@@ -1,26 +1,42 @@
 # /due
 
-## Goal
+Track dues. Subscriptions. Loans. Bills.
 
-Track:
-- credit card dues
-- subscriptions
-- loans
-- recurring bills
+## Input
+- Obligation type (credit card, subscription, loan, bill)
+- Amount
+- Due date
+- Frequency (one-time, monthly, quarterly, annual)
 
----
+## Process
 
-# Output
+1. **Extract** → type, amount, due date, frequency
+2. **Normalize dates** → YYYY-MM-DD, calc days left
+3. **Detect overlaps** → dues within 3 days = cash flow spike
+4. **Sum recurring** → total monthly outflow
+5. **Flag risks** → overdue, overlapping, high cost (>30% income), 5+ obligations
+6. **Sort** → by due date (nearest first)
 
-## Upcoming Obligations
+## Output
 
-- item
-- amount
-- due date
+**Upcoming (Next 30 Days)**
+| Item | Type | Amount | Due | Days |
+|---|---|---|---|---|
 
-## Risk Signals
+**Summary**
+- Total monthly recurring
+- Next due date
+- Overdue count
 
-- overlapping obligations
-- high recurring costs
+**Risks**
+- Overlapping dues (±3 days)
+- High recurring (>50% income)
+- Overdue items
+- Complexity (5+ obligations)
 
-Keep concise and tactical.
+**Tips**
+- Consolidate payment dates
+- Reminders 3 days before
+- Cancel unused subscriptions
+
+Tactical. Tables only.

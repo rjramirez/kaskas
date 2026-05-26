@@ -1,41 +1,45 @@
 # /review
 
-## Goal
+Parse statements. Extract spend. Find patterns.
 
-Generate concise financial analysis from:
-- statement PDFs
-- pasted transactions
-- screenshots
-- receipts
+## Input
+- PDF statements
+- Pasted transactions
+- Screenshots
+- Receipts
 
----
+## Process
 
-# Workflow
+1. **Extract** → merchant, amount, date
+2. **Normalize** → match categories (see `references/merchant-categories.md`)
+3. **Detect recurring** → same merchant 2+ times, monthly cadence ±5 days, amount ±10%
+4. **Flag installments** → "installment" keyword, "0%", sequential charges
+5. **Calculate utilization** → spend / limit (see `references/utilization-rules.md`)
+6. **Summarize** → use `templates/summary.md`
 
-1. Extract merchants
-2. Normalize categories
-3. Detect recurring charges
-4. Identify installments
-5. Estimate utilization
-6. Generate concise summary
+## Output
 
----
+**Summary**
+- Total spend
+- Transaction count
+- Date range
+- Top categories (by amount)
+- Top merchants (by frequency + spend)
 
-# Output
+**Recurring**
+- Merchant
+- Est. monthly
+- Confidence (high/medium/low)
 
-## Summary
-- total spend
-- top categories
-- top merchants
-- recurring obligations
+**Risks**
+- Utilization >60%
+- 3+ installments active
+- 5+ subscriptions
+- Spending spike >20%
 
-## Risks
-- overspending
-- installment overload
-- utilization concerns
+**Opportunities**
+- Cashback optimization → `/offers`
+- Spending cuts
+- Cancel unused subscriptions
 
-## Opportunities
-- cashback optimization
-- spending reductions
-
-Keep concise.
+Concise. Tables only.

@@ -1,33 +1,45 @@
 # /subscriptions
 
-## Goal
+Find recurring charges. Monthly obligations.
 
-Detect recurring subscriptions and monthly obligations.
+## Detection Rules
 
----
+**High Confidence** (all 3):
+- Same merchant 2+ times
+- Monthly cadence ±5 days
+- Amount ±10% variance
 
-# Detection Rules
+**Medium Confidence** (2 of 3):
+- Known service (Netflix, Spotify, etc.)
+- "subscription" keyword in name
 
-Indicators:
-- repeated merchant
-- monthly cadence
-- similar amounts
+**Low Confidence** (1 indicator):
+- Single charge
+- Quarterly/annual pattern
 
-Examples:
-- Netflix
-- Spotify
-- Canva
-- ChatGPT
-- iCloud
+## Process
 
----
+1. **Extract** → transactions from `/review` or new input
+2. **Group** → by merchant
+3. **Analyze** → days between charges, amount variance, known services
+4. **Score** → high/medium/low confidence
+5. **Estimate monthly** → if annual divide by 12, if quarterly by 3
+6. **Sum** → total monthly recurring
 
-# Output
+## Output
 
-## Recurring Charges
+**Recurring Charges**
+| Merchant | Monthly | Frequency | Confidence |
+|---|---|---|---|
 
-- merchant
-- estimated monthly amount
-- confidence
+**Summary**
+- Total monthly recurring
+- Subscription count
+- Potential savings (cancellation candidates)
 
-## Total Monthly Recurring
+**Review**
+- Low-confidence items (verify)
+- Unused services (ask user)
+- Duplicates (same category)
+
+Concise. Flag uncertain.

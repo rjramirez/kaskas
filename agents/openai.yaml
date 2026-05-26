@@ -9,7 +9,7 @@ interface:
 
 agent:
   name: "kaskas"
-  version: "0.1.0"
+  version: "1.0.0"
   model: "claude-3-5-sonnet"
   
 system_prompt: |

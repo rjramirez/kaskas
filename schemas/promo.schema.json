@@ -1,5 +1,58 @@
 {
-  "card": "string",
-  "reward": "string",
-  "category": "string"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Card Reward/Promo",
+  "type": "object",
+  "required": ["card", "category"],
+  "properties": {
+    "card": {
+      "type": "string",
+      "description": "Credit card name",
+      "minLength": 1
+    },
+    "issuer": {
+      "type": "string",
+      "description": "Card issuer bank",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "description": "Spending category",
+      "enum": ["Food", "Shopping", "Utilities", "Transport", "Entertainment", "Healthcare", "Education", "Online", "Dining", "Grocery", "Gas", "Other"]
+    },
+    "reward_type": {
+      "type": "string",
+      "description": "Type of reward",
+      "enum": ["cashback", "points", "miles", "rebate"]
+    },
+    "reward_rate": {
+      "type": "number",
+      "description": "Reward rate as percentage (e.g., 2.5 for 2.5%)",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "reward_value": {
+      "type": "string",
+      "description": "Reward value description (e.g., '2.5% cashback', '1 point per PHP')"
+    },
+    "min_spend": {
+      "type": "number",
+      "description": "Minimum spend to qualify, if applicable",
+      "minimum": 0
+    },
+    "max_reward": {
+      "type": "number",
+      "description": "Maximum reward per month/year, if capped",
+      "minimum": 0
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or conditions"
+    },
+    "verified_date": {
+      "type": "string",
+      "description": "Date reward info was last verified (YYYY-MM-DD)",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  },
+  "additionalProperties": false
 }

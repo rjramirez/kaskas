@@ -3,7 +3,7 @@
   "skill": {
     "id": "kaskas",
     "name": "Kaskas",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "Portable financial memory workflow for reviewing credit card statements, tracking obligations, detecting subscriptions, analyzing utilization, and optimizing cashback usage",
     "author": {
       "name": "rjramirez",

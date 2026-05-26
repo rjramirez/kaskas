@@ -1,10 +1,10 @@
 # Roadmap
 
-## V1
-- markdown-native workflows
-- statement review
-- due-date tracking
-- subscription detection
+## V1 ✅ COMPLETE
+- ✅ markdown-native workflows
+- ✅ statement review
+- ✅ due-date tracking
+- ✅ subscription detection
 
 ## V2
 - OCR support

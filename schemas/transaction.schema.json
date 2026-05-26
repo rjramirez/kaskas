@@ -1,6 +1,56 @@
 {
-  "merchant": "string",
-  "amount": "number",
-  "category": "string",
-  "date": "string"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Transaction",
+  "type": "object",
+  "required": ["merchant", "amount", "date"],
+  "properties": {
+    "merchant": {
+      "type": "string",
+      "description": "Merchant or vendor name",
+      "minLength": 1
+    },
+    "amount": {
+      "type": "number",
+      "description": "Transaction amount in PHP",
+      "minimum": 0
+    },
+    "category": {
+      "type": "string",
+      "description": "Spending category (Food, Shopping, Utilities, Transport, Entertainment, Other)",
+      "enum": ["Food", "Shopping", "Utilities", "Transport", "Entertainment", "Healthcare", "Education", "Other"]
+    },
+    "date": {
+      "type": "string",
+      "description": "Transaction date in YYYY-MM-DD format",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional transaction description or notes"
+    },
+    "type": {
+      "type": "string",
+      "description": "Transaction type",
+      "enum": ["purchase", "installment", "subscription", "bill", "other"]
+    },
+    "installment_info": {
+      "type": "object",
+      "description": "If type is installment",
+      "properties": {
+        "total_installments": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "current_installment": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "interest_rate": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "additionalProperties": false
 }
