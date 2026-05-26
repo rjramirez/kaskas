@@ -1,0 +1,94 @@
+{
+  "name": "kaskas",
+  "version": "0.1.0",
+  "description": "Portable financial memory workflow for reviewing credit card statements, tracking obligations, detecting subscriptions, analyzing utilization, and optimizing cashback usage",
+  "author": "rjramirez",
+  "license": "MIT",
+  "homepage": "https://github.com/rjramirez/kaskas",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rjramirez/kaskas.git"
+  },
+  "interface": {
+    "display_name": "Kaskas",
+    "short_description": "Financial memory workflow",
+    "description": "Review statements, track obligations, detect subscriptions, and optimize card usage",
+    "icon": "💰",
+    "color": "#22c55e"
+  },
+  "commands": [
+    {
+      "name": "review",
+      "description": "Analyze credit card statements, receipts, and transactions",
+      "icon": "📊",
+      "resources": [
+        "commands/review.md",
+        "references/merchant-categories.md",
+        "templates/summary.md",
+        "schemas/transaction.schema.json"
+      ]
+    },
+    {
+      "name": "due",
+      "description": "Track credit card dues, subscriptions, and recurring bills",
+      "icon": "⏰",
+      "resources": [
+        "commands/due.md",
+        "templates/obligations.md",
+        "schemas/obligation.schema.json"
+      ]
+    },
+    {
+      "name": "subscriptions",
+      "description": "Detect recurring charges and subscription patterns",
+      "icon": "🔄",
+      "resources": [
+        "commands/subscriptions.md",
+        "references/recurring-patterns.md",
+        "schemas/transaction.schema.json"
+      ]
+    },
+    {
+      "name": "offers",
+      "description": "Find best card offers and cashback opportunities",
+      "icon": "💳",
+      "resources": [
+        "commands/offers.md",
+        "references/ph-cards.md",
+        "schemas/promo.schema.json"
+      ]
+    },
+    {
+      "name": "safe",
+      "description": "Check safe spending limits and utilization risk",
+      "icon": "🛡️",
+      "resources": [
+        "commands/safe.md",
+        "references/utilization-rules.md"
+      ]
+    },
+    {
+      "name": "export",
+      "description": "Export financial memory as JSON, CSV, or Markdown",
+      "icon": "📤",
+      "resources": [
+        "commands/export.md",
+        "schemas/transaction.schema.json",
+        "schemas/obligation.schema.json"
+      ]
+    }
+  ],
+  "resources": {
+    "commands": "commands/",
+    "references": "references/",
+    "templates": "templates/",
+    "schemas": "schemas/",
+    "agents": "agents/"
+  },
+  "settings": {
+    "token_limit": "low",
+    "philosophy": "caveman",
+    "output_format": "markdown",
+    "data_ownership": "user"
+  }
+}

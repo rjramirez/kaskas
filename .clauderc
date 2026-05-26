@@ -1,0 +1,18 @@
+{
+  "skill": {
+    "id": "kaskas",
+    "enabled": true,
+    "auto_load": true,
+    "cache_resources": true
+  },
+  "behavior": {
+    "token_limit": "low",
+    "philosophy": "caveman",
+    "output_format": "markdown"
+  },
+  "security": {
+    "sandbox": true,
+    "local_only": true,
+    "no_external_calls": true
+  }
+}

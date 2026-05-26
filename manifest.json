@@ -1,0 +1,142 @@
+{
+  "manifest_version": "1.0",
+  "skill": {
+    "id": "kaskas",
+    "name": "Kaskas",
+    "version": "0.1.0",
+    "description": "Portable financial memory workflow for reviewing credit card statements, tracking obligations, detecting subscriptions, analyzing utilization, and optimizing cashback usage",
+    "author": {
+      "name": "rjramirez",
+      "url": "https://github.com/rjramirez"
+    },
+    "license": "MIT",
+    "repository": "https://github.com/rjramirez/kaskas",
+    "homepage": "https://github.com/rjramirez/kaskas",
+    "keywords": [
+      "finance",
+      "credit-cards",
+      "budgeting",
+      "subscriptions",
+      "cashback",
+      "portable-memory",
+      "caveman"
+    ],
+    "categories": [
+      "finance",
+      "productivity",
+      "analysis"
+    ]
+  },
+  "interface": {
+    "display_name": "Kaskas",
+    "short_description": "Financial memory workflow",
+    "description": "Review statements, track obligations, detect subscriptions, and optimize card usage",
+    "icon": "💰",
+    "color": "#22c55e",
+    "theme": "light"
+  },
+  "commands": [
+    {
+      "id": "review",
+      "name": "Review",
+      "description": "Analyze credit card statements, receipts, and transactions",
+      "icon": "📊",
+      "handler": "commands/review.md",
+      "resources": [
+        "references/merchant-categories.md",
+        "templates/summary.md",
+        "schemas/transaction.schema.json"
+      ]
+    },
+    {
+      "id": "due",
+      "name": "Due",
+      "description": "Track credit card dues, subscriptions, and recurring bills",
+      "icon": "⏰",
+      "handler": "commands/due.md",
+      "resources": [
+        "templates/obligations.md",
+        "schemas/obligation.schema.json"
+      ]
+    },
+    {
+      "id": "subscriptions",
+      "name": "Subscriptions",
+      "description": "Detect recurring charges and subscription patterns",
+      "icon": "🔄",
+      "handler": "commands/subscriptions.md",
+      "resources": [
+        "references/recurring-patterns.md",
+        "schemas/transaction.schema.json"
+      ]
+    },
+    {
+      "id": "offers",
+      "name": "Offers",
+      "description": "Find best card offers and cashback opportunities",
+      "icon": "💳",
+      "handler": "commands/offers.md",
+      "resources": [
+        "references/ph-cards.md",
+        "schemas/promo.schema.json"
+      ]
+    },
+    {
+      "id": "safe",
+      "name": "Safe",
+      "description": "Check safe spending limits and utilization risk",
+      "icon": "🛡️",
+      "handler": "commands/safe.md",
+      "resources": []
+    },
+    {
+      "id": "export",
+      "name": "Export",
+      "description": "Export financial memory as JSON, CSV, or Markdown",
+      "icon": "📤",
+      "handler": "commands/export.md",
+      "resources": [
+        "schemas/transaction.schema.json",
+        "schemas/obligation.schema.json"
+      ]
+    }
+  ],
+  "resources": {
+    "base_path": "./",
+    "directories": {
+      "commands": "commands/",
+      "references": "references/",
+      "templates": "templates/",
+      "schemas": "schemas/",
+      "agents": "agents/"
+    }
+  },
+  "configuration": {
+    "token_efficiency": "high",
+    "philosophy": "caveman",
+    "output_format": "markdown",
+    "data_ownership": "user-first",
+    "cache_resources": true,
+    "validate_schemas": true,
+    "security": {
+      "requires_authentication": false,
+      "data_storage": "local-only",
+      "data_export": true
+    }
+  },
+  "dependencies": [],
+  "installation": {
+    "windows": {
+      "path": "%APPDATA%\\Claude\\skills\\kaskas",
+      "script": "install.ps1"
+    },
+    "macos": {
+      "path": "~/Library/Application Support/Claude/skills/kaskas",
+      "script": "install.sh"
+    },
+    "linux": {
+      "path": "~/.config/Claude/skills/kaskas",
+      "script": "install.sh"
+    }
+  }
+}
