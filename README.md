@@ -45,13 +45,13 @@ Kaskas prioritizes:
 ## MacOS / Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOURNAME/kaskas/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/rjramirez/kaskas/main/install.sh | bash
 ```
 
 ## Windows PowerShell
 
 ```powershell
-irm https://raw.githubusercontent.com/YOURNAME/kaskas/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/rjramirez/kaskas/main/install.ps1 | iex
 ```
 
 Restart Claude Desktop after installation.
