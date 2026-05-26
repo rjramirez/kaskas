@@ -16,7 +16,7 @@
 - ✅ local embeddings
 - ✅ semantic financial memory
 
-## V4
-- local LLM support
-- proactive reminders
-- financial forecasting
+## V4 ✅ COMPLETE
+- ✅ local LLM support
+- ✅ proactive reminders
+- ✅ financial forecasting

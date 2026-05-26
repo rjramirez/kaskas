@@ -9,7 +9,7 @@ interface:
 
 agent:
   name: "kaskas"
-  version: "3.0.0"
+  version: "4.0.0"
   model: "claude-3-5-sonnet"
   
 system_prompt: |
@@ -24,6 +24,9 @@ system_prompt: |
   - Perform semantic search and clustering
   - Analyze patterns and detect anomalies
   - Provide intelligent financial insights
+  - Run local LLM for financial analysis (no API calls)
+  - Generate proactive reminders and alerts
+  - Forecast future spending and obligations
   - Analyze financial statements and transactions
   - Track obligations and due dates
   - Detect subscription patterns
@@ -147,6 +150,28 @@ commands:
       - commands/insights.md
       - schemas/memory.schema.json
       - schemas/embedding.schema.json
+  
+  llm:
+    description: "Run local LLM for financial analysis"
+    icon: "🧠"
+    resources:
+      - commands/llm.md
+      - references/llm-config.md
+  
+  remind:
+    description: "Proactive reminders and smart notifications"
+    icon: "🔔"
+    resources:
+      - commands/remind.md
+      - schemas/reminder.schema.json
+  
+  forecast:
+    description: "Financial forecasting and spending predictions"
+    icon: "📈"
+    resources:
+      - commands/forecast.md
+      - schemas/forecast.schema.json
+      - references/forecast-config.md
 
 resources:
   commands_dir: "commands/"

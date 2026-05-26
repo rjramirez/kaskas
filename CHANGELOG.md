@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.0 - V4 Complete
+- ✅ Local LLM support (`/llm` command, no API calls)
+- ✅ Proactive reminders (`/remind` command, smart alerts)
+- ✅ Financial forecasting (`/forecast` command, spending predictions)
+- ✅ Multiple forecasting models (linear, exponential, ARIMA, Prophet)
+- ✅ What-if scenario analysis (consolidation, cancellation, optimization)
+- ✅ Anomaly-based alerts (spending spikes, unusual merchants)
+- ✅ Opportunity alerts (unused subscriptions, better cards)
+- ✅ Confidence intervals (95% bounds on forecasts)
+
 ## 3.0.0 - V3 Complete
 - ✅ SQLite memory (`/memory` command for persistent local storage)
 - ✅ Local embeddings (`/embed` command for semantic vectors)

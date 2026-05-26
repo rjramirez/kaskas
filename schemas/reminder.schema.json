@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reminder",
+  "type": "object",
+  "required": ["id", "type", "trigger", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique reminder ID (UUID)",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "type": {
+      "type": "string",
+      "description": "Reminder type",
+      "enum": ["due", "spending", "opportunity", "anomaly"]
+    },
+    "trigger": {
+      "type": "object",
+      "description": "Trigger condition",
+      "properties": {
+        "event": {
+          "type": "string",
+          "description": "Event type (due_date, spending_spike, etc.)"
+        },
+        "threshold": {
+          "type": "number",
+          "description": "Threshold value (if applicable)"
+        },
+        "target_id": {
+          "type": "string",
+          "description": "Reference to obligation/transaction/subscription"
+        }
+      }
+    },
+    "schedule": {
+      "type": "object",
+      "description": "Reminder schedule",
+      "properties": {
+        "time": {
+          "type": "string",
+          "description": "Time of day (HH:MM format)",
+          "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+        },
+        "days_before": {
+          "type": "integer",
+          "description": "Days before event",
+          "minimum": 0
+        },
+        "frequency": {
+          "type": "string",
+          "description": "Reminder frequency",
+          "enum": ["once", "daily", "weekly", "monthly"]
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "description": "Reminder status",
+      "enum": ["active", "snoozed", "dismissed", "completed"]
+    },
+    "snoozed_until": {
+      "type": "string",
+      "description": "Snooze expiration (ISO 8601)",
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "description": "Creation timestamp (ISO 8601)",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "description": "Last update timestamp (ISO 8601)",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

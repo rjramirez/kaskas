@@ -3,7 +3,7 @@
   "skill": {
     "id": "kaskas",
     "name": "Kaskas",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "description": "Portable financial memory workflow for reviewing credit card statements, tracking obligations, detecting subscriptions, analyzing utilization, and optimizing cashback usage",
     "author": {
       "name": "rjramirez",
@@ -160,6 +160,37 @@
       "resources": [
         "schemas/memory.schema.json",
         "schemas/embedding.schema.json"
+      ]
+    },
+    {
+      "id": "llm",
+      "name": "LLM",
+      "description": "Run local LLM for financial analysis and questions",
+      "icon": "🧠",
+      "handler": "commands/llm.md",
+      "resources": [
+        "references/llm-config.md"
+      ]
+    },
+    {
+      "id": "remind",
+      "name": "Remind",
+      "description": "Proactive reminders and smart notifications",
+      "icon": "🔔",
+      "handler": "commands/remind.md",
+      "resources": [
+        "schemas/reminder.schema.json"
+      ]
+    },
+    {
+      "id": "forecast",
+      "name": "Forecast",
+      "description": "Financial forecasting and spending predictions",
+      "icon": "📈",
+      "handler": "commands/forecast.md",
+      "resources": [
+        "schemas/forecast.schema.json",
+        "references/forecast-config.md"
       ]
     }
   ],
