@@ -1,10 +1,10 @@
-# 💰 Kaskas
+# 💰 kaskas
 
-Financial memory skill for Claude Desktop. Analyze statements, track obligations, find cashback.
+Financial memory for Claude. Analyze statements, track dues, find cashback. Local-only.
 
 ---
 
-## 🚀 Install
+## Install
 
 ### Windows
 ```powershell
@@ -16,52 +16,81 @@ irm https://raw.githubusercontent.com/rjramirez/kaskas/main/install.ps1 | iex
 curl -fsSL https://raw.githubusercontent.com/rjramirez/kaskas/main/install.sh | bash
 ```
 
-**Then restart Claude Desktop.**
+Restart Claude Desktop and Claude Code.
 
 ---
 
-## 📍 Location
+## Works in
 
-- **Windows**: `%APPDATA%\Claude\skills\kaskas`
-- **macOS**: `~/Library/Application Support/Claude/skills/kaskas`
-- **Linux**: `~/.config/Claude/skills/kaskas`
+| App | How |
+|-----|-----|
+| Claude Desktop (Windows Store) | MCP server — slash commands in chat |
+| Claude Desktop (macOS / Linux) | MCP server — slash commands in chat |
+| Claude Code CLI | Plugin — skills + slash commands |
+| Claude Code Desktop | Plugin — skills + slash commands |
 
 ---
 
-## ⚡ Commands
+## Commands
 
-| Command | What It Does |
-|---------|--------------|
+| Command | What |
+|---------|------|
 | `/review` | Analyze credit card statements |
-| `/due` | Show upcoming payments |
+| `/due` | Upcoming payments (next 30 days) |
 | `/subscriptions` | Find recurring charges |
-| `/offers` | Best card for spending |
-| `/safe` | Check spending limits |
-| `/export` | Export your data |
+| `/offers` | Best card for your spending |
+| `/safe` | Utilization risk score |
+| `/export` | Export data (JSON / CSV / Markdown) |
+| `/ocr` | Extract text from receipts / screenshots |
+| `/pdf` | Extract transactions from PDFs |
+| `/promos` | Parse card promotional offers |
+| `/memory` | SQLite persistent storage |
+| `/embed` | Semantic search on transactions |
+| `/insights` | Pattern analysis, anomaly detection |
+| `/llm` | Local LLM analysis (no API calls) |
+| `/remind` | Set payment reminders |
+| `/forecast` | Spending forecasts + scenarios |
 
 ---
 
-## 💡 Quick Start
+## Quick start
 
 ```
 /review
-[paste your statement]
+[paste your credit card statement here]
 ```
 
 ---
 
-## 🔒 Privacy
+## Install location
 
-- Local-only processing
-- Your data stays on your machine
+| Platform | Path |
+|----------|------|
+| Windows | `%APPDATA%\Claude\kaskas` |
+| macOS | `~/Library/Application Support/Claude/kaskas` |
+| Linux | `~/.config/Claude/kaskas` |
+
+---
+
+## Uninstall
+
+```powershell
+# Windows
+powershell -ExecutionPolicy Bypass -File install.ps1 -Uninstall
+```
+```bash
+# macOS / Linux
+bash install.sh --uninstall
+```
+
+---
+
+## Privacy
+
+- Local-only — no external API calls
+- Data stays on your machine
 - Export anytime, no lock-in
 
 ---
 
-## 📄 License
-
-MIT
-
----
-
-**Made with ❤️ for financial privacy**
+MIT License

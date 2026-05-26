@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "kaskas",
+  "description": "Financial memory skill for Claude. Analyze statements, track dues, find cashback.",
+  "owner": {
+    "name": "rjramirez",
+    "url": "https://github.com/rjramirez"
+  },
+  "plugins": [
+    {
+      "name": "kaskas",
+      "description": "Analyze credit card statements, track obligations, find cashback. Local-only.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

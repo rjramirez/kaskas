@@ -1,0 +1,8 @@
+{
+  "name": "kaskas",
+  "description": "Financial memory skill for Claude. Analyze statements, track dues, find cashback. Local-only, zero external calls.",
+  "author": {
+    "name": "rjramirez",
+    "url": "https://github.com/rjramirez"
+  }
+}
