@@ -1,103 +1,123 @@
-# Kaskas
+# 💰 Kaskas
 
-Portable financial memory workflows for AI agents.
+> **Your AI-powered financial memory that actually stays yours**
 
-Kaskas helps analyze:
-- credit card statements
-- recurring subscriptions
-- cashback opportunities
-- financial obligations
-- due dates
-- safe spending thresholds
-
-Built with:
-- local-first philosophy
-- Caveman workflow design
-- portable memory principles
-- markdown-native reusable skills
-
-Compatible with:
-- Claude Desktop
-- Caveman Skills
-- Cursor
-- Roo
-- local AI agents
+Portable financial memory workflows for AI agents. Think of Kaskas as your personal financial AI assistant that remembers everything about your money—without forgetting who owns the data.
 
 ---
 
-# Philosophy
+## 🎯 What Kaskas Does
 
-Models change.
-Agents change.
-Your financial memory should remain yours.
+Kaskas helps you analyze and understand:
 
-Kaskas prioritizes:
-- exportable memory
-- deterministic parsing
-- low token usage
-- portable workflows
-- user-owned data
+- 📊 **Credit Card Statements** - Parse and understand your spending patterns
+- 🔄 **Recurring Subscriptions** - Track what's bleeding your account monthly
+- 💸 **Cashback Opportunities** - Never miss rewards again
+- 📋 **Financial Obligations** - Know what you owe and when
+- ⏰ **Due Dates** - Never miss a payment deadline
+- 🛡️ **Safe Spending Thresholds** - Know your financial limits
 
 ---
 
-# Installation
+## 🏗️ Built With
 
-## MacOS / Linux
+- 🏠 **Local-first philosophy** - Your data, your machine
+- 🦴 **Caveman workflow design** - Simple, efficient, token-light
+- 📦 **Portable memory principles** - Take your data anywhere
+- 📝 **Markdown-native skills** - Human-readable, version-controllable
+
+---
+
+## 🤝 Compatible With
+
+- 🤖 Claude Desktop
+- 🦴 Caveman Skills
+- ✏️ Cursor
+- 🦘 Roo
+- 🔧 Local AI agents
+
+---
+
+## 🧠 Philosophy
+
+> **Models change. Agents change. Your financial memory should remain yours.**
+
+Kaskas is built on a simple principle: **you own your data**. We prioritize:
+
+✅ **Exportable memory** - Take it with you  
+✅ **Deterministic parsing** - Consistent, predictable results  
+✅ **Low token usage** - Efficient AI interactions  
+✅ **Portable workflows** - Works everywhere  
+✅ **User-owned data** - Always yours, never ours  
+
+---
+
+## 🚀 Installation
+
+### MacOS / Linux
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/rjramirez/kaskas/main/install.sh | bash
 ```
 
-## Windows PowerShell
+### Windows PowerShell
 
 ```powershell
 irm https://raw.githubusercontent.com/rjramirez/kaskas/main/install.ps1 | iex
 ```
 
-Restart Claude Desktop after installation.
+> 💡 **Restart Claude Desktop** after installation to activate the skills
 
 ---
 
-# Claude Desktop Skill Paths
+## 📍 Skill Paths
 
-## MacOS
-
+### MacOS
+```
 ~/Library/Application Support/Claude/skills/kaskas
+```
 
-## Windows
-
+### Windows
+```
 %APPDATA%\Claude\skills\kaskas
+```
 
 ---
 
-# Slash Commands
+## ⚡ Slash Commands
 
-/review
-/due
-/subscriptions
-/offers
-/safe
-/export
+| Command | Purpose |
+|---------|---------|
+| `/review` | 📊 Analyze credit card statements |
+| `/due` | ⏰ Show upcoming obligations |
+| `/subscriptions` | 🔄 List recurring charges |
+| `/offers` | 💳 Find best card offers |
+| `/safe` | 🛡️ Check safe spending limits |
+| `/export` | 📤 Export your financial memory |
 
 ---
 
-# Example Usage
+## 💡 Example Usage
 
+### Review Your Spending
 ```text
 /review
 Analyze this statement PDF
 ```
 
+### Check What's Due
 ```text
 /due
 Show upcoming obligations
 ```
 
+### Find the Best Card
 ```text
-/offer
+/offers
 Best card for dining?
 ```
 
+### Know Your Limits
 ```text
 /safe
 Can I safely spend ₱10,000 this month?
@@ -105,24 +125,55 @@ Can I safely spend ₱10,000 this month?
 
 ---
 
-# Security Notes
+## 🔒 Security & Privacy
 
-Kaskas is designed for:
-- local-first workflows
-- portable memory
-- temporary parsing pipelines
+Kaskas is designed with privacy-first architecture:
 
-Recommended:
-- mask card numbers
-- avoid storing raw statements permanently
-- export structured memory only
+🏠 **Local-first workflows** - Everything stays on your machine  
+📦 **Portable memory** - No vendor lock-in  
+⚡ **Temporary parsing** - Data doesn't linger  
+
+### Best Practices
+
+- 🔐 **Mask card numbers** before sharing statements
+- 🗑️ **Don't store raw statements** permanently
+- 📤 **Export structured memory only** for backups
+- 🔒 **Keep your skills folder private**
 
 ---
 
-# Future Direction
+## 🚧 Roadmap
 
-- OCR support
-- local embeddings
-- local SQLite memory
-- local LLM support
-- semantic financial memory
+Coming soon to make Kaskas even more powerful:
+
+- 🔍 **OCR Support** - Extract data from images
+- 🧠 **Local Embeddings** - Semantic understanding
+- 💾 **Local SQLite** - Persistent memory
+- 🤖 **Local LLM Support** - Run fully offline
+- 🔗 **Semantic Financial Memory** - Understand context
+
+---
+
+## 📚 Documentation
+
+- 📖 [Skill Guide](./SKILL.md) - How to use Kaskas skills
+- 🗺️ [Roadmap](./ROADMAP.md) - What's coming next
+- 📝 [Changelog](./CHANGELOG.md) - What's changed
+
+---
+
+## 💬 Contributing
+
+Have ideas? Found a bug? Want to improve Kaskas?
+
+We'd love your help! This is a community project built for people who care about their financial privacy.
+
+---
+
+## 📄 License
+
+MIT License - See LICENSE file for details
+
+---
+
+**Made with ❤️ for people who care about their financial privacy**
