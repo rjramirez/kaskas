@@ -64,9 +64,14 @@ download_directory() {
     done
 }
 
-# Download SKILL.md
-echo "  📥 Downloading SKILL.md..."
-download_file "$REPO_URL/SKILL.md" "$SKILL_DIR/SKILL.md"
+# Download manifest files (CRITICAL for Claude Desktop)
+echo "📥 Downloading manifest files..."
+manifest_files=("claude.json" "manifest.json" ".clauderc" "SKILL.md")
+for file in "${manifest_files[@]}"; do
+    download_file "$REPO_URL/$file" "$SKILL_DIR/$file"
+done
+
+echo ""
 
 # Download directories
 for dir in commands references templates schemas agents; do

@@ -20,10 +20,12 @@ try {
     New-Item -ItemType Directory -Force -Path $SkillDir | Out-Null
     Write-Host "✓ Created skill directory" -ForegroundColor Green
     
-    # Download SKILL.md
-    Write-Host "📥 Downloading SKILL.md..." -ForegroundColor Gray
-    $skillMdUrl = "$RepoUrl/SKILL.md"
-    Invoke-WebRequest -Uri $skillMdUrl -OutFile "$SkillDir\SKILL.md" -ErrorAction Stop
+    # Download manifest files (CRITICAL for Claude Desktop)
+    Write-Host "📥 Downloading manifest files..." -ForegroundColor Gray
+    $manifestFiles = @("claude.json", "manifest.json", ".clauderc", "SKILL.md")
+    foreach ($file in $manifestFiles) {
+        Invoke-WebRequest -Uri "$RepoUrl/$file" -OutFile "$SkillDir\$file" -ErrorAction Stop
+    }
     
     # Download and setup commands
     Write-Host "📂 Setting up commands..." -ForegroundColor Gray
