@@ -7,15 +7,7 @@
 # Or local:
 #   powershell -ExecutionPolicy Bypass -File install.ps1
 
-param(
-    [switch]$Force,
-    [switch]$Uninstall
-)
-
-$ErrorActionPreference = "Stop"
-$ProgressPreference    = "SilentlyContinue"   # suppress Invoke-WebRequest progress bar
-
-# ── Banner ────────────────────────────────────────────────────────────────────
+# ── Banner (show immediately) ─────────────────────────────────────────────────
 Write-Host ""
 Write-Host "  ╔═══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
 Write-Host "  ║                                                           ║" -ForegroundColor Cyan
@@ -26,6 +18,14 @@ Write-Host "  ║   Local-only • No external API calls • Your data stays   �
 Write-Host "  ║                                                           ║" -ForegroundColor Cyan
 Write-Host "  ╚═══════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
 Write-Host ""
+
+param(
+    [switch]$Force,
+    [switch]$Uninstall
+)
+
+$ErrorActionPreference = "Stop"
+$ProgressPreference    = "SilentlyContinue"   # suppress Invoke-WebRequest progress bar
 
 $RepoUrl       = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
 $RepoId        = "rjramirez/kaskas"
