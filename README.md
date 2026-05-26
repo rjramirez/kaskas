@@ -90,4 +90,30 @@ bash install.sh --uninstall
 **What kaskas stores:**
 - Merchant names (e.g., "Jollibee", "Meralco")
 - Transaction amounts and dates
-- Last 4 digits
+- Last 4 digits of cards (e.g., `****1234`)
+- Last 4 digits of account numbers (e.g., `****5678`)
+
+**What kaskas never stores:**
+- Full card numbers
+- CVV / security codes
+- Passwords or PINs
+- Full account numbers
+- Personal identification numbers
+
+**Why it's safe:**
+- Last 4 digits alone cannot be used for fraud
+- All data stays on your machine (local-only)
+- No external API calls or cloud storage
+- Follows PCI DSS and banking industry standards
+
+---
+
+## Privacy
+
+- Local-only — no external API calls
+- Data stays on your machine
+- Export anytime, no lock-in
+
+---
+
+MIT License
