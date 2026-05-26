@@ -1,0 +1,30 @@
+title: Kaskas
+description: Financial memory for Claude. Analyze statements, track dues, find cashback. Local-only.
+theme: jekyll-theme-minimal
+logo: https://raw.githubusercontent.com/rjramirez/kaskas/main/docs/assets/kaskas-logo.png
+
+# Navigation
+nav_links:
+  - title: Home
+    url: /
+  - title: Install
+    url: /docs/install.md
+  - title: Commands
+    url: /docs/commands.md
+  - title: Security
+    url: /docs/security.md
+  - title: GitHub
+    url: https://github.com/rjramirez/kaskas
+
+# GitHub
+github:
+  repository_url: https://github.com/rjramirez/kaskas
+  is_project_page: false
+
+# Analytics (optional)
+google_analytics:
+
+# Social
+social_links:
+  - platform: github
+    user_url: https://github.com/rjramirez/kaskas
