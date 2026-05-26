@@ -15,6 +15,18 @@ param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference    = "SilentlyContinue"   # suppress Invoke-WebRequest progress bar
 
+# ── Banner ────────────────────────────────────────────────────────────────────
+Write-Host ""
+Write-Host "  ╔═══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
+Write-Host "  ║                                                           ║" -ForegroundColor Cyan
+Write-Host "  ║   💰 KASKAS - Financial Memory for Claude                ║" -ForegroundColor Cyan
+Write-Host "  ║   Analyze statements • Track dues • Find cashback        ║" -ForegroundColor Cyan
+Write-Host "  ║                                                           ║" -ForegroundColor Cyan
+Write-Host "  ║   Local-only • No external API calls • Your data stays   ║" -ForegroundColor Cyan
+Write-Host "  ║                                                           ║" -ForegroundColor Cyan
+Write-Host "  ╚═══════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+Write-Host ""
+
 $RepoUrl       = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
 $RepoId        = "rjramirez/kaskas"
 $PluginName    = "kaskas"
@@ -70,28 +82,32 @@ if (-not $Force) {
     }
     if ($serverExists -and $desktopWired) {
         Write-Host ""
-        Write-Host "✓ kaskas already installed!" -ForegroundColor Green
+        Write-Host "  ✓ kaskas already installed!" -ForegroundColor Green
         Write-Host ""
-        Write-Host "What would you like to do?" -ForegroundColor Cyan
-        Write-Host "  [U] Update to latest version"
-        Write-Host "  [F] Force reinstall (overwrite)"
-        Write-Host "  [E] Exit"
+        Write-Host "  What would you like to do?" -ForegroundColor Cyan
         Write-Host ""
-        $choice = Read-Host "Enter choice (U/F/E)"
+        Write-Host "    [U] Update to latest version" -ForegroundColor White
+        Write-Host "    [F] Force reinstall (overwrite)" -ForegroundColor White
+        Write-Host "    [E] Exit" -ForegroundColor White
+        Write-Host ""
+        $choice = Read-Host "  Enter choice (U/F/E)"
 
         switch ($choice.ToUpper()) {
             "U" {
-                Write-Host "Updating kaskas..." -ForegroundColor Cyan
+                Write-Host ""
+                Write-Host "  Updating kaskas..." -ForegroundColor Cyan
                 $Force = $true
                 # Continue with install
             }
             "F" {
-                Write-Host "Force reinstalling kaskas..." -ForegroundColor Cyan
+                Write-Host ""
+                Write-Host "  Force reinstalling kaskas..." -ForegroundColor Cyan
                 $Force = $true
                 # Continue with install
             }
             default {
-                Write-Host "Exiting." -ForegroundColor Yellow
+                Write-Host ""
+                Write-Host "  Exiting." -ForegroundColor Yellow
                 exit 0
             }
         }
