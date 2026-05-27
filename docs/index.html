@@ -383,18 +383,29 @@
     .security-block.safe  li::before { content: "[+]"; color: var(--green-dim); font-family: monospace; font-size: 0.75rem; }
     .security-block.never li::before { content: "[x]"; color: #ff5252; font-family: monospace; font-size: 0.75rem; }
 
-    /* ── Shoutout ── */
-    .shoutout {
+    /* ── Acknowledgements ── */
+    .ack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .ack-card {
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: 0.75rem;
-      padding: 2.5rem;
+      padding: 2rem;
       text-align: center;
       position: relative;
       overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .ack-card:hover {
+      border-color: var(--green-dark);
+      box-shadow: 0 0 24px rgba(0, 255, 65, 0.08);
     }
 
-    .shoutout::before {
+    .ack-card::before {
       content: "";
       position: absolute;
       top: 0; left: 50%;
@@ -404,39 +415,39 @@
       background: linear-gradient(90deg, transparent, var(--green), transparent);
     }
 
-    .shoutout-label {
+    .ack-tag {
       font-family: monospace;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--text-dim);
       margin-bottom: 1rem;
     }
 
-    .shoutout-name {
-      font-size: clamp(1.2rem, 3vw, 1.8rem);
+    .ack-name {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
       font-weight: 700;
       color: var(--white);
       margin-bottom: 0.5rem;
     }
 
-    .shoutout-name a {
+    .ack-name a {
       color: var(--green);
       text-decoration: none;
       transition: text-shadow 0.2s;
     }
-    .shoutout-name a:hover {
+    .ack-name a:hover {
       text-shadow: 0 0 15px var(--green);
     }
 
-    .shoutout-desc {
-      font-size: 0.9rem;
+    .ack-desc {
+      font-size: 0.85rem;
       color: var(--text-dim);
-      max-width: 480px;
       margin: 0 auto 1.25rem;
+      line-height: 1.6;
     }
 
-    .shoutout-link {
+    .ack-link {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -444,13 +455,13 @@
       border: 1px solid var(--green-dark);
       color: var(--green);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-family: monospace;
-      padding: 0.5rem 1.25rem;
+      padding: 0.45rem 1.1rem;
       border-radius: 4px;
       transition: all 0.2s;
     }
-    .shoutout-link:hover {
+    .ack-link:hover {
       background: var(--green);
       color: var(--bg);
       box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
@@ -718,20 +729,36 @@
 
   <hr class="divider">
 
-  <!-- Shoutout -->
+  <!-- Acknowledgements -->
   <section>
-    <div class="shoutout">
-      <p class="shoutout-label">// built with &nbsp; FullScale</p>
-      <p class="shoutout-name">
-        Shoutout to <a href="https://fullscale.ph" target="_blank" rel="noopener">FullScale Teams PH, INC.</a>
-      </p>
-      <p class="shoutout-desc">
-        World-class engineering teams, built in the Philippines.
-        Thank you for the culture of building things that matter.
-      </p>
-      <a href="https://fullscale.ph" target="_blank" rel="noopener" class="shoutout-link">
-        &gt; fullscale.ph
-      </a>
+    <div class="ack-grid">
+
+      <div class="ack-card">
+        <p class="ack-tag">// engineering</p>
+        <p class="ack-name">
+          <a href="https://fullscale.ph" target="_blank" rel="noopener">FullScale Teams PH, INC.</a>
+        </p>
+        <p class="ack-desc">
+          World-class software engineering teams,<br>built and grown in the Philippines.
+        </p>
+        <a href="https://fullscale.ph" target="_blank" rel="noopener" class="ack-link">
+          &gt; fullscale.ph
+        </a>
+      </div>
+
+      <div class="ack-card">
+        <p class="ack-tag">// geek culture</p>
+        <p class="ack-name">
+          <a href="https://geekstamatic.com" target="_blank" rel="noopener">Geekstamatic</a>
+        </p>
+        <p class="ack-desc">
+          Tech, gadgets, and everything in between<br>for the curious and the geeky.
+        </p>
+        <a href="https://geekstamatic.com" target="_blank" rel="noopener" class="ack-link">
+          &gt; geekstamatic.com
+        </a>
+      </div>
+
     </div>
   </section>
 
@@ -745,6 +772,8 @@
         <a href="https://github.com/rjramirez/kaskas/issues">Issues</a>
         &nbsp;&bull;&nbsp;
         <a href="https://fullscale.ph" target="_blank">FullScale Teams PH</a>
+        &nbsp;&bull;&nbsp;
+        <a href="https://geekstamatic.com" target="_blank">Geekstamatic</a>
       </span>
     </div>
   </footer>
