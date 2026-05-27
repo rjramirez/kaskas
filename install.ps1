@@ -6,7 +6,6 @@ $ProgressPreference = "SilentlyContinue"
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 $RepoUrl = "https://cdn.jsdelivr.net/gh/rjramirez/kaskas@main"
-$RepoUrlGithub = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
 $Version = "4.0.0"
 $SkillDir = Join-Path $env:APPDATA "Claude\kaskas"
 $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
@@ -145,7 +144,7 @@ function Uninstall-Kaskas {
 }
 
 # ── Pre-checks ─────────────────────────────────────────────────────────────────
-function Check-Node {
+function Test-Node {
   if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     Err "Node.js not found. Install from https://nodejs.org (LTS)"
   }
@@ -153,7 +152,7 @@ function Check-Node {
 }
 
 # ── Already installed? ─────────────────────────────────────────────────────────
-function Check-Installed {
+function Test-KaskasInstalled {
   if ($Force) { return }
   if (-not (Test-Path "$SkillDir\mcp-server.js")) { return }
 
@@ -209,14 +208,14 @@ $Files = @(
 )
 
 # ── Download with retry (multiple sources) ────────────────────────────────────
-function Download-File([string]$file, [string]$fullPath, [string]$dest) {
+function Get-RemoteFile([string]$file, [string]$fullPath, [string]$dest) {
   $urls = @(
     "$RepoUrl/$fullPath",
     "https://api.github.com/repos/rjramirez/kaskas/contents/$fullPath`?ref=main"
   )
 
   foreach ($url in $urls) {
-    $retries = 2
+    $retries = 3
     $delay = 500
     $success = $false
     while ($retries -gt 0 -and -not $success) {
@@ -227,26 +226,27 @@ function Download-File([string]$file, [string]$fullPath, [string]$dest) {
           $response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
           $json = $response.Content | ConvertFrom-Json
           if ($json.content) {
-            $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($json.content))
+            $base64 = $json.content -replace '\s', ''
+            $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64))
             [System.IO.File]::WriteAllText($dest, $content, $UTF8NoBOM)
-            Write-Host "    ✓ Success: $file" -ForegroundColor Green
+            Write-Host "    [OK] $file" -ForegroundColor Green
             $success = $true
           } else {
             throw "No content in response"
           }
         } else {
           Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing -ErrorAction Stop
-          Write-Host "    ✓ Success: $file" -ForegroundColor Green
+          Write-Host "    [OK] $file" -ForegroundColor Green
           $success = $true
         }
       } catch {
         $retries--
         if ($retries -gt 0) {
-          Write-Host "    ✗ Failed, retrying... ($retries left)" -ForegroundColor Yellow
+          Write-Host "    [!] Failed, retrying... ($retries left)" -ForegroundColor Yellow
           Start-Sleep -Milliseconds $delay
           $delay = $delay * 2
         } else {
-          Write-Host "    ✗ Failed: $url" -ForegroundColor Red
+          Write-Host "    [!] Failed: $url" -ForegroundColor Red
         }
       }
     }
@@ -269,7 +269,7 @@ function Install-Kaskas {
   }
 
   # Create temp dir
-  $TempDir = New-Item -ItemType Directory -Path ([System.IO.Path]::GetTempPath()) -Name "kaskas-$(Get-Random)" -Force
+  $TempDir = (New-Item -ItemType Directory -Path ([System.IO.Path]::GetTempPath()) -Name "kaskas-$(Get-Random)" -Force).FullName
 
   try {
     # Download files
@@ -282,7 +282,7 @@ function Install-Kaskas {
       if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir -Force | Out-Null }
 
       $fullPath = if ($dir -eq ".") { $file } else { "$dir/$file" }
-      if (Download-File $file $fullPath (Join-Path $destDir $file)) {
+      if (Get-RemoteFile $file $fullPath (Join-Path $destDir $file)) {
         $Count++
         Write-Host -NoNewline "`r  Downloaded: $Count/$($Files.Count) files"
       } else {
@@ -302,7 +302,8 @@ function Install-Kaskas {
     }
 
     # Verify count
-    $Actual = @(Get-ChildItem $TempDir -Recurse -File).Count
+
+    $Actual = (Get-ChildItem $TempDir -Recurse -File | Measure-Object).Count
     if ($Actual -ne $Files.Count) { Err "Incomplete download: $Actual/$($Files.Count) files" }
     Info "Verified: $Actual/$($Files.Count) files"
 
@@ -321,11 +322,6 @@ function Install-Kaskas {
     Move-Item $TempDir $SkillDir -Force
     Info "Installed: $SkillDir"
 
-    # Wire Claude Desktop
-    if (Test-Path (Split-Path $DesktopConfig -Parent)) {
-      if (-not (Test-Path $DesktopConfig)) {
-        [System.IO.File]::WriteAllText($DesktopConfig, '{}', $UTF8NoBOM)
-      }
       Copy-Item $DesktopConfig "$DesktopConfig.bak" -Force
 
       if (Update-Config $DesktopConfig "add-desktop") {
@@ -334,10 +330,6 @@ function Install-Kaskas {
         Err "Could not wire config"
       }
     }
-
-    # Health check
-    if (Test-Path "$SkillDir/mcp-server.js") {
-      Info "Health check: OK"
     } else {
       Warn "Health check failed (non-critical)"
     }
@@ -359,9 +351,11 @@ Show-Banner
 
 if ($Uninstall) {
   Uninstall-Kaskas
+  if (-not $IsPipe) { $null = Read-Host "  Press Any Key to exit" }
   exit 0
 }
 
-Check-Node
-Check-Installed
+Test-Node
+Test-KaskasInstalled
 Install-Kaskas
+if (-not $IsPipe) { $null = Read-Host "  Press Any Key to exit" }
