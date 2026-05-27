@@ -72,19 +72,6 @@ Restart Claude Desktop and Claude Code.
 
 ---
 
-## Uninstall
-
-```powershell
-# Windows
-powershell -ExecutionPolicy Bypass -File install.ps1 -Uninstall
-```
-```bash
-# macOS / Linux
-bash install.sh --uninstall
-```
-
----
-
 ## Security
 
 **What kaskas stores:**

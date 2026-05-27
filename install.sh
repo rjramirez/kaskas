@@ -269,4 +269,33 @@ install() {
 
   # Health check
   if timeout 2 node "$SKILL_DIR/mcp-server.js" <<< '{"jsonrpc":"2.0","id":1,"method":"initialize"}' 2>/dev/null | grep -q "kaskas"; then
-    inf
+    info "MCP server responds"
+  else
+    warn "MCP server not responding (may need restart)"
+  fi
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+banner
+check_node
+
+if [ "$UNINSTALL" = true ]; then
+  uninstall
+else
+  check_installed
+  install
+
+  echo ""
+  info "Done! Restart Claude Desktop."
+  echo ""
+  echo "  Commands: /review /due /subscriptions /offers /safe /export /ocr /pdf /promos /memory /embed /insights /llm /remind /forecast"
+  echo "  Uninstall: bash install.sh --uninstall"
+  echo ""
+fi
+
+# ── Wait for user (if piped) ───────────────────────────────────────────────────
+if $IS_PIPE; then
+  echo ""
+  printf "  Press Enter to exit..."
+  read -r || true
+fi

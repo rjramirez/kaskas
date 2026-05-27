@@ -311,4 +311,37 @@ function Install-Kaskas {
         });
       " -InputObject '{"jsonrpc":"2.0","id":1,"method":"initialize"}' 2>$null
 
-      if ($result
+      if ($result -like "*kaskas*") { Info "MCP server responds" }
+      else { Warn "MCP server not responding (may need restart)" }
+    } catch {
+      Warn "Could not test MCP server"
+    }
+  } finally {
+    if (Test-Path $TempDir) { Remove-Item $TempDir -Recurse -Force -ErrorAction SilentlyContinue }
+  }
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+Show-Banner
+Check-Node
+
+if ($Uninstall) {
+  Uninstall-Kaskas
+} else {
+  Check-Installed
+  Install-Kaskas
+
+  Write-Host ""
+  Info "Done! Restart Claude Desktop."
+  Write-Host ""
+  Write-Host "  Commands: /review /due /subscriptions /offers /safe /export /ocr /pdf /promos /memory /embed /insights /llm /remind /forecast"
+  Write-Host "  Uninstall: powershell -File install.ps1 -Uninstall"
+  Write-Host ""
+}
+
+# ── Wait for user (if piped) ───────────────────────────────────────────────────
+if ($IsPipe) {
+  Write-Host ""
+  Write-Host "  Press any key to exit..."
+  $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
