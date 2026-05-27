@@ -176,13 +176,17 @@ $Files = @(
 # ── Download with retry ────────────────────────────────────────────────────────
 function Download-File([string]$file, [string]$dest) {
   $retries = 3
+  $delay = 500
   while ($retries -gt 0) {
     try {
       Invoke-WebRequest -Uri "$RepoUrl/$file" -OutFile $dest -UseBasicParsing -ErrorAction Stop
       return $true
     } catch {
       $retries--
-      if ($retries -gt 0) { Start-Sleep -Milliseconds 500 }
+      if ($retries -gt 0) {
+        Start-Sleep -Milliseconds $delay
+        $delay = $delay * 2
+      }
     }
   }
   return $false
@@ -206,23 +210,31 @@ function Install-Kaskas {
     # Download files
     $Failed = 0
     $Count = 0
+    $FailedFiles = @()
     foreach ($entry in $Files) {
       $file, $dir = $entry
       $destDir = Join-Path $TempDir $dir
       if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir -Force | Out-Null }
 
-      if (Download-File "$dir/$file" (Join-Path $destDir $file)) {
+      $fullPath = "$dir/$file"
+      if (Download-File $fullPath (Join-Path $destDir $file)) {
         $Count++
         Write-Host -NoNewline "`r  Downloaded: $Count/$($Files.Count) files"
       } else {
         Write-Host ""
-        Warn "Failed to download $file"
+        Warn "Failed to download $fullPath (after 3 retries)"
+        $FailedFiles += $fullPath
         $Failed++
       }
     }
     Write-Host ""
 
-    if ($Failed -gt 0) { Err "Failed to download $Failed file(s)" }
+    if ($Failed -gt 0) {
+      Write-Host ""
+      Warn "Failed files:"
+      foreach ($f in $FailedFiles) { Write-Host "  - $f" -ForegroundColor Yellow }
+      Err "Failed to download $Failed file(s). Check network and try again."
+    }
 
     # Verify count
     $Actual = @(Get-ChildItem $TempDir -Recurse -File).Count

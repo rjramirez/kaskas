@@ -157,14 +157,17 @@ FILES=(
 
 # ── Download with retry ────────────────────────────────────────────────────────
 download_file() {
-  local file="$1" dest="$2" retries=3
+  local file="$1" dest="$2" retries=3 delay=1
 
   while [ $retries -gt 0 ]; do
     if curl -fsSL "$REPO_URL/$file" -o "$dest" 2>/dev/null; then
       return 0
     fi
     retries=$((retries - 1))
-    [ $retries -gt 0 ] && sleep 1
+    if [ $retries -gt 0 ]; then
+      sleep $delay
+      delay=$((delay * 2))
+    fi
   done
 
   return 1
@@ -187,21 +190,31 @@ install() {
 
   # Download files
   FAILED=0
+  FAILED_FILES=()
   for entry in "${FILES[@]}"; do
     IFS=: read -r file dir <<< "$entry"
     mkdir -p "$TEMP_DIR/$dir"
 
-    if download_file "$dir/$file" "$TEMP_DIR/$dir/$file"; then
+    FULL_PATH="$dir/$file"
+    if download_file "$FULL_PATH" "$TEMP_DIR/$dir/$file"; then
       echo -ne "\r  Downloaded: ${#FILES[@]} files"
     else
       echo ""
-      warn "Failed to download $file (retrying...)"
+      warn "Failed to download $FULL_PATH (after 3 retries)"
+      FAILED_FILES+=("$FULL_PATH")
       FAILED=$((FAILED + 1))
     fi
   done
   echo ""
 
-  [ $FAILED -gt 0 ] && err "Failed to download $FAILED file(s)"
+  if [ $FAILED -gt 0 ]; then
+    echo ""
+    warn "Failed files:"
+    for f in "${FAILED_FILES[@]}"; do
+      echo "  - $f"
+    done
+    err "Failed to download $FAILED file(s). Check network and try again."
+  fi
 
   # Verify count
   ACTUAL=$(find "$TEMP_DIR" -type f | wc -l)
