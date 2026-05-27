@@ -11,7 +11,6 @@ $SkillDir = Join-Path $env:APPDATA "Claude\kaskas"
 $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
 $CodeSettings = Join-Path $env:USERPROFILE ".claude\settings.json"
 $LogFile = Join-Path $SkillDir "install.log"
-$IsPipe = [string]::IsNullOrEmpty($PSCommandPath)
 
 # ── Parse args ─────────────────────────────────────────────────────────────────
 $Force = $args -contains "-Force" -or $args -contains "--force"
@@ -27,7 +26,11 @@ function Log([string]$msg) {
 
 function Info([string]$msg) { Write-Host "  [OK] $msg" -ForegroundColor Green }
 function Warn([string]$msg) { Write-Host "  [!] $msg" -ForegroundColor Yellow }
-function Err([string]$msg) { Write-Host "  ERROR: $msg" -ForegroundColor Red; exit 1 }
+function Err([string]$msg) { 
+  Write-Host "  ERROR: $msg" -ForegroundColor Red
+  $null = Read-Host "  Press Enter to exit"
+  exit 1 
+}
 
 # ── Banner ─────────────────────────────────────────────────────────────────────
 function Show-Banner {
@@ -117,7 +120,7 @@ function Uninstall-Kaskas {
 
   # Ask about data
   $KeepData = $false
-  if ((Test-Path "$SkillDir\data") -and -not $IsPipe) {
+  if (Test-Path "$SkillDir\data") {
     Write-Host ""
     try {
       $ans = Read-Host "  Keep your financial data? [Y/n]"
@@ -166,13 +169,6 @@ function Test-KaskasInstalled {
 
   if (-not $Wired) { return }
 
-  if ($IsPipe) {
-    Write-Host "  [OK] kaskas already installed." -ForegroundColor Green
-    Write-Host "       Re-run with -Force to update or -Uninstall to remove."
-    Write-Host ""
-    exit 0
-  }
-
   Write-Host ""
   Write-Host "  kaskas is already installed."
   Write-Host "  [1] Update / Reinstall  [2] Uninstall  [3] Cancel"
@@ -186,8 +182,17 @@ function Test-KaskasInstalled {
 
   switch ($choice) {
     "1" { $script:Force = $true }
-    "2" { Uninstall-Kaskas; exit 0 }
-    default { Write-Host "  Cancelled."; Write-Host ""; exit 0 }
+    "2" { 
+      Uninstall-Kaskas
+      $null = Read-Host "  Press Enter to exit"
+      exit 0 
+    }
+    default { 
+      Write-Host "  Cancelled."
+      Write-Host ""
+      $null = Read-Host "  Press Enter to exit"
+      exit 0 
+    }
   }
 }
 
