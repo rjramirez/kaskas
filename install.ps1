@@ -5,10 +5,7 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-$RepoUrl = "https://api.github.com/repos/rjramirez/kaskas/contents"
-$RepoOwner = "rjramirez"
-$RepoName = "kaskas"
-$RepoBranch = "main"
+$RepoUrl = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
 $Version = "4.0.0"
 $SkillDir = Join-Path $env:APPDATA "Claude\kaskas"
 $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
@@ -176,26 +173,14 @@ $Files = @(
   @("transaction.schema.json", "schemas")
 )
 
-# ── Download with retry (GitHub API) ──────────────────────────────────────────
+# ── Download with retry ────────────────────────────────────────────────────────
 function Download-File([string]$file, [string]$dest) {
   $retries = 3
   $delay = 500
   while ($retries -gt 0) {
     try {
-      $apiUrl = "$RepoUrl/$file`?ref=$RepoBranch"
-      $response = Invoke-WebRequest -Uri $apiUrl -UseBasicParsing -ErrorAction Stop
-      $content = $response.Content | ConvertFrom-Json
-
-      if ($content.download_url) {
-        $fileContent = Invoke-WebRequest -Uri $content.download_url -UseBasicParsing -ErrorAction Stop
-        [System.IO.File]::WriteAllBytes($dest, $fileContent.Content)
-        return $true
-      } else {
-        # Fallback: use content directly if base64 encoded
-        $bytes = [System.Convert]::FromBase64String($content.content)
-        [System.IO.File]::WriteAllBytes($dest, $bytes)
-        return $true
-      }
+      Invoke-WebRequest -Uri "$RepoUrl/$file" -OutFile $dest -UseBasicParsing -ErrorAction Stop
+      return $true
     } catch {
       $retries--
       if ($retries -gt 0) {
