@@ -257,3 +257,10 @@ else
   echo "  Uninstall: bash install.sh --uninstall"
   echo ""
 fi
+
+# ── Wait for user (if piped) ───────────────────────────────────────────────────
+if $IS_PIPE; then
+  echo ""
+  printf "  Press Enter to exit..."
+  read -r || true
+fi

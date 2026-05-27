@@ -302,3 +302,10 @@ if ($Uninstall) {
   Write-Host "  Uninstall: powershell -File install.ps1 -Uninstall"
   Write-Host ""
 }
+
+# ── Wait for user (if piped) ───────────────────────────────────────────────────
+if ($IsPipe) {
+  Write-Host ""
+  Write-Host "  Press any key to exit..."
+  $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
