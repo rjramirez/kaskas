@@ -175,10 +175,10 @@ $Files = @(
 )
 
 # ── Download with retry (multiple sources) ────────────────────────────────────
-function Download-File([string]$file, [string]$dest) {
+function Download-File([string]$file, [string]$fullPath, [string]$dest) {
   $urls = @(
-    "$RepoUrl/$file",                                                           # Try jsDelivr first
-    "https://api.github.com/repos/rjramirez/kaskas/contents/$file?ref=main"    # GitHub API (works for private repos)
+    "$RepoUrl/$fullPath",                                                           # Try jsDelivr first
+    "https://api.github.com/repos/rjramirez/kaskas/contents/$fullPath?ref=main"    # GitHub API (works for private repos)
   )
 
   foreach ($url in $urls) {
@@ -244,7 +244,7 @@ function Install-Kaskas {
       if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir -Force | Out-Null }
 
       $fullPath = if ($dir -eq ".") { $file } else { "$dir/$file" }
-      if (Download-File $fullPath (Join-Path $destDir $file)) {
+      if (Download-File $file $fullPath (Join-Path $destDir $file)) {
         $Count++
         Write-Host -NoNewline "`r  Downloaded: $Count/$($Files.Count) files"
       } else {
