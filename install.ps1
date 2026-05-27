@@ -304,4 +304,41 @@ function Install-Kaskas {
         const rl=readline.createInterface({input:process.stdin,terminal:false});
         rl.on('line',line=>{
           try{const req=JSON.parse(line);
-          if(req.method==='initialize
+          if(req.method==='initialize'){
+            console.log(JSON.stringify({jsonrpc:'2.0',id:req.id,result:{capabilities:{},serverInfo:{name:'kaskas',version:'$Version'}}}));
+            process.exit(0);
+          }}catch(e){console.error(e.message);}
+        });
+        setTimeout(()=>process.exit(1),2000);
+      " 2>$null
+      Info "Health check: OK"
+    } catch {
+      Warn "Health check failed (non-critical)"
+    }
+
+    Write-Host ""
+    Info "Installation complete!"
+    Write-Host ""
+    Write-Host "  Next steps:"
+    Write-Host "  1. Restart Claude Desktop"
+    Write-Host "  2. Try: /due, /insights, /review, /forecast"
+    Write-Host ""
+  } finally {
+    if (Test-Path $TempDir) { Remove-Item $TempDir -Recurse -Force -ErrorAction SilentlyContinue }
+  }
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+Show-Banner
+
+if ($Uninstall) {
+  Uninstall-Kaskas
+  exit 0
+}
+
+Check-Node
+Check-Installed
+Install-Kaskas
+
+Write-Host "  Press any key to exit..."
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
