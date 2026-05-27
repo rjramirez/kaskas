@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /sessions/exciting-optimistic-fermi/mnt/kaskas
+cd /sessions/amazing-nice-goldberg/mnt/kaskas
 
 echo "Killing git processes..."
 pkill -9 git 2>/dev/null || true

@@ -51,6 +51,7 @@ function Update-Config([string]$config, [string]$action) {
   $result = & node -e "
     const fs=require('fs'), p=process.env.C, a=process.env.A, sd=process.env.SD;
     let c=JSON.parse(fs.readFileSync(p,'utf8')||'{}');
+    let changed=false;
 
     if(a==='add-desktop') {
       if(!c.mcpServers) c.mcpServers={};
@@ -59,13 +60,13 @@ function Update-Config([string]$config, [string]$action) {
       delete c.mcpServers.kaskas;
       if(!Object.keys(c.mcpServers).length) delete c.mcpServers;
     } else if(a==='remove-code') {
-      let changed=false;
       if(c.enabledPlugins?.['kaskas@kaskas']) { delete c.enabledPlugins['kaskas@kaskas']; changed=true; }
       if(c.extraKnownMarketplaces?.kaskas) { delete c.extraKnownMarketplaces.kaskas; changed=true; }
-      if(!changed) return;
     }
 
-    fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
+    if(changed) {
+      fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
+    }
     console.log('OK');
   " C="$config" A="$action" SD="$SkillDir" 2>$null
 

@@ -56,6 +56,7 @@ update_config() {
   node -e "
     const fs=require('fs'), p=process.env.C, a=process.env.A, sd=process.env.SD;
     let c=JSON.parse(fs.readFileSync(p,'utf8')||'{}');
+    let changed=false;
 
     if(a==='add-desktop') {
       if(!c.mcpServers) c.mcpServers={};
@@ -64,13 +65,13 @@ update_config() {
       delete c.mcpServers.kaskas;
       if(!Object.keys(c.mcpServers).length) delete c.mcpServers;
     } else if(a==='remove-code') {
-      let changed=false;
       if(c.enabledPlugins?.['kaskas@kaskas']) { delete c.enabledPlugins['kaskas@kaskas']; changed=true; }
       if(c.extraKnownMarketplaces?.kaskas) { delete c.extraKnownMarketplaces.kaskas; changed=true; }
-      if(!changed) return;
     }
 
-    fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
+    if(changed) {
+      fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
+    }
     console.log('OK');
   " C="$config" A="$action" SD="$SKILL_DIR" 2>/dev/null || return 1
 }
@@ -269,33 +270,4 @@ install() {
 
   # Health check
   if timeout 2 node "$SKILL_DIR/mcp-server.js" <<< '{"jsonrpc":"2.0","id":1,"method":"initialize"}' 2>/dev/null | grep -q "kaskas"; then
-    info "MCP server responds"
-  else
-    warn "MCP server not responding (may need restart)"
-  fi
-}
-
-# ── Main ───────────────────────────────────────────────────────────────────────
-banner
-check_node
-
-if [ "$UNINSTALL" = true ]; then
-  uninstall
-else
-  check_installed
-  install
-
-  echo ""
-  info "Done! Restart Claude Desktop."
-  echo ""
-  echo "  Commands: /review /due /subscriptions /offers /safe /export /ocr /pdf /promos /memory /embed /insights /llm /remind /forecast"
-  echo "  Uninstall: bash install.sh --uninstall"
-  echo ""
-fi
-
-# ── Wait for user (if piped) ───────────────────────────────────────────────────
-if $IS_PIPE; then
-  echo ""
-  printf "  Press Enter to exit..."
-  read -r || true
-fi
+    inf
