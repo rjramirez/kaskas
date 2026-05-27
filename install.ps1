@@ -141,6 +141,9 @@ function Check-Installed {
 
   if ($IsPipe) {
     Info "kaskas already installed. Re-run with -Force to update or -Uninstall to remove."
+    Write-Host ""
+    Write-Host "  Press any key to exit..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     exit 0
   }
 
@@ -155,8 +158,8 @@ function Check-Installed {
   }
   switch ($choice) {
     "1" { $script:Force = $true }
-    "2" { Uninstall-Kaskas; exit 0 }
-    default { Write-Host "  Cancelled."; Write-Host ""; exit 0 }
+    "2" { Uninstall-Kaskas; Write-Host ""; Write-Host "  Press any key to exit..."; $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown"); exit 0 }
+    default { Write-Host "  Cancelled."; Write-Host ""; Write-Host "  Press any key to exit..."; $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown"); exit 0 }
   }
 }
 
