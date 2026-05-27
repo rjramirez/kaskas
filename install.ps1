@@ -139,23 +139,17 @@ function Check-Installed {
 
   if (-not $Wired) { return }
 
-  if ($IsPipe) {
-    Info "kaskas already installed. Re-run with -Force to update or -Uninstall to remove."
-    Write-Host ""
-    Write-Host "  Press any key to exit..."
-    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-    exit 0
-  }
-
   Write-Host ""
   Write-Host "  kaskas is already installed."
   Write-Host "  [1] Update / Reinstall  [2] Uninstall  [3] Cancel"
   Write-Host ""
+
   try {
     $choice = Read-Host "  Choice"
   } catch {
     $choice = "3"
   }
+
   switch ($choice) {
     "1" { $script:Force = $true }
     "2" { Uninstall-Kaskas; Write-Host ""; Write-Host "  Press any key to exit..."; $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown"); exit 0 }

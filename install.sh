@@ -126,11 +126,6 @@ check_installed() {
 
   [ "$WIRED" != "true" ] && return 0
 
-  if $IS_PIPE; then
-    info "kaskas already installed. Re-run with --force to update or --uninstall to remove."
-    exit 0
-  fi
-
   echo ""
   echo "  kaskas is already installed."
   echo "  [1] Update / Reinstall  [2] Uninstall  [3] Cancel"
