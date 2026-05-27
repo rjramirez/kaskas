@@ -5,10 +5,8 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-$RepoUrl = "https://api.github.com/repos/rjramirez/kaskas/contents"
-$RepoOwner = "rjramirez"
-$RepoName = "kaskas"
-$RepoBranch = "main"
+$RepoUrl = "https://cdn.jsdelivr.net/gh/rjramirez/kaskas@main"
+$RepoUrlGithub = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
 $Version = "4.0.0"
 $SkillDir = Join-Path $env:APPDATA "Claude\kaskas"
 $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
@@ -176,31 +174,45 @@ $Files = @(
   @("transaction.schema.json", "schemas")
 )
 
-# ── Download with retry (GitHub API) ──────────────────────────────────────────
+# ── Download with retry (multiple sources) ────────────────────────────────────
 function Download-File([string]$file, [string]$dest) {
-  $retries = 3
-  $delay = 500
-  while ($retries -gt 0) {
-    try {
-      $apiUrl = "$RepoUrl/$file`?ref=$RepoBranch"
-      $response = Invoke-WebRequest -Uri $apiUrl -UseBasicParsing -ErrorAction Stop
-      $content = $response.Content | ConvertFrom-Json
+  $urls = @(
+    "$RepoUrl/$file",                                                           # Try jsDelivr first
+    "https://api.github.com/repos/rjramirez/kaskas/contents/$file?ref=main"    # GitHub API (works for private repos)
+  )
 
-      if ($content.download_url) {
-        $fileContent = Invoke-WebRequest -Uri $content.download_url -UseBasicParsing -ErrorAction Stop
-        [System.IO.File]::WriteAllBytes($dest, $fileContent.Content)
-        return $true
-      } else {
-        # Fallback: use content directly if base64 encoded
-        $bytes = [System.Convert]::FromBase64String($content.content)
-        [System.IO.File]::WriteAllBytes($dest, $bytes)
-        return $true
-      }
-    } catch {
-      $retries--
-      if ($retries -gt 0) {
-        Start-Sleep -Milliseconds $delay
-        $delay = $delay * 2
+  foreach ($url in $urls) {
+    $retries = 2
+    $delay = 500
+    while ($retries -gt 0) {
+      try {
+        Write-Host "    Trying: $url" -ForegroundColor DarkGray
+
+        if ($url -like "*api.github.com*") {
+          # GitHub API returns base64-encoded content
+          $response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
+          $json = $response.Content | ConvertFrom-Json
+          if ($json.content) {
+            $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($json.content))
+            Set-Content -Path $dest -Value $content -Encoding UTF8
+            Write-Host "    ✓ Success: $file" -ForegroundColor Green
+            return $true
+          }
+        } else {
+          # Standard download for jsDelivr
+          Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing -ErrorAction Stop
+          Write-Host "    ✓ Success: $file" -ForegroundColor Green
+          return $true
+        }
+      } catch {
+        $retries--
+        if ($retries -gt 0) {
+          Write-Host "    ✗ Failed, retrying... ($retries left)" -ForegroundColor Yellow
+          Start-Sleep -Milliseconds $delay
+          $delay = $delay * 2
+        } else {
+          Write-Host "    ✗ Failed: $url" -ForegroundColor Red
+        }
       }
     }
   }
