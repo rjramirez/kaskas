@@ -1,0 +1,221 @@
+/* ============================================================
+   Builder Tasklist Design System — Colors & Type
+   v1.2 — Based on the official Brand Guide (March 2026) and
+   the companion Figma file. Inter is the sole brand typeface.
+   ============================================================ */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('./fonts/Inter-VariableFont.ttf') format('truetype-variations');
+}
+
+:root {
+  /* ---------- BRAND PALETTE — "BT Blues" ----------
+     Canonical names + hex match the Flutter theme (`btBlue`,
+     `btDarkBlue`, `btLink`, etc). Previous `--bt-blue-dark` /
+     `--bt-blue` aliases are kept for back-compat and remapped
+     so no downstream consumer breaks. */
+  --bt-blue:         #132252;  /* btBlue — primary text, wordmark, section headers */
+  --bt-dark-blue:    #0D1738;  /* btDarkBlue — deepest nav, hero, dark UI */
+  --bt-blue-medium:  #3F97EF;  /* btLink — CTAs, links, active states */
+  --bt-blue-light:   #60B0F0;  /* accents, gradient start, hover tint */
+
+  /* Back-compat aliases (prefer --bt-blue / --bt-dark-blue) */
+  --bt-blue-dark:    var(--bt-dark-blue);
+  --bt-navy-ink:     var(--bt-blue);
+  --bt-navy-deep:    var(--bt-dark-blue);
+
+  /* ---------- SEMANTIC / UI COLORS ---------- */
+  --success:         #22C55E;
+  --success-tint:    #DCFCE7;
+  --warning:         #F59E0B;
+  --warning-tint:    #FEF3C7;
+  --danger:          #EF4444;
+  --danger-tint:     #FEE2E2;
+  --danger-deep:     #B91C1C;   /* high-contrast text-on-tint */
+
+  /* Extra accents lifted from the Figma file */
+  --accent-amber:    #FECA00;   /* highlight / pro badge */
+  --accent-teal:     #02AAB0;
+  --accent-aqua:     #00CDAC;
+  --accent-magenta:  #B06AB3;   /* illustration fills only */
+
+  /* ---------- NEUTRAL SCALE ---------- */
+  --n-0:    #FFFFFF;
+  --n-50:   #F8FAFC;   /* page background */
+  --n-100:  #F3F4F6;   /* subtle surface */
+  --n-150:  #F7FCFF;   /* cool tint surface */
+  --n-200:  #E5E7EB;   /* dividers, borders */
+  --n-300:  #D1D5DB;
+  --n-400:  #9CA3AF;
+  --n-500:  #6B7280;   /* secondary text */
+  --n-600:  #4B5563;
+  --n-700:  #374151;
+  --n-800:  #1F2937;
+  --n-900:  #111827;   /* primary text (body) */
+  --n-950:  #0F172A;
+
+  /* Glass / overlay */
+  --overlay-25: rgba(0,0,0,0.25);
+  --overlay-50: rgba(0,0,0,0.50);
+
+  /* ---------- GRADIENTS ---------- */
+  /* "BT Gradient" — primary brand gradient, used on hero headers
+      and splash. Light → medium blue. */
+  --bt-gradient:     linear-gradient(135deg, #60B0F0 0%, #3090E0 50%, #1E3A7B 100%);
+  /* "BT Gradient Header" — signature marketing gradient headline
+     (Inter Extra Bold, applied as -webkit-background-clip: text). */
+  --bt-gradient-alt: linear-gradient(90deg, #4568DC 0%, #B06AB3 100%);
+  /* Dark hero — used on app-store graphics and trade-show collateral */
+  --bt-gradient-dark: linear-gradient(180deg, #1E3A7B 0%, #0F2050 100%);
+  /* Mesh-background top-to-bottom fade-to-white (in-app) */
+  --bt-mesh-fade:    linear-gradient(180deg, rgba(255,255,255,0) 0%, #FFFFFF 100%);
+
+  /* ---------- SEMANTIC ROLES ---------- */
+  --fg-1: var(--bt-blue-dark);     /* primary text */
+  --fg-2: var(--n-700);            /* body text */
+  --fg-3: var(--n-500);            /* secondary / captions */
+  --fg-inverse: var(--n-0);
+  --link: var(--bt-blue-medium);
+  --link-visited: var(--bt-blue);
+
+  --bg-page: var(--n-0);
+  --bg-muted: var(--n-50);
+  --bg-surface: var(--n-0);
+  --bg-inverse: var(--bt-blue-dark);
+  --border: var(--n-200);
+  --border-strong: var(--n-300);
+
+  /* ---------- RADII — Material 3 shape scale ---------- */
+  --r-none: 0;
+  --r-xs:   4px;
+  --r-sm:   8px;
+  --r-md:   12px;
+  --r-lg:   16px;
+  --r-xl:   28px;
+  --r-2xl:  28px;    /* alias */
+  --r-pill: 9999px;
+
+  /* ---------- SHADOWS — Material 3 elevation ----------
+     Level 0 = flat, Level 1 = cards, Level 3 = pickup, Level 5 = modal.
+     Tint is neutral black (not navy) per Material defaults. */
+  --shadow-xs:    none;                                                                               /* Level 0 */
+  --shadow-sm:    0 1px 2px rgba(0,0,0,0.30), 0 1px 3px 1px rgba(0,0,0,0.15);                          /* Level 1 */
+  --shadow-md:    0 1px 2px rgba(0,0,0,0.30), 0 2px 6px 2px rgba(0,0,0,0.15);                          /* Level 2 */
+  --shadow-lg:    0 1px 3px rgba(0,0,0,0.30), 0 4px 8px 3px rgba(0,0,0,0.15);                          /* Level 3 */
+  --shadow-xl:    0 2px 3px rgba(0,0,0,0.30), 0 6px 10px 4px rgba(0,0,0,0.15);                         /* Level 4 */
+  --shadow-2xl:   0 4px 4px rgba(0,0,0,0.30), 0 8px 12px 6px rgba(0,0,0,0.15);                         /* Level 5 */
+  --shadow-focus: 0 0 0 3px rgba(63, 151, 239, 0.35);
+
+  /* ---------- SPACING (4px grid) ---------- */
+  --s-0:  0;
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  20px;
+  --s-6:  24px;
+  --s-8:  32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+
+  /* ---------- TYPOGRAPHY TOKENS ---------- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+               Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Desktop display / heading scale (Figma: Headings - Desktop) */
+  --t-display-lg-size:   52px;  --t-display-lg-lh: 56px;  --t-display-lg-tr: -2%;
+  --t-display-sm-size:   44px;  --t-display-sm-lh: 48px;  --t-display-sm-tr: -2%;
+  --t-h1-size:           40px;  --t-h1-lh:         48px;  --t-h1-tr:         -2%;
+  --t-h2-size:           36px;  --t-h2-lh:         44px;  --t-h2-tr:         -2%;
+  --t-h3-size:           32px;  --t-h3-lh:         40px;  --t-h3-tr:         -2%;
+  --t-h4-size:           28px;  --t-h4-lh:         36px;  --t-h4-tr:         -2%;
+  --t-h5-size:           24px;  --t-h5-lh:         32px;  --t-h5-tr:         -2%;
+  --t-h6-size:           20px;  --t-h6-lh:         28px;  --t-h6-tr:         -2%;
+
+  /* Paragraph scale */
+  --t-para-lg-size:      18px;  --t-para-lg-lh: 28px;
+  --t-para-md-size:      16px;  --t-para-md-lh: 24px;
+  --t-para-sm-size:      14px;  --t-para-sm-lh: 20px;
+  --t-para-xs-size:      12px;  --t-para-xs-lh: 20px;
+
+  /* Label scale */
+  --t-label-lg-size:     16px;  --t-label-lg-lh: 24px;
+  --t-label-md-size:     14px;  --t-label-md-lh: 20px;
+  --t-label-sm-size:     12px;  --t-label-sm-lh: 16px;
+  --t-label-xs-size:     10px;  --t-label-xs-lh: 14px;
+}
+
+/* ============================================================
+   Semantic element defaults — opt in by loading this file and
+   using normal tags; everything below honours the tokens above.
+   ============================================================ */
+html, body {
+  font-family: var(--font-sans);
+  color: var(--fg-2);
+  background: var(--bg-page);
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--fg-1);
+  font-weight: 700;          /* Inter Bold for marketing headings */
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 { font-size: var(--t-h1-size); line-height: var(--t-h1-lh); }
+h2 { font-size: var(--t-h2-size); line-height: var(--t-h2-lh); }
+h3 { font-size: var(--t-h3-size); line-height: var(--t-h3-lh); }
+h4 { font-size: var(--t-h4-size); line-height: var(--t-h4-lh); }
+h5 { font-size: var(--t-h5-size); line-height: var(--t-h5-lh); font-weight: 600; }
+h6 { font-size: var(--t-h6-size); line-height: var(--t-h6-lh); font-weight: 600; }
+
+p {
+  font-size: var(--t-para-md-size);
+  line-height: var(--t-para-md-lh);
+  color: var(--fg-2);
+  margin: 0 0 var(--s-4);
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+a:visited { color: var(--link-visited); }
+
+small, .caption {
+  font-size: var(--t-label-sm-size);
+  line-height: var(--t-label-sm-lh);
+  color: var(--fg-3);
+}
+
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
+}
+
+/* Utility classes ------------------------------------------------ */
+.display-lg { font-size: var(--t-display-lg-size); line-height: var(--t-display-lg-lh); font-weight: 800; letter-spacing: -0.02em; }
+.display-sm { font-size: var(--t-display-sm-size); line-height: var(--t-display-sm-lh); font-weight: 800; letter-spacing: -0.02em; }
+.overline   { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bt-blue); }
+.eyebrow    { font-size: 13px; font-weight: 600; color: var(--bt-blue-medium); letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Brand gradient text — matches "Gradient Header" style in guide */
+.bt-gradient-text {
+  background: var(--bt-gradient-alt);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}

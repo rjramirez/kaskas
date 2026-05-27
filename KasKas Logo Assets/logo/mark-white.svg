@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" aria-label="kaskas mark — white">
+  <rect x="12" y="11" width="9" height="42" rx="4.5" fill="#ffffff"></rect>
+  <path d="M21 32 L50 11" stroke="#ffffff" stroke-width="9" stroke-linecap="round" fill="none"></path>
+  <path d="M21 32 L50 53" stroke="#ffffff" stroke-width="9" stroke-linecap="round" fill="none"></path>
+</svg>

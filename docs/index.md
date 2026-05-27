@@ -3,20 +3,21 @@ layout: default
 title: Kaskas - Financial Memory for Claude
 ---
 
+![Kaskas Logo](./assets/kaskas-logo.svg){: width="150" }
+
 # 💰 Kaskas
 
 **Financial memory for Claude. Analyze statements, track dues, find cashback. Local-only.**
 
-```
-╔═══════════════════════════════════════════════════════════╗
-║                                                           ║
-║   💰 KASKAS - Financial Memory for Claude                ║
-║   Analyze statements • Track dues • Find cashback        ║
-║                                                           ║
-║   Local-only • No external API calls • Your data stays   ║
-║                                                           ║
-╚═══════════════════════════════════════════════════════════╝
-```
+![Kaskas Card](./assets/kaskas-card.svg){: width="400" }
+
+---
+
+## What is Kaskas?
+
+Kaskas is your personal financial AI assistant for Claude Desktop. It analyzes credit card statements, tracks payments, finds cashback opportunities, and helps you optimize your spending—all locally on your machine with zero external API calls.
+
+**Built for Filipinos** 🇵🇭 - Works with Philippine peso (₱) and local banks.
 
 ---
 
