@@ -1,257 +1,259 @@
 #!/usr/bin/env bash
-# kaskas -- one-command installer for macOS / Linux
-# Installs kaskas for Claude Desktop (MCP server)
-#
-# One-liner:
-#   curl -fsSL https://raw.githubusercontent.com/rjramirez/kaskas/main/install.sh | bash
-#
-# Or local:
-#   bash install.sh [--force] [--uninstall]
+# kaskas -- optimized installer for macOS / Linux
+# Fast, safe, clean installation and uninstall
 
 set -euo pipefail
 
+# ── Config ─────────────────────────────────────────────────────────────────────
 REPO_URL="https://raw.githubusercontent.com/rjramirez/kaskas/main"
-PLUGIN_NAME="kaskas"
+VERSION="4.0.0"
 
-# ── Paths ──────────────────────────────────────────────────────────────────────
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  CLAUDE_DESKTOP_DIR="$HOME/Library/Application Support/Claude"
+  CLAUDE_DIR="$HOME/Library/Application Support/Claude"
 else
-  CLAUDE_DESKTOP_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/Claude"
+  CLAUDE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/Claude"
 fi
 
-SKILL_DIR="$CLAUDE_DESKTOP_DIR/kaskas"
-DESKTOP_CONFIG="$CLAUDE_DESKTOP_DIR/claude_desktop_config.json"
+SKILL_DIR="$CLAUDE_DIR/kaskas"
+DESKTOP_CONFIG="$CLAUDE_DIR/claude_desktop_config.json"
 CODE_SETTINGS="$HOME/.claude/settings.json"
+LOG_FILE="$SKILL_DIR/install.log"
 
-# ── Flags ──────────────────────────────────────────────────────────────────────
+# ── Parse args ─────────────────────────────────────────────────────────────────
 FORCE=false UNINSTALL=false
 for arg in "$@"; do
-  case "$arg" in
-    --force)     FORCE=true ;;
-    --uninstall) UNINSTALL=true ;;
-  esac
+  case "$arg" in --force|--uninstall) eval "${arg#--}=true" ;; esac
 done
 
-# Detect pipe vs interactive (stdin is terminal = interactive)
-IS_PIPE=true
-[ -t 0 ] && IS_PIPE=false
+IS_PIPE=! [ -t 0 ]
+
+# ── Helpers ────────────────────────────────────────────────────────────────────
+log()   { echo "  $1"; [ -d "$(dirname "$LOG_FILE")" ] && echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE" 2>/dev/null || true; }
+err()   { echo "  ERROR: $1" >&2; exit 1; }
+info()  { echo "  [OK] $1"; }
+warn()  { echo "  [!] $1"; }
 
 # ── Banner ─────────────────────────────────────────────────────────────────────
-echo ""
-echo "  +-----------------------------------------------------------+"
-echo "  |                                                           |"
-echo "  |   KASKAS - Financial Memory for Claude                   |"
-echo "  |   Analyze statements | Track dues | Find cashback        |"
-echo "  |                                                           |"
-echo "  |   Local-only | No external API calls | Your data stays   |"
-echo "  |                                                           |"
-echo "  +-----------------------------------------------------------+"
-echo ""
+banner() {
+  echo ""
+  echo "  +-----------------------------------------------------------+"
+  echo "  |  KASKAS - Financial Memory for Claude (v$VERSION)         |"
+  echo "  |  Analyze statements | Track dues | Find cashback         |"
+  echo "  |  Local-only | No external API calls | Your data stays    |"
+  echo "  +-----------------------------------------------------------+"
+  echo ""
+}
 
-# ── Uninstall function ─────────────────────────────────────────────────────────
-do_uninstall() {
-  echo "  Uninstalling kaskas..."
+# ── Update config (JSON) ───────────────────────────────────────────────────────
+update_config() {
+  local config="$1" action="$2"
+
+  if [ ! -f "$config" ]; then
+    [ "$action" = "add" ] && echo '{}' > "$config" || return 0
+  fi
+
+  node -e "
+    const fs=require('fs'), p=process.env.C, a=process.env.A, sd=process.env.SD;
+    let c=JSON.parse(fs.readFileSync(p,'utf8')||'{}');
+
+    if(a==='add-desktop') {
+      if(!c.mcpServers) c.mcpServers={};
+      c.mcpServers.kaskas={command:'node',args:[sd+'/mcp-server.js']};
+    } else if(a==='remove-desktop' && c.mcpServers) {
+      delete c.mcpServers.kaskas;
+      if(!Object.keys(c.mcpServers).length) delete c.mcpServers;
+    } else if(a==='remove-code') {
+      let changed=false;
+      if(c.enabledPlugins?.['kaskas@kaskas']) { delete c.enabledPlugins['kaskas@kaskas']; changed=true; }
+      if(c.extraKnownMarketplaces?.kaskas) { delete c.extraKnownMarketplaces.kaskas; changed=true; }
+      if(!changed) return;
+    }
+
+    fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
+    console.log('OK');
+  " C="$config" A="$action" SD="$SKILL_DIR" 2>/dev/null || return 1
+}
+
+# ── Uninstall ──────────────────────────────────────────────────────────────────
+uninstall() {
+  log "Uninstalling kaskas..."
   echo ""
 
-  # Step 1: Backup desktop config
-  if [ -f "$DESKTOP_CONFIG" ]; then
-    cp "$DESKTOP_CONFIG" "$DESKTOP_CONFIG.bak"
-    echo "  Backup: $DESKTOP_CONFIG.bak"
-  fi
+  # Backup config
+  [ -f "$DESKTOP_CONFIG" ] && cp "$DESKTOP_CONFIG" "$DESKTOP_CONFIG.bak" && log "Backup: $DESKTOP_CONFIG.bak"
 
-  # Step 2: Remove from Claude Desktop MCP config
-  if [ -f "$DESKTOP_CONFIG" ] && command -v node &>/dev/null; then
-    node -e "
-      const fs=require('fs'), p=process.env.DC;
-      try {
-        const c=JSON.parse(fs.readFileSync(p,'utf8'));
-        if(c.mcpServers&&c.mcpServers.kaskas){
-          delete c.mcpServers.kaskas;
-          if(!Object.keys(c.mcpServers).length) delete c.mcpServers;
-          fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
-          console.log('  [OK] Removed from claude_desktop_config.json');
-        }
-      }catch(e){}
-    " DC="$DESKTOP_CONFIG" 2>/dev/null || true
-  fi
+  # Remove from configs
+  update_config "$DESKTOP_CONFIG" "remove-desktop" && info "Removed from claude_desktop_config.json" || warn "Could not update desktop config"
+  update_config "$CODE_SETTINGS" "remove-code" && info "Removed from settings.json" || true
 
-  # Step 3: Remove from Claude Code settings.json
-  if [ -f "$CODE_SETTINGS" ] && command -v node &>/dev/null; then
-    node -e "
-      const fs=require('fs'), p=process.env.CS;
-      try {
-        const c=JSON.parse(fs.readFileSync(p,'utf8'));
-        let changed=false;
-        if(c.enabledPlugins&&c.enabledPlugins['kaskas@kaskas']){
-          delete c.enabledPlugins['kaskas@kaskas']; changed=true;
-        }
-        if(c.extraKnownMarketplaces&&c.extraKnownMarketplaces.kaskas){
-          delete c.extraKnownMarketplaces.kaskas; changed=true;
-        }
-        if(changed){
-          fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
-          console.log('  [OK] Removed from ~/.claude/settings.json');
-        }
-      }catch(e){}
-    " CS="$CODE_SETTINGS" 2>/dev/null || true
-  fi
-
-  # Step 4: Keep data?
-  DATA_DIR="$SKILL_DIR/data"
+  # Ask about data
   KEEP_DATA=false
-  if [ -d "$DATA_DIR" ] && [ "$IS_PIPE" = false ]; then
+  if [ -d "$SKILL_DIR/data" ] && ! $IS_PIPE; then
     echo ""
     printf "  Keep your financial data? [Y/n]: "
     read -r ans </dev/tty || ans=""
-    case "$ans" in
-      [Nn]*) KEEP_DATA=false ;;
-      *)     KEEP_DATA=true ;;
-    esac
+    [[ ! "$ans" =~ ^[Nn] ]] && KEEP_DATA=true
   fi
 
-  # Step 5: Remove skill dir
+  # Remove skill dir
   if [ -d "$SKILL_DIR" ]; then
-    if [ "$KEEP_DATA" = true ]; then
-      find "$SKILL_DIR" -mindepth 1 -maxdepth 1 ! -name "data" -exec rm -rf {} +
-      echo "  [OK] Removed skill files (data kept: $DATA_DIR)"
+    if $KEEP_DATA; then
+      find "$SKILL_DIR" -mindepth 1 -maxdepth 1 ! -name "data" -exec rm -rf {} + 2>/dev/null || true
+      info "Removed skill files (data kept)"
     else
       rm -rf "$SKILL_DIR"
-      echo "  [OK] Removed: $SKILL_DIR"
+      info "Removed: $SKILL_DIR"
     fi
-  else
-    echo "  [--] Not found: $SKILL_DIR"
   fi
 
   echo ""
-  echo "  Uninstalled. Restart Claude Desktop."
+  log "Uninstalled. Restart Claude Desktop."
   echo ""
 }
-
-# ── Uninstall flag ─────────────────────────────────────────────────────────────
-if [ "$UNINSTALL" = true ]; then
-  do_uninstall
-  exit 0
-fi
 
 # ── Pre-checks ─────────────────────────────────────────────────────────────────
-if ! command -v node &>/dev/null; then
-  echo "  ERROR: Node.js not found." >&2
-  echo "         Install from https://nodejs.org (LTS) then re-run." >&2
-  echo ""; exit 1
-fi
-echo "  Node.js $(node --version)"
+check_node() {
+  command -v node &>/dev/null || err "Node.js not found. Install from https://nodejs.org (LTS)"
+  log "Node.js $(node --version)"
+}
 
 # ── Already installed? ─────────────────────────────────────────────────────────
-if [ "$FORCE" = false ] && [ -f "$SKILL_DIR/mcp-server.js" ]; then
-  WIRED=false
-  if [ -f "$DESKTOP_CONFIG" ]; then
-    WIRED=$(node -e "
-      try{ const c=JSON.parse(require('fs').readFileSync(process.env.DC,'utf8'));
-           console.log(!!(c.mcpServers&&c.mcpServers.kaskas)); }
-      catch(e){ console.log(false); }
-    " DC="$DESKTOP_CONFIG" 2>/dev/null || echo "false")
+check_installed() {
+  [ "$FORCE" = true ] && return 0
+  [ ! -f "$SKILL_DIR/mcp-server.js" ] && return 0
+
+  WIRED=$(node -e "try{const c=JSON.parse(require('fs').readFileSync(process.env.DC,'utf8'));console.log(!!(c.mcpServers?.kaskas));}catch(e){console.log(false);}" DC="$DESKTOP_CONFIG" 2>/dev/null || echo "false")
+
+  [ "$WIRED" != "true" ] && return 0
+
+  if $IS_PIPE; then
+    info "kaskas already installed. Re-run with --force to update or --uninstall to remove."
+    exit 0
   fi
-  if [ "$WIRED" = "true" ]; then
-    if [ "$IS_PIPE" = true ]; then
-      echo "  [OK] kaskas already installed."
-      echo "       Re-run with --force to update or --uninstall to remove."
-      echo ""; exit 0
+
+  echo ""
+  echo "  kaskas is already installed."
+  echo "  [1] Update / Reinstall  [2] Uninstall  [3] Cancel"
+  echo ""
+  printf "  Choice: "
+  read -r choice </dev/tty || choice=""
+  case "$choice" in
+    1) FORCE=true ;;
+    2) uninstall; exit 0 ;;
+    *) echo "  Cancelled."; echo ""; exit 0 ;;
+  esac
+}
+
+# ── File list ──────────────────────────────────────────────────────────────────
+FILES=(
+  "mcp-server.js:." "manifest.json:." "claude.json:."
+  "due.md:commands" "embed.md:commands" "export.md:commands" "forecast.md:commands"
+  "insights.md:commands" "llm.md:commands" "memory.md:commands" "ocr.md:commands"
+  "offers.md:commands" "pdf.md:commands" "promos.md:commands" "remind.md:commands"
+  "review.md:commands" "safe.md:commands" "subscriptions.md:commands"
+  "embedding-config.md:references" "forecast-config.md:references" "llm-config.md:references"
+  "merchant-categories.md:references" "ph-cards.md:references" "recurring-patterns.md:references"
+  "utilization-rules.md:references"
+  "obligations.md:templates" "summary.md:templates"
+  "embedding.schema.json:schemas" "forecast.schema.json:schemas" "memory.schema.json:schemas"
+  "obligation.schema.json:schemas" "promo.schema.json:schemas" "reminder.schema.json:schemas"
+  "transaction.schema.json:schemas"
+)
+
+# ── Download with retry ────────────────────────────────────────────────────────
+download_file() {
+  local file="$1" dest="$2" retries=3
+
+  while [ $retries -gt 0 ]; do
+    if curl -fsSL "$REPO_URL/$file" -o "$dest" 2>/dev/null; then
+      return 0
     fi
-    echo ""
-    echo "  kaskas is already installed."
-    echo ""
-    echo "  [1] Update / Reinstall"
-    echo "  [2] Uninstall"
-    echo "  [3] Cancel"
-    echo ""
-    printf "  Choice: "
-    read -r choice </dev/tty || choice=""
-    case "$choice" in
-      1) FORCE=true ;;
-      2) do_uninstall; exit 0 ;;
-      *) echo "  Cancelled."; echo ""; exit 0 ;;
-    esac
+    retries=$((retries - 1))
+    [ $retries -gt 0 ] && sleep 1
+  done
+
+  return 1
+}
+
+# ── Install ────────────────────────────────────────────────────────────────────
+install() {
+  log "Installing kaskas..."
+
+  # Backup if updating
+  if [ "$FORCE" = true ] && [ -d "$SKILL_DIR" ]; then
+    BACKUP_DIR="$SKILL_DIR.backup.$(date +%s)"
+    cp -r "$SKILL_DIR" "$BACKUP_DIR"
+    log "Backup: $BACKUP_DIR"
   fi
-fi
 
-echo "  Installing kaskas..."
+  # Create temp dir
+  TEMP_DIR=$(mktemp -d)
+  trap "rm -rf $TEMP_DIR" EXIT
 
-# ── Detect script source ───────────────────────────────────────────────────────
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd)" || SCRIPT_DIR=""
+  # Download files
+  FAILED=0
+  for entry in "${FILES[@]}"; do
+    IFS=: read -r file dir <<< "$entry"
+    mkdir -p "$TEMP_DIR/$dir"
 
-dl() {
-  local rel="$1" dest="$2"
-  mkdir -p "$(dirname "$dest")"
-  if [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/$rel" ]; then
-    cp "$SCRIPT_DIR/$rel" "$dest"
+    if download_file "$dir/$file" "$TEMP_DIR/$dir/$file"; then
+      echo -ne "\r  Downloaded: ${#FILES[@]} files"
+    else
+      echo ""
+      warn "Failed to download $file (retrying...)"
+      FAILED=$((FAILED + 1))
+    fi
+  done
+  echo ""
+
+  [ $FAILED -gt 0 ] && err "Failed to download $FAILED file(s)"
+
+  # Verify count
+  ACTUAL=$(find "$TEMP_DIR" -type f | wc -l)
+  [ $ACTUAL -ne ${#FILES[@]} ] && err "Incomplete download: $ACTUAL/${#FILES[@]} files"
+  info "Verified: $ACTUAL/${#FILES[@]} files"
+
+  # Validate JSON
+  for json in "$TEMP_DIR"/*.json "$TEMP_DIR"/schemas/*.json; do
+    [ -f "$json" ] && ! node -e "JSON.parse(require('fs').readFileSync(process.env.F,'utf8'))" F="$json" 2>/dev/null && err "Invalid JSON: $(basename "$json")"
+  done
+  info "Validated: JSON syntax OK"
+
+  # Move to final location
+  rm -rf "$SKILL_DIR"
+  mv "$TEMP_DIR" "$SKILL_DIR"
+  info "Installed: $SKILL_DIR"
+
+  # Wire Claude Desktop
+  if [ -d "$CLAUDE_DIR" ]; then
+    [ -f "$DESKTOP_CONFIG" ] && cp "$DESKTOP_CONFIG" "$DESKTOP_CONFIG.bak"
+    [ -f "$DESKTOP_CONFIG" ] || echo '{}' > "$DESKTOP_CONFIG"
+
+    update_config "$DESKTOP_CONFIG" "add-desktop" && info "Wired: claude_desktop_config.json" || err "Could not wire config"
+  fi
+
+  # Health check
+  if timeout 2 node "$SKILL_DIR/mcp-server.js" <<< '{"jsonrpc":"2.0","id":1,"method":"initialize"}' 2>/dev/null | grep -q "kaskas"; then
+    info "MCP server responds"
   else
-    curl -fsSL "$REPO_URL/$rel" -o "$dest"
+    warn "MCP server not responding (may need restart)"
   fi
 }
 
-# ── 1. Install skill files ─────────────────────────────────────────────────────
-mkdir -p "$SKILL_DIR"
-echo "  Downloading files..."
+# ── Main ───────────────────────────────────────────────────────────────────────
+banner
+check_node
 
-for f in mcp-server.js manifest.json claude.json; do dl "$f" "$SKILL_DIR/$f"; done
+if [ "$UNINSTALL" = true ]; then
+  uninstall
+else
+  check_installed
+  install
 
-for f in due.md embed.md export.md forecast.md insights.md llm.md memory.md \
-          ocr.md offers.md pdf.md promos.md remind.md review.md safe.md subscriptions.md; do
-  dl "commands/$f" "$SKILL_DIR/commands/$f"
-done
-
-for f in embedding-config.md forecast-config.md llm-config.md merchant-categories.md \
-          ph-cards.md recurring-patterns.md utilization-rules.md; do
-  dl "references/$f" "$SKILL_DIR/references/$f"
-done
-
-for f in obligations.md summary.md; do dl "templates/$f" "$SKILL_DIR/templates/$f"; done
-
-for f in embedding.schema.json forecast.schema.json memory.schema.json obligation.schema.json \
-          promo.schema.json reminder.schema.json transaction.schema.json; do
-  dl "schemas/$f" "$SKILL_DIR/schemas/$f"
-done
-
-echo "  [OK] Installed: $SKILL_DIR"
-
-# ── 2. Wire Claude Desktop MCP ─────────────────────────────────────────────────
-if [ -d "$CLAUDE_DESKTOP_DIR" ]; then
-  [ -f "$DESKTOP_CONFIG" ] && cp "$DESKTOP_CONFIG" "$DESKTOP_CONFIG.bak"
-  [ -f "$DESKTOP_CONFIG" ] || echo '{}' > "$DESKTOP_CONFIG"
-
-  SKILL_DIR_ESC="$SKILL_DIR" node -e "
-    const fs=require('fs'), p=process.env.DC, sd=process.env.SKILL_DIR_ESC;
-    let raw=(fs.readFileSync(p,'utf8')||'').trim()||'{}';
-    let c; try{c=JSON.parse(raw);}catch(e){c={};}
-    if(!c.mcpServers) c.mcpServers={};
-    c.mcpServers.kaskas={command:'node', args:[sd+'/mcp-server.js']};
-    fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
-    console.log('  [OK] Wired: claude_desktop_config.json');
-  " DC="$DESKTOP_CONFIG"
+  echo ""
+  info "Done! Restart Claude Desktop."
+  echo ""
+  echo "  Commands: /review /due /subscriptions /offers /safe /export /ocr /pdf /promos /memory /embed /insights /llm /remind /forecast"
+  echo "  Uninstall: bash install.sh --uninstall"
+  echo ""
 fi
-
-# ── Done ───────────────────────────────────────────────────────────────────────
-echo ""
-echo "  Done! Restart Claude Desktop."
-echo ""
-echo "  Commands in Claude Desktop chat:"
-echo "    /review        Analyze a statement"
-echo "    /due           Upcoming payments"
-echo "    /subscriptions Recurring charges"
-echo "    /offers        Best card for your spend"
-echo "    /safe          Risk score"
-echo "    /export        Export data"
-echo "    /ocr           Extract text from receipts"
-echo "    /pdf           Extract from PDFs"
-echo "    /promos        Parse card offers"
-echo "    /memory        Persistent storage"
-echo "    /embed         Semantic search"
-echo "    /insights      Pattern analysis"
-echo "    /llm           Local LLM analysis"
-echo "    /remind        Payment reminders"
-echo "    /forecast      Spending forecasts"
-echo ""
-echo "  Uninstall: bash install.sh --uninstall"
-echo "         or: curl -fsSL https://raw.githubusercontent.com/rjramirez/kaskas/main/install.sh | bash -- --uninstall"
-echo ""
