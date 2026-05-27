@@ -310,7 +310,7 @@ function Install-Kaskas {
     # Validate JSON
     foreach ($json in Get-ChildItem $TempDir -Recurse -Filter "*.json") {
       try {
-        $null = Get-Content $json.FullName | ConvertFrom-Json
+        $null = Get-Content $json.FullName | ConvertFrom-Json -ErrorAction Stop
       } catch {
         Err "Invalid JSON: $($json.Name)"
       }
@@ -322,14 +322,28 @@ function Install-Kaskas {
     Move-Item $TempDir $SkillDir -Force
     Info "Installed: $SkillDir"
 
-      Copy-Item $DesktopConfig "$DesktopConfig.bak" -Force
+    # Wire Claude Desktop
+    try {
+      $ConfigParent = Split-Path $DesktopConfig -Parent
+      if (Test-Path $ConfigParent) {
+        if (-not (Test-Path $DesktopConfig)) {
+          [System.IO.File]::WriteAllText($DesktopConfig, '{}', $UTF8NoBOM)
+        }
+        Copy-Item $DesktopConfig "$DesktopConfig.bak" -Force
 
-      if (Update-Config $DesktopConfig "add-desktop") {
-        Info "Wired: claude_desktop_config.json"
-      } else {
-        Err "Could not wire config"
+        if (Update-Config $DesktopConfig "add-desktop") {
+          Info "Wired: claude_desktop_config.json"
+        } else {
+          Err "Could not wire config"
+        }
       }
+    } catch {
+      Warn "Could not wire Claude Desktop config (non-critical)"
     }
+
+    # Health check
+    if (Test-Path "$SkillDir/mcp-server.js") {
+      Info "Health check: OK"
     } else {
       Warn "Health check failed (non-critical)"
     }
