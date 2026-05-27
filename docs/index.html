@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kaskas — Financial memory for Claude. Analyze statements, track dues, find cashback. Local-only, zero external API calls.">
+  <title>Kaskas — Financial Memory for Claude</title>
+  <style>
+    :root {
+      --green:      #00ff41;
+      --green-dim:  #00c853;
+      --green-dark: #004d1a;
+      --bg:         #0a0d0a;
+      --bg2:        #0f140f;
+      --bg3:        #141a14;
+      --border:     #1a2e1a;
+      --text:       #c8d8c8;
+      --text-dim:   #6a8a6a;
+      --white:      #f0f0f0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Matrix rain canvas ── */
+    #matrix-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+
+    .wrapper { position: relative; z-index: 1; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(10, 13, 10, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green);
+      text-shadow: 0 0 12px var(--green);
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      border: 1px solid var(--green-dark);
+      background: rgba(0, 255, 65, 0.05);
+      color: var(--green-dim);
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 0.35rem 1rem;
+      border-radius: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 800;
+      font-family: monospace;
+      letter-spacing: -2px;
+      color: var(--green);
+      text-shadow:
+        0 0 20px rgba(0, 255, 65, 0.8),
+        0 0 60px rgba(0, 255, 65, 0.3),
+        0 0 100px rgba(0, 255, 65, 0.1);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 0.6em;
+      height: 1em;
+      background: var(--green);
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+      max-width: 600px;
+    }
+
+    .hero-tag {
+      font-size: 0.9rem;
+      color: var(--green-dim);
+      margin-bottom: 3rem;
+      font-family: monospace;
+    }
+
+    .hero-tag span { opacity: 0.5; margin: 0 0.5rem; }
+
+    .install-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 0 40px rgba(0, 255, 65, 0.06);
+    }
+
+    .install-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.6rem 1rem;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-btn.active {
+      color: var(--green);
+      border-bottom-color: var(--green);
+      background: rgba(0, 255, 65, 0.04);
+    }
+    .tab-btn:hover { color: var(--green); }
+
+    .tab-content { display: none; padding: 1rem 1.25rem; }
+    .tab-content.active { display: flex; align-items: center; gap: 0.75rem; }
+
+    .tab-content code {
+      flex: 1;
+      font-family: "Cascadia Code", "Fira Code", "Consolas", monospace;
+      font-size: 0.85rem;
+      color: var(--green);
+      background: none;
+      border: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .copy-btn {
+      flex-shrink: 0;
+      background: var(--green-dark);
+      border: 1px solid var(--green-dim);
+      color: var(--green);
+      font-size: 0.75rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: var(--green);
+      color: var(--bg);
+    }
+    .copy-btn.copied {
+      background: var(--green);
+      color: var(--bg);
+    }
+
+    .hero-note {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-family: monospace;
+    }
+
+    /* ── Section common ── */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+
+    .section-label {
+      font-family: monospace;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--green-dim);
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    h2 .accent { color: var(--green); }
+
+    .section-desc {
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      margin-bottom: 3rem;
+      max-width: 600px;
+    }
+
+    /* ── Commands grid ── */
+    .commands-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .cmd-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      transition: all 0.2s;
+      cursor: default;
+    }
+    .cmd-card:hover {
+      border-color: var(--green-dark);
+      background: var(--bg3);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .cmd-name {
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 0.4rem;
+    }
+
+    .cmd-desc {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .cmd-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      margin-top: 0.5rem;
+    }
+    .badge-core    { background: rgba(0,200,83,0.1);  color: #00c853;  border: 1px solid #00c853; }
+    .badge-ocr     { background: rgba(0,188,212,0.1); color: #00bcd4;  border: 1px solid #00bcd4; }
+    .badge-memory  { background: rgba(156,39,176,0.1);color: #ce93d8;  border: 1px solid #9c27b0; }
+    .badge-ai      { background: rgba(255,152,0,0.1); color: #ffb74d;  border: 1px solid #ff9800; }
+
+    /* ── Why section ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .why-card {
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      background: var(--bg2);
+    }
+
+    .why-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      display: block;
+      font-family: monospace;
+      color: var(--green);
+    }
+
+    .why-title {
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+    }
+
+    .why-desc { font-size: 0.88rem; color: var(--text-dim); }
+
+    /* ── Security section ── */
+    .security-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 640px) {
+      .security-row { grid-template-columns: 1fr; }
+    }
+
+    .security-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+    }
+
+    .security-block.safe  { border-color: #1a3d1a; }
+    .security-block.never { border-color: #3d1a1a; }
+
+    .security-block h3 {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .security-block.safe  h3 { color: var(--green-dim); }
+    .security-block.never h3 { color: #ff5252; }
+
+    .security-block ul { list-style: none; }
+    .security-block li {
+      font-size: 0.9rem;
+      color: var(--text);
+      padding: 0.3rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .security-block.safe  li::before { content: "[+]"; color: var(--green-dim); font-family: monospace; font-size: 0.75rem; }
+    .security-block.never li::before { content: "[x]"; color: #ff5252; font-family: monospace; font-size: 0.75rem; }
+
+    /* ── Shoutout ── */
+    .shoutout {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shoutout::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+    }
+
+    .shoutout-label {
+      font-family: monospace;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+
+    .shoutout-name {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .shoutout-name a {
+      color: var(--green);
+      text-decoration: none;
+      transition: text-shadow 0.2s;
+    }
+    .shoutout-name a:hover {
+      text-shadow: 0 0 15px var(--green);
+    }
+
+    .shoutout-desc {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      max-width: 480px;
+      margin: 0 auto 1.25rem;
+    }
+
+    .shoutout-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 255, 65, 0.08);
+      border: 1px solid var(--green-dark);
+      color: var(--green);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-family: monospace;
+      padding: 0.5rem 1.25rem;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .shoutout-link:hover {
+      background: var(--green);
+      color: var(--bg);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--green); }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      .nav-links { gap: 1rem; }
+      .nav-links a { font-size: 0.75rem; }
+      section { padding: 3rem 1.25rem; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links { display: none; }
+    }
+
+    /* ── Fade-in animation ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .fade-in:nth-child(1) { animation-delay: 0.1s; }
+    .fade-in:nth-child(2) { animation-delay: 0.2s; }
+    .fade-in:nth-child(3) { animation-delay: 0.3s; }
+    .fade-in:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Scan line effect ── */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.03) 2px,
+        rgba(0, 0, 0, 0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+
+<div class="wrapper">
+
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="nav-logo">KASKAS</a>
+    <ul class="nav-links">
+      <li><a href="#install">Install</a></li>
+      <li><a href="#commands">Commands</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="https://github.com/rjramirez/kaskas">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge fade-in">v4.0 &nbsp;&bull;&nbsp; Claude Desktop &nbsp;&bull;&nbsp; Claude Code</div>
+    <h1 class="fade-in">KASKAS<span class="cursor"></span></h1>
+    <p class="hero-sub fade-in">Financial memory for Claude Desktop.</p>
+    <p class="hero-tag fade-in">
+      Analyze statements <span>|</span> Track dues <span>|</span> Find cashback <span>|</span> Local-only
+    </p>
+
+    <!-- Install box -->
+    <div class="install-box fade-in" id="install">
+      <div class="install-tabs">
+        <button class="tab-btn active" onclick="switchTab('win', this)">Windows</button>
+        <button class="tab-btn" onclick="switchTab('mac', this)">macOS / Linux</button>
+      </div>
+      <div class="tab-content active" id="tab-win">
+        <code>irm https://raw.githubusercontent.com/rjramirez/kaskas/main/install.ps1 | iex</code>
+        <button class="copy-btn" onclick="copyInstall('win')">COPY</button>
+      </div>
+      <div class="tab-content" id="tab-mac">
+        <code>curl -fsSL https://raw.githubusercontent.com/rjramirez/kaskas/main/install.sh | bash</code>
+        <button class="copy-btn" onclick="copyInstall('mac')">COPY</button>
+      </div>
+    </div>
+
+    <p class="hero-note fade-in">Restart Claude Desktop after install &nbsp;&bull;&nbsp; Requires Node.js</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Commands -->
+  <section id="commands">
+    <p class="section-label">// commands</p>
+    <h2>15 <span class="accent">slash commands.</span></h2>
+    <p class="section-desc">Type any command in Claude Desktop chat. Works out of the box after install.</p>
+
+    <div class="commands-grid">
+      <div class="cmd-card">
+        <div class="cmd-name">/review</div>
+        <div class="cmd-desc">Analyze credit card statements. Extract merchants, amounts, dates, categories.</div>
+        <span class="cmd-badge badge-core">core</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/due</div>
+        <div class="cmd-desc">Upcoming dues, bills, subscriptions for the next 30 days with risk flags.</div>
+        <span class="cmd-badge badge-core">core</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/subscriptions</div>
+        <div class="cmd-desc">Detect recurring charges. High / medium / low confidence scoring.</div>
+        <span class="cmd-badge badge-core">core</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/offers</div>
+        <div class="cmd-desc">Best PH credit card for your spending. Cashback estimates, gap analysis.</div>
+        <span class="cmd-badge badge-core">core</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/safe</div>
+        <div class="cmd-desc">Utilization risk score (0-100). Safe spending threshold based on your income.</div>
+        <span class="cmd-badge badge-core">core</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/export</div>
+        <div class="cmd-desc">Export your data as JSON, CSV, or Markdown. No lock-in.</div>
+        <span class="cmd-badge badge-core">core</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/ocr</div>
+        <div class="cmd-desc">Extract transaction text from receipt images and screenshots.</div>
+        <span class="cmd-badge badge-ocr">ocr</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/pdf</div>
+        <div class="cmd-desc">Pull transactions directly from PDF bank statements.</div>
+        <span class="cmd-badge badge-ocr">ocr</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/promos</div>
+        <div class="cmd-desc">Parse and summarize credit card promotional offers.</div>
+        <span class="cmd-badge badge-ocr">ocr</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/memory</div>
+        <div class="cmd-desc">Persistent SQLite storage. Remembers transactions across sessions.</div>
+        <span class="cmd-badge badge-memory">memory</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/embed</div>
+        <div class="cmd-desc">Semantic search on your transaction history.</div>
+        <span class="cmd-badge badge-memory">memory</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/insights</div>
+        <div class="cmd-desc">Pattern analysis, anomaly detection, intelligent recommendations.</div>
+        <span class="cmd-badge badge-memory">memory</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/llm</div>
+        <div class="cmd-desc">Local LLM financial analysis. Zero external API calls.</div>
+        <span class="cmd-badge badge-ai">AI</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/remind</div>
+        <div class="cmd-desc">Proactive payment reminders and smart alerts.</div>
+        <span class="cmd-badge badge-ai">AI</span>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">/forecast</div>
+        <div class="cmd-desc">Spending forecasts, what-if scenarios, confidence intervals.</div>
+        <span class="cmd-badge badge-ai">AI</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Why -->
+  <section>
+    <p class="section-label">// why kaskas</p>
+    <h2>Built for <span class="accent">privacy.</span></h2>
+    <p class="section-desc">Your financial data never leaves your machine.</p>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <span class="why-icon">[LOCAL]</span>
+        <div class="why-title">100% Local</div>
+        <div class="why-desc">No cloud sync. No telemetry. All data lives in your machine's file system.</div>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">[ZERO]</span>
+        <div class="why-title">Zero External Calls</div>
+        <div class="why-desc">Kaskas never pings any server. Not even for updates. Pure local processing.</div>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">[PHP]</span>
+        <div class="why-title">Built for PH</div>
+        <div class="why-desc">Philippine peso, local banks, PH credit card rewards database built-in.</div>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">[MIT]</span>
+        <div class="why-title">Open Source</div>
+        <div class="why-desc">MIT licensed. Read the code. Fork it. Own it completely.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Security -->
+  <section id="security">
+    <p class="section-label">// security</p>
+    <h2>What gets <span class="accent">stored.</span></h2>
+    <p class="section-desc">Kaskas follows PCI DSS data minimization principles.</p>
+
+    <div class="security-row">
+      <div class="security-block safe">
+        <h3>Stored (safe)</h3>
+        <ul>
+          <li>Merchant names (e.g. Jollibee, Meralco)</li>
+          <li>Transaction amounts and dates</li>
+          <li>Last 4 digits of cards (****1234)</li>
+          <li>Last 4 digits of account numbers</li>
+          <li>Spending categories</li>
+        </ul>
+      </div>
+      <div class="security-block never">
+        <h3>Never stored</h3>
+        <ul>
+          <li>Full card numbers</li>
+          <li>CVV / security codes</li>
+          <li>Passwords or PINs</li>
+          <li>Full account numbers</li>
+          <li>Personal identification numbers</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Shoutout -->
+  <section>
+    <div class="shoutout">
+      <p class="shoutout-label">// built with &nbsp; FullScale</p>
+      <p class="shoutout-name">
+        Shoutout to <a href="https://fullscale.ph" target="_blank" rel="noopener">FullScale Teams PH, INC.</a>
+      </p>
+      <p class="shoutout-desc">
+        World-class engineering teams, built in the Philippines.
+        Thank you for the culture of building things that matter.
+      </p>
+      <a href="https://fullscale.ph" target="_blank" rel="noopener" class="shoutout-link">
+        &gt; fullscale.ph
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <span>KASKAS &mdash; Financial Memory for Claude &mdash; MIT License</span>
+      <span>
+        <a href="https://github.com/rjramirez/kaskas">GitHub</a>
+        &nbsp;&bull;&nbsp;
+        <a href="https://github.com/rjramirez/kaskas/issues">Issues</a>
+        &nbsp;&bull;&nbsp;
+        <a href="https://fullscale.ph" target="_blank">FullScale Teams PH</a>
+      </span>
+    </div>
+  </footer>
+
+</div><!-- /wrapper -->
+
+<script>
+  // ── Matrix rain ───────────────────────────────────────────────────────────
+  const canvas = document.getElementById('matrix-canvas');
+  const ctx    = canvas.getContext('2d');
+  let cols, drops;
+
+  const chars = 'KASKAS01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホ0110';
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols  = Math.floor(canvas.width / 16);
+    drops = Array(cols).fill(1);
+  }
+
+  function draw() {
+    ctx.fillStyle = 'rgba(10, 13, 10, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00ff41';
+    ctx.font      = '13px monospace';
+    drops.forEach((y, i) => {
+      const ch = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(ch, i * 16, y * 16);
+      if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    });
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  setInterval(draw, 50);
+
+  // ── Tabs ─────────────────────────────────────────────────────────────────
+  function switchTab(os, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + os).classList.add('active');
+  }
+
+  // ── Copy ─────────────────────────────────────────────────────────────────
+  const cmds = {
+    win: 'irm https://raw.githubusercontent.com/rjramirez/kaskas/main/install.ps1 | iex',
+    mac: 'curl -fsSL https://raw.githubusercontent.com/rjramirez/kaskas/main/install.sh | bash'
+  };
+
+  function copyInstall(os) {
+    navigator.clipboard.writeText(cmds[os]).then(() => {
+      const btn = document.querySelector('#tab-' + os + ' .copy-btn');
+      btn.textContent = 'COPIED';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
