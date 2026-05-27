@@ -5,7 +5,8 @@
 set -euo pipefail
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-REPO_URL="https://raw.githubusercontent.com/rjramirez/kaskas/main"
+REPO_URL="https://cdn.jsdelivr.net/gh/rjramirez/kaskas@main"
+REPO_URL_GITHUB="https://raw.githubusercontent.com/rjramirez/kaskas/main"
 VERSION="4.0.0"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -155,19 +156,45 @@ FILES=(
   "transaction.schema.json:schemas"
 )
 
-# ── Download with retry ────────────────────────────────────────────────────────
+# ── Download with retry (multiple sources) ────────────────────────────────────
 download_file() {
-  local file="$1" dest="$2" retries=3 delay=1
+  local file="$1" dest="$2"
+  # Try jsDelivr first (works for public repos), then GitHub API (works for private repos)
+  local urls=(
+    "$REPO_URL/$file"
+    "https://api.github.com/repos/rjramirez/kaskas/contents/$file?ref=main"
+  )
 
-  while [ $retries -gt 0 ]; do
-    if curl -fsSL "$REPO_URL/$file" -o "$dest" 2>/dev/null; then
-      return 0
-    fi
-    retries=$((retries - 1))
-    if [ $retries -gt 0 ]; then
-      sleep $delay
-      delay=$((delay * 2))
-    fi
+  for url in "${urls[@]}"; do
+    local retries=2 delay=1
+    while [ $retries -gt 0 ]; do
+      echo "    Trying: $url" >&2
+
+      # If GitHub API, extract content and decode base64
+      if [[ "$url" == *"api.github.com"* ]]; then
+        if curl -fsSL "$url" 2>/dev/null | grep -q '"content"'; then
+          curl -fsSL "$url" 2>/dev/null | grep '"content"' | sed 's/.*"content": "\(.*\)".*/\1/' | base64 -d > "$dest" 2>/dev/null && {
+            echo "    ✓ Success: $file" >&2
+            return 0
+          }
+        fi
+      else
+        # Standard download for jsDelivr
+        if curl -fsSL "$url" -o "$dest" 2>/dev/null; then
+          echo "    ✓ Success: $file" >&2
+          return 0
+        fi
+      fi
+
+      retries=$((retries - 1))
+      if [ $retries -gt 0 ]; then
+        echo "    ✗ Failed, retrying... ($retries left)" >&2
+        sleep $delay
+        delay=$((delay * 2))
+      else
+        echo "    ✗ Failed: $url" >&2
+      fi
+    done
   done
 
   return 1
@@ -242,33 +269,4 @@ install() {
 
   # Health check
   if timeout 2 node "$SKILL_DIR/mcp-server.js" <<< '{"jsonrpc":"2.0","id":1,"method":"initialize"}' 2>/dev/null | grep -q "kaskas"; then
-    info "MCP server responds"
-  else
-    warn "MCP server not responding (may need restart)"
-  fi
-}
-
-# ── Main ───────────────────────────────────────────────────────────────────────
-banner
-check_node
-
-if [ "$UNINSTALL" = true ]; then
-  uninstall
-else
-  check_installed
-  install
-
-  echo ""
-  info "Done! Restart Claude Desktop."
-  echo ""
-  echo "  Commands: /review /due /subscriptions /offers /safe /export /ocr /pdf /promos /memory /embed /insights /llm /remind /forecast"
-  echo "  Uninstall: bash install.sh --uninstall"
-  echo ""
-fi
-
-# ── Wait for user (if piped) ───────────────────────────────────────────────────
-if $IS_PIPE; then
-  echo ""
-  printf "  Press Enter to exit..."
-  read -r || true
-fi
+    inf

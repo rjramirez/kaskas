@@ -5,7 +5,8 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-$RepoUrl = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
+$RepoUrl = "https://cdn.jsdelivr.net/gh/rjramirez/kaskas@main"
+$RepoUrlGithub = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
 $Version = "4.0.0"
 $SkillDir = Join-Path $env:APPDATA "Claude\kaskas"
 $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
@@ -173,19 +174,45 @@ $Files = @(
   @("transaction.schema.json", "schemas")
 )
 
-# ── Download with retry ────────────────────────────────────────────────────────
+# ── Download with retry (multiple sources) ────────────────────────────────────
 function Download-File([string]$file, [string]$dest) {
-  $retries = 3
-  $delay = 500
-  while ($retries -gt 0) {
-    try {
-      Invoke-WebRequest -Uri "$RepoUrl/$file" -OutFile $dest -UseBasicParsing -ErrorAction Stop
-      return $true
-    } catch {
-      $retries--
-      if ($retries -gt 0) {
-        Start-Sleep -Milliseconds $delay
-        $delay = $delay * 2
+  $urls = @(
+    "$RepoUrl/$file",                                                           # Try jsDelivr first
+    "https://api.github.com/repos/rjramirez/kaskas/contents/$file?ref=main"    # GitHub API (works for private repos)
+  )
+
+  foreach ($url in $urls) {
+    $retries = 2
+    $delay = 500
+    while ($retries -gt 0) {
+      try {
+        Write-Host "    Trying: $url" -ForegroundColor DarkGray
+
+        if ($url -like "*api.github.com*") {
+          # GitHub API returns base64-encoded content
+          $response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
+          $json = $response.Content | ConvertFrom-Json
+          if ($json.content) {
+            $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($json.content))
+            Set-Content -Path $dest -Value $content -Encoding UTF8
+            Write-Host "    ✓ Success: $file" -ForegroundColor Green
+            return $true
+          }
+        } else {
+          # Standard download for jsDelivr
+          Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing -ErrorAction Stop
+          Write-Host "    ✓ Success: $file" -ForegroundColor Green
+          return $true
+        }
+      } catch {
+        $retries--
+        if ($retries -gt 0) {
+          Write-Host "    ✗ Failed, retrying... ($retries left)" -ForegroundColor Yellow
+          Start-Sleep -Milliseconds $delay
+          $delay = $delay * 2
+        } else {
+          Write-Host "    ✗ Failed: $url" -ForegroundColor Red
+        }
       }
     }
   }
@@ -284,37 +311,4 @@ function Install-Kaskas {
         });
       " -InputObject '{"jsonrpc":"2.0","id":1,"method":"initialize"}' 2>$null
 
-      if ($result -like "*kaskas*") { Info "MCP server responds" }
-      else { Warn "MCP server not responding (may need restart)" }
-    } catch {
-      Warn "Could not test MCP server"
-    }
-  } finally {
-    if (Test-Path $TempDir) { Remove-Item $TempDir -Recurse -Force -ErrorAction SilentlyContinue }
-  }
-}
-
-# ── Main ───────────────────────────────────────────────────────────────────────
-Show-Banner
-Check-Node
-
-if ($Uninstall) {
-  Uninstall-Kaskas
-} else {
-  Check-Installed
-  Install-Kaskas
-
-  Write-Host ""
-  Info "Done! Restart Claude Desktop."
-  Write-Host ""
-  Write-Host "  Commands: /review /due /subscriptions /offers /safe /export /ocr /pdf /promos /memory /embed /insights /llm /remind /forecast"
-  Write-Host "  Uninstall: powershell -File install.ps1 -Uninstall"
-  Write-Host ""
-}
-
-# ── Wait for user (if piped) ───────────────────────────────────────────────────
-if ($IsPipe) {
-  Write-Host ""
-  Write-Host "  Press any key to exit..."
-  $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
+      if ($result
