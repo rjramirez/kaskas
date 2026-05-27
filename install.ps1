@@ -221,7 +221,9 @@ function Download-File([string]$file, [string]$fullPath, [string]$dest) {
 
 # ── Install ────────────────────────────────────────────────────────────────────
 function Install-Kaskas {
-  Log "Installing kaskas..."
+  Write-Host ""
+  Write-Host "  Installing kaskas..." -ForegroundColor Cyan
+  Write-Host ""
 
   # Backup if updating
   if ($Force -and (Test-Path $SkillDir)) {
@@ -299,19 +301,11 @@ function Install-Kaskas {
 
     # Health check
     try {
-      $result = & node -e "
-        const readline=require('readline');
-        const rl=readline.createInterface({input:process.stdin,terminal:false});
-        rl.on('line',line=>{
-          try{const req=JSON.parse(line);
-          if(req.method==='initialize'){
-            console.log(JSON.stringify({jsonrpc:'2.0',id:req.id,result:{capabilities:{},serverInfo:{name:'kaskas',version:'$Version'}}}));
-            process.exit(0);
-          }}catch(e){console.error(e.message);}
-        });
-        setTimeout(()=>process.exit(1),2000);
-      " 2>$null
-      Info "Health check: OK"
+      if (Test-Path "$SkillDir/mcp-server.js") {
+        Info "Health check: OK"
+      } else {
+        Warn "Health check failed (non-critical)"
+      }
     } catch {
       Warn "Health check failed (non-critical)"
     }
@@ -326,6 +320,10 @@ function Install-Kaskas {
   } finally {
     if (Test-Path $TempDir) { Remove-Item $TempDir -Recurse -Force -ErrorAction SilentlyContinue }
   }
+
+  Write-Host ""
+  Write-Host "  Press Enter to exit..." -ForegroundColor Gray
+  $null = Read-Host ""
 }
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -333,6 +331,9 @@ Show-Banner
 
 if ($Uninstall) {
   Uninstall-Kaskas
+  Write-Host ""
+  Write-Host "  Press Enter to exit..." -ForegroundColor Gray
+  $null = Read-Host ""
   exit 0
 }
 
