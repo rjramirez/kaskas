@@ -5,7 +5,10 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-$RepoUrl = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
+$RepoUrl = "https://api.github.com/repos/rjramirez/kaskas/contents"
+$RepoOwner = "rjramirez"
+$RepoName = "kaskas"
+$RepoBranch = "main"
 $Version = "4.0.0"
 $SkillDir = Join-Path $env:APPDATA "Claude\kaskas"
 $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
@@ -173,14 +176,26 @@ $Files = @(
   @("transaction.schema.json", "schemas")
 )
 
-# ── Download with retry ────────────────────────────────────────────────────────
+# ── Download with retry (GitHub API) ──────────────────────────────────────────
 function Download-File([string]$file, [string]$dest) {
   $retries = 3
   $delay = 500
   while ($retries -gt 0) {
     try {
-      Invoke-WebRequest -Uri "$RepoUrl/$file" -OutFile $dest -UseBasicParsing -ErrorAction Stop
-      return $true
+      $apiUrl = "$RepoUrl/$file`?ref=$RepoBranch"
+      $response = Invoke-WebRequest -Uri $apiUrl -UseBasicParsing -ErrorAction Stop
+      $content = $response.Content | ConvertFrom-Json
+
+      if ($content.download_url) {
+        $fileContent = Invoke-WebRequest -Uri $content.download_url -UseBasicParsing -ErrorAction Stop
+        [System.IO.File]::WriteAllBytes($dest, $fileContent.Content)
+        return $true
+      } else {
+        # Fallback: use content directly if base64 encoded
+        $bytes = [System.Convert]::FromBase64String($content.content)
+        [System.IO.File]::WriteAllBytes($dest, $bytes)
+        return $true
+      }
     } catch {
       $retries--
       if ($retries -gt 0) {
@@ -216,7 +231,7 @@ function Install-Kaskas {
       $destDir = Join-Path $TempDir $dir
       if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir -Force | Out-Null }
 
-      $fullPath = "$dir/$file"
+      $fullPath = if ($dir -eq ".") { $file } else { "$dir/$file" }
       if (Download-File $fullPath (Join-Path $destDir $file)) {
         $Count++
         Write-Host -NoNewline "`r  Downloaded: $Count/$($Files.Count) files"

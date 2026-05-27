@@ -5,7 +5,10 @@
 set -euo pipefail
 
 # ── Config ─────────────────────────────────────────────────────────────────────
-REPO_URL="https://raw.githubusercontent.com/rjramirez/kaskas/main"
+REPO_URL="https://api.github.com/repos/rjramirez/kaskas/contents"
+REPO_OWNER="rjramirez"
+REPO_NAME="kaskas"
+REPO_BRANCH="main"
 VERSION="4.0.0"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -155,14 +158,31 @@ FILES=(
   "transaction.schema.json:schemas"
 )
 
-# ── Download with retry ────────────────────────────────────────────────────────
+# ── Download with retry (GitHub API) ──────────────────────────────────────────
 download_file() {
   local file="$1" dest="$2" retries=3 delay=1
 
   while [ $retries -gt 0 ]; do
-    if curl -fsSL "$REPO_URL/$file" -o "$dest" 2>/dev/null; then
-      return 0
+    # Get file metadata from GitHub API
+    local api_url="$REPO_URL/$file?ref=$REPO_BRANCH"
+    local response=$(curl -fsSL "$api_url" 2>/dev/null)
+
+    # Extract download_url from JSON response
+    local download_url=$(echo "$response" | grep -o '"download_url":"[^"]*"' | cut -d'"' -f4)
+
+    if [ -n "$download_url" ]; then
+      # Download from the download_url
+      if curl -fsSL "$download_url" -o "$dest" 2>/dev/null; then
+        return 0
+      fi
+    else
+      # Fallback: try to extract base64 content
+      local content=$(echo "$response" | grep -o '"content":"[^"]*"' | cut -d'"' -f4)
+      if [ -n "$content" ]; then
+        echo "$content" | base64 -d > "$dest" 2>/dev/null && return 0
+      fi
     fi
+
     retries=$((retries - 1))
     if [ $retries -gt 0 ]; then
       sleep $delay
