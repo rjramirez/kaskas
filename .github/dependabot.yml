@@ -1,0 +1,47 @@
+version: 2
+updates:
+  # npm packages
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    commit-message:
+      prefix: "chore"
+      prefix-scope: "deps"
+      include: "scope"
+    pull-request-branch-name:
+      separator: "/"
+    reviewers:
+      - "rjramirez"
+    assignees:
+      - "rjramirez"
+    labels:
+      - "dependencies"
+      - "npm"
+    allow:
+      - dependency-type: "all"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+    versioning-strategy: "auto"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    commit-message:
+      prefix: "chore"
+      prefix-scope: "ci"
+    reviewers:
+      - "rjramirez"
+    assignees:
+      - "rjramirez"
+    labels:
+      - "ci"
+      - "github-actions"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
