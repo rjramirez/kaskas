@@ -18,6 +18,8 @@ $RepoUrl       = "https://raw.githubusercontent.com/rjramirez/kaskas/main"
 $PluginName    = "kaskas"
 $SkillDir      = Join-Path $env:APPDATA "Claude\kaskas"
 $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
+$CodeSettings  = Join-Path $env:USERPROFILE ".claude\settings.json"
+$IsPipe        = [string]::IsNullOrEmpty($PSCommandPath)
 
 # Banner -- ASCII only, safe on all Windows terminal encodings
 Write-Host ""
@@ -31,12 +33,18 @@ Write-Host "  |                                                           |" -Fo
 Write-Host "  +-----------------------------------------------------------+" -ForegroundColor Cyan
 Write-Host ""
 
-# ── Uninstall ──────────────────────────────────────────────────────────────────
-if ($Uninstall) {
-    if (Test-Path $SkillDir) {
-        Remove-Item $SkillDir -Recurse -Force
-        Write-Host "  Removed: $SkillDir"
+# ── Uninstall function ─────────────────────────────────────────────────────────
+function Do-Uninstall {
+    Write-Host "  Uninstalling kaskas..." -ForegroundColor Cyan
+    Write-Host ""
+
+    # Step 1: Backup desktop config
+    if (Test-Path $DesktopConfig) {
+        Copy-Item $DesktopConfig "$DesktopConfig.bak" -Force
+        Write-Host "  Backup: $DesktopConfig.bak" -ForegroundColor DarkGray
     }
+
+    # Step 2: Remove from Claude Desktop MCP config
     if (Test-Path $DesktopConfig) {
         try {
             $cfg = Get-Content $DesktopConfig -Raw | ConvertFrom-Json
@@ -46,12 +54,63 @@ if ($Uninstall) {
                     $cfg.PSObject.Properties.Remove('mcpServers')
                 }
                 $cfg | ConvertTo-Json -Depth 20 | Set-Content $DesktopConfig -Encoding utf8
-                Write-Host "  Removed from claude_desktop_config.json"
+                Write-Host "  [OK] Removed from claude_desktop_config.json" -ForegroundColor Green
             }
         } catch {}
     }
+
+    # Step 3: Remove from Claude Code settings.json
+    if (Test-Path $CodeSettings) {
+        try {
+            $cs = Get-Content $CodeSettings -Raw | ConvertFrom-Json
+            $changed = $false
+            if ($cs.PSObject.Properties['enabledPlugins'] -and
+                $cs.enabledPlugins.PSObject.Properties['kaskas@kaskas']) {
+                $cs.enabledPlugins.PSObject.Properties.Remove('kaskas@kaskas')
+                $changed = $true
+            }
+            if ($cs.PSObject.Properties['extraKnownMarketplaces'] -and
+                $cs.extraKnownMarketplaces.PSObject.Properties['kaskas']) {
+                $cs.extraKnownMarketplaces.PSObject.Properties.Remove('kaskas')
+                $changed = $true
+            }
+            if ($changed) {
+                $cs | ConvertTo-Json -Depth 20 | Set-Content $CodeSettings -Encoding utf8
+                Write-Host "  [OK] Removed from ~/.claude/settings.json" -ForegroundColor Green
+            }
+        } catch {}
+    }
+
+    # Step 4: Keep data?
+    $DataDir  = Join-Path $SkillDir "data"
+    $KeepData = $false
+    if ((Test-Path $DataDir) -and -not $IsPipe) {
+        Write-Host ""
+        $ans = Read-Host "  Keep your financial data? [Y/n]"
+        $KeepData = ($ans -eq '' -or $ans -match '^[Yy]')
+    }
+
+    # Step 5: Remove skill dir
+    if (Test-Path $SkillDir) {
+        if ($KeepData) {
+            Get-ChildItem $SkillDir -Exclude "data" | Remove-Item -Recurse -Force
+            Write-Host "  [OK] Removed skill files (data kept: $DataDir)" -ForegroundColor Green
+        } else {
+            Remove-Item $SkillDir -Recurse -Force
+            Write-Host "  [OK] Removed: $SkillDir" -ForegroundColor Green
+        }
+    } else {
+        Write-Host "  [--] Not found: $SkillDir" -ForegroundColor DarkGray
+    }
+
     Write-Host ""
     Write-Host "  Uninstalled. Restart Claude Desktop." -ForegroundColor Green
+    Write-Host ""
+}
+
+# ── Uninstall flag ─────────────────────────────────────────────────────────────
+if ($Uninstall) {
+    Do-Uninstall
     exit 0
 }
 
@@ -75,10 +134,25 @@ if (-not $Force) {
         } catch {}
     }
     if ($serverExists -and $desktopWired) {
-        Write-Host "  [OK] kaskas already installed." -ForegroundColor Green
-        Write-Host "       Re-run with -Force to overwrite."
+        if ($IsPipe) {
+            Write-Host "  [OK] kaskas already installed." -ForegroundColor Green
+            Write-Host "       Re-run with -Force to update or -Uninstall to remove."
+            Write-Host ""
+            exit 0
+        }
         Write-Host ""
-        exit 0
+        Write-Host "  kaskas is already installed." -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "  [1] Update / Reinstall"
+        Write-Host "  [2] Uninstall"
+        Write-Host "  [3] Cancel"
+        Write-Host ""
+        $choice = Read-Host "  Choice"
+        switch ($choice) {
+            "1" { $Force = $true }
+            "2" { Do-Uninstall; exit 0 }
+            default { Write-Host "  Cancelled." -ForegroundColor DarkGray; Write-Host ""; exit 0 }
+        }
     }
 }
 
@@ -184,6 +258,6 @@ Write-Host "    /llm           Local LLM analysis"
 Write-Host "    /remind        Payment reminders"
 Write-Host "    /forecast      Spending forecasts"
 Write-Host ""
-Write-Host "  Uninstall: irm https://raw.githubusercontent.com/rjramirez/kaskas/main/install.ps1 | iex -- -Uninstall"
-Write-Host "         or: powershell -File install.ps1 -Uninstall"
+Write-Host "  Uninstall: powershell -File install.ps1 -Uninstall"
+Write-Host "         or: irm https://raw.githubusercontent.com/rjramirez/kaskas/main/install.ps1 | iex -- -Uninstall"
 Write-Host ""
