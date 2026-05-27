@@ -92,8 +92,12 @@ function Uninstall-Kaskas {
   $KeepData = $false
   if ((Test-Path "$SkillDir\data") -and -not $IsPipe) {
     Write-Host ""
-    $ans = Read-Host "  Keep your financial data? [Y/n]"
-    $KeepData = ($ans -eq '' -or $ans -match '^[Yy]')
+    try {
+      $ans = Read-Host "  Keep your financial data? [Y/n]"
+      $KeepData = ($ans -eq '' -or $ans -match '^[Yy]')
+    } catch {
+      $KeepData = $true
+    }
   }
 
   # Remove skill dir
@@ -144,7 +148,11 @@ function Check-Installed {
   Write-Host "  kaskas is already installed."
   Write-Host "  [1] Update / Reinstall  [2] Uninstall  [3] Cancel"
   Write-Host ""
-  $choice = Read-Host "  Choice"
+  try {
+    $choice = Read-Host "  Choice"
+  } catch {
+    $choice = "3"
+  }
   switch ($choice) {
     "1" { $script:Force = $true }
     "2" { Uninstall-Kaskas; exit 0 }

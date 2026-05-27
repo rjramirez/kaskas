@@ -91,7 +91,7 @@ uninstall() {
   if [ -d "$SKILL_DIR/data" ] && ! $IS_PIPE; then
     echo ""
     printf "  Keep your financial data? [Y/n]: "
-    read -r ans </dev/tty || ans=""
+    read -r ans || ans=""
     [[ ! "$ans" =~ ^[Nn] ]] && KEEP_DATA=true
   fi
 
@@ -136,7 +136,7 @@ check_installed() {
   echo "  [1] Update / Reinstall  [2] Uninstall  [3] Cancel"
   echo ""
   printf "  Choice: "
-  read -r choice </dev/tty || choice=""
+  read -r choice || choice=""
   case "$choice" in
     1) FORCE=true ;;
     2) uninstall; exit 0 ;;
