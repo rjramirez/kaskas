@@ -365,11 +365,11 @@ Show-Banner
 
 if ($Uninstall) {
   Uninstall-Kaskas
-  if (-not $IsPipe) { $null = Read-Host "  Press Any Key to exit" }
+  $null = Read-Host "  Press Enter to exit"
   exit 0
 }
 
 Test-Node
 Test-KaskasInstalled
 Install-Kaskas
-if (-not $IsPipe) { $null = Read-Host "  Press Any Key to exit" }
+$null = Read-Host "  Press Enter to exit"
