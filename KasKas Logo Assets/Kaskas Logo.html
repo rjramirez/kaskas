@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>kaskas — logo</title>
+  <link rel="stylesheet" href="colors_and_type.css" />
+  <style>
+    /* Page-level styling lives in colors_and_type.css; canvas controls
+       its own surface. A few utilities for tiles below. */
+    body { margin: 0; }
+
+    /* Reusable tile for showing a mark or lockup on a colored surface */
+    .tile {
+      width: 100%; height: 100%;
+      display: grid; place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .tile.dark  { background: #0b0f12; color: #e6edf3; }
+    .tile.deep  { background: #050709; color: #e6edf3; }
+    .tile.light { background: #fafafa; color: #0f172a; }
+    .tile.paper { background: #ffffff; color: #0f172a; }
+    .tile.midnight {
+      background:
+        radial-gradient(120% 80% at 0% 0%, rgba(34,197,94,0.10), transparent 60%),
+        #0b0f12;
+      color: #e6edf3;
+    }
+
+    .tile .corner {
+      position: absolute; left: 14px; top: 12px;
+      font: 600 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .tile.light .corner, .tile.paper .corner { color: rgba(15,23,42,0.45); }
+    .tile .caption {
+      position: absolute; left: 14px; bottom: 12px; right: 14px;
+      display: flex; justify-content: space-between; align-items: baseline;
+      font: 500 12px/1.2 var(--font-sans);
+      color: rgba(255,255,255,0.55);
+    }
+    .tile.light .caption, .tile.paper .caption { color: rgba(15,23,42,0.55); }
+    .tile .caption b { color: inherit; font-weight: 600; }
+
+    /* Terminal mock */
+    .term {
+      width: 92%; height: 86%;
+      background: #0a0d10;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .term-bar {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: #0d1115;
+    }
+    .term-bar i {
+      width: 11px; height: 11px; border-radius: 50%;
+      background: rgba(255,255,255,0.16);
+      display: inline-block;
+    }
+    .term-bar i:nth-child(1) { background: #ff5f57; }
+    .term-bar i:nth-child(2) { background: #febc2e; }
+    .term-bar i:nth-child(3) { background: #28c840; }
+    .term-bar .title {
+      margin-left: 10px;
+      font: 500 12px var(--font-sans);
+      color: rgba(255,255,255,0.45);
+    }
+    .term-body {
+      flex: 1;
+      padding: 18px 20px;
+      font: 13.5px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: #c9d1d9;
+    }
+    .term-body .prompt { color: #7d8590; }
+    .term-body .cmd    { color: #e6edf3; }
+    .term-body .ok     { color: #22c55e; }
+    .term-body .dim    { color: #6e7681; }
+    .term-body .accent { color: #22c55e; }
+    .term-body .cursor {
+      display: inline-block; width: 8px; height: 1em;
+      background: #22c55e; vertical-align: -2px;
+      animation: blink 1.05s steps(1) infinite;
+      margin-left: 2px;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* GitHub-style repo header */
+    .gh {
+      width: 92%; height: 84%;
+      background: #0d1117;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .gh-top {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .gh-row {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .gh-path {
+      font: 500 18px var(--font-sans);
+      color: #e6edf3;
+    }
+    .gh-path .sep { color: #6e7681; margin: 0 4px; font-weight: 400; }
+    .gh-path .name { color: #58a6ff; font-weight: 600; }
+    .gh-pill {
+      font: 500 11px/1 var(--font-sans);
+      padding: 4px 8px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #c9d1d9;
+      letter-spacing: 0.02em;
+      margin-left: 6px;
+    }
+    .gh-desc {
+      margin-top: 10px;
+      font: 14px/1.5 var(--font-sans);
+      color: #8b949e;
+    }
+    .gh-tags {
+      display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap;
+    }
+    .gh-tag {
+      font: 500 11px/1 var(--font-sans);
+      color: #58a6ff;
+      background: rgba(56,139,253,0.10);
+      padding: 4px 10px; border-radius: 999px;
+    }
+    .gh-bot {
+      padding: 14px 20px;
+      display: flex; gap: 18px;
+      font: 12.5px var(--font-sans);
+      color: #8b949e;
+    }
+    .gh-bot .star { color: #e3b341; }
+
+    /* iOS app icon mock */
+    .ios-stage {
+      width: 88%; height: 86%;
+      background: linear-gradient(170deg, #0d1117, #050709);
+      border-radius: 26px;
+      display: grid; place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .ios-stage::before {
+      content: "";
+      position: absolute; inset: -40% -40% auto auto;
+      width: 80%; aspect-ratio: 1;
+      background: radial-gradient(closest-side, rgba(34,197,94,0.15), transparent 70%);
+    }
+    .ios-icon {
+      width: 124px; height: 124px;
+      border-radius: 28px;
+      background: #0b0f12;
+      box-shadow:
+        0 30px 60px rgba(0,0,0,0.55),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+      display: grid; place-items: center;
+    }
+    .ios-label {
+      margin-top: 12px;
+      font: 600 13px var(--font-sans);
+      color: #e6edf3;
+      letter-spacing: -0.01em;
+    }
+
+    /* Favicon row */
+    .fav-row {
+      display: flex; gap: 14px; align-items: center;
+    }
+    .fav-tab {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px 8px 10px;
+      background: #1f2937;
+      border-radius: 8px 8px 0 0;
+      color: #e6edf3;
+      font: 12px var(--font-sans);
+    }
+    .fav-tab.light { background: #ffffff; color: #0f172a; box-shadow: inset 0 -1px 0 #e5e7eb; }
+
+    /* Scale-display chip */
+    .sizes {
+      display: flex; align-items: center; gap: 22px;
+    }
+    .size-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .size-cell .lbl {
+      font: 500 10px ui-monospace, Menlo, monospace;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.06em;
+    }
+    .tile.light .size-cell .lbl, .tile.paper .size-cell .lbl { color: rgba(15,23,42,0.45); }
+  </style>
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="marks.jsx"></script>
+  <script type="text/babel" src="design-canvas.jsx"></script>
+
+  <script type="text/babel">
+    const { DesignCanvas, DCSection, DCArtboard, DCPostIt: PostIt } = window;
+
+    /* ─────────────── Concept tile factory ─────────────── */
+    function ConceptTile({ Mark, letter, name, surface = "dark", color }) {
+      return (
+        <div className={`tile ${surface}`}>
+          <span className="corner">{letter}</span>
+          <Mark size={160} color={color ?? KASKAS_GREEN} />
+          <div className="caption">
+            <b>{name}</b>
+            <span style={{opacity: 0.55, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 11}}>
+              kaskas / mark
+            </span>
+          </div>
+        </div>
+      );
+    }
+
+    /* ─────────────── App root ─────────────── */
+    function App() {
+      return (
+        <DesignCanvas>
+          {/* ───────── Section 1 — concept exploration ───────── */}
+          <DCSection
+            id="explore"
+            title="Concept exploration"
+            subtitle="Five marks across the brief — credit-card swipe, terminal prompt, memory stack. Each draws from a different visual metaphor; A is recommended.">
+
+            <DCArtboard id="cA" label="A · Swipe K  ★ recommended" width={300} height={300}>
+              <ConceptTile Mark={MarkSwipeK} letter="A" name="swipe k" surface="midnight" />
+            </DCArtboard>
+            <DCArtboard id="cB" label="B · Swipe chevron" width={300} height={300}>
+              <ConceptTile Mark={MarkChevron} letter="B" name="chevron" surface="dark" />
+            </DCArtboard>
+            <DCArtboard id="cC" label="C · Card stack" width={300} height={300}>
+              <ConceptTile Mark={MarkStack} letter="C" name="stack" surface="dark" />
+            </DCArtboard>
+            <DCArtboard id="cD" label="D · Bracket k" width={300} height={300}>
+              <ConceptTile Mark={MarkBracket} letter="D" name="[k]" surface="dark" />
+            </DCArtboard>
+            <DCArtboard id="cE" label="E · Card + trail" width={300} height={300}>
+              <ConceptTile Mark={MarkCardTrail} letter="E" name="card trail" surface="dark" />
+            </DCArtboard>
+
+            <PostIt left={0} top={440} width={260} rotate={-2}>
+              The K *is* the meaning — "kaskas" starts with it, and the
+              vertical stem reads as a credit card on its edge with the two
+              arms springing out mid-swipe. Cleanest at favicon size, works
+              one-color, no gradient required.
+            </PostIt>
+          </DCSection>
+
+          {/* ───────── Section 2 — wordmark studies ───────── */}
+          <DCSection
+            id="wordmark"
+            title="Wordmark studies"
+            subtitle="Inter at a confident weight, lowercase, tight tracking. Optional green cursor for terminal/CLI contexts.">
+
+            <DCArtboard id="w1" label="1 · Plain — Inter 700" width={520} height={180}>
+              <div className="tile paper">
+                <Wordmark size={84} color="#0b0f12" />
+                <div className="caption">
+                  <b>Inter 700 · -0.045em · lowercase</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>primary</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            <DCArtboard id="w2" label="2 · Cursor — terminal-friendly" width={520} height={180}>
+              <div className="tile paper">
+                <Wordmark size={84} color="#0b0f12" cursor={true} />
+                <div className="caption">
+                  <b>+ blinking cursor block</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>CLI / README</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            <DCArtboard id="w3" label="3 · Mono variant" width={520} height={180}>
+              <div className="tile paper">
+                <span style={{
+                  font: '700 80px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+                  color: '#0b0f12', letterSpacing: '-0.03em',
+                }}>kaskas</span>
+                <div className="caption">
+                  <b>Geist Mono / SF Mono fallback</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>code / docs</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            <DCArtboard id="w4" label="4 · Dark wordmark with green k's" width={520} height={180}>
+              <div className="tile dark">
+                <span style={{
+                  font: '700 84px Inter, sans-serif',
+                  letterSpacing: '-0.045em',
+                  color: '#e6edf3',
+                  display: 'inline-flex',
+                }}>
+                  <span style={{color:'#22c55e'}}>k</span>as<span style={{color:'#22c55e'}}>k</span>as
+                </span>
+                <div className="caption">
+                  <b>Accented k's — sparingly</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>hero / pitch deck</span>
+                </div>
+              </div>
+            </DCArtboard>
+          </DCSection>
+
+          {/* ───────── Section 3 — recommended system ───────── */}
+          <DCSection
+            id="system"
+            title="The recommended system"
+            subtitle="Mark A (Swipe K) applied across every required deliverable: primary lockup, icon-only, dark mode, monochrome, GitHub avatar.">
+
+            {/* 1 — Primary logo (light) */}
+            <DCArtboard id="p-light" label="1 · Primary logo — light" width={620} height={260}>
+              <div className="tile paper">
+                <span className="corner">01 · primary</span>
+                <Lockup size={64} color="#0b0f12" accent="#16a34a" />
+                <div className="caption">
+                  <b>Lockup — mark + wordmark</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>kaskas.com / docs</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* 2 — Primary logo (dark) */}
+            <DCArtboard id="p-dark" label="2 · Primary logo — dark mode" width={620} height={260}>
+              <div className="tile midnight">
+                <span className="corner">02 · dark mode</span>
+                <Lockup size={64} color="#e6edf3" accent="#22c55e" />
+                <div className="caption">
+                  <b>Same lockup, terminal palette</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>terminal / app dark</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* 3 — Icon only on light */}
+            <DCArtboard id="i-light" label="3 · Icon only — light" width={300} height={300}>
+              <div className="tile paper">
+                <span className="corner">03 · icon</span>
+                <MarkSwipeK size={180} color="#0b0f12" />
+                <div className="caption">
+                  <b>Mark, isolated</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>nav / chrome</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* 4 — Icon only on dark */}
+            <DCArtboard id="i-dark" label="4 · Icon only — dark" width={300} height={300}>
+              <div className="tile midnight">
+                <span className="corner">04 · icon dark</span>
+                <MarkSwipeK size={180} color="#22c55e" />
+                <div className="caption">
+                  <b>Green on charcoal</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>default avatar</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* 5 — Mono black */}
+            <DCArtboard id="mono-b" label="5 · Monochrome — black" width={460} height={220}>
+              <div className="tile paper">
+                <span className="corner">05 · mono</span>
+                <Lockup size={48} color="#000" accent="#000" markColor="#000" />
+                <div className="caption">
+                  <b>Single-color: black</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>print / fax</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* 6 — Mono white */}
+            <DCArtboard id="mono-w" label="6 · Monochrome — white" width={460} height={220}>
+              <div className="tile deep">
+                <span className="corner">06 · mono inv</span>
+                <Lockup size={48} color="#fff" accent="#fff" markColor="#fff" />
+                <div className="caption">
+                  <b>Single-color: white</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>over photo / merch</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* 7 — GitHub avatar */}
+            <DCArtboard id="avatar" label="7 · GitHub avatar" width={300} height={300}>
+              <div className="tile light" style={{background:"#f6f8fa"}}>
+                <span className="corner">07 · 1024×1024</span>
+                <AvatarTile size={200} bg="#0b0f12" color="#22c55e" />
+                <div className="caption">
+                  <b>Rounded-square tile · 22% radius</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>github / npm</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* 8 — Sizes scale */}
+            <DCArtboard id="scale" label="8 · Scale — favicon to display" width={620} height={220}>
+              <div className="tile paper">
+                <span className="corner">08 · scale</span>
+                <div className="sizes">
+                  <div className="size-cell">
+                    <MarkSwipeK size={16} color="#0b0f12" />
+                    <span className="lbl">16</span>
+                  </div>
+                  <div className="size-cell">
+                    <MarkSwipeK size={24} color="#0b0f12" />
+                    <span className="lbl">24</span>
+                  </div>
+                  <div className="size-cell">
+                    <MarkSwipeK size={32} color="#0b0f12" />
+                    <span className="lbl">32</span>
+                  </div>
+                  <div className="size-cell">
+                    <MarkSwipeK size={48} color="#0b0f12" />
+                    <span className="lbl">48</span>
+                  </div>
+                  <div className="size-cell">
+                    <MarkSwipeK size={80} color="#0b0f12" />
+                    <span className="lbl">80</span>
+                  </div>
+                  <div className="size-cell">
+                    <MarkSwipeK size={120} color="#0b0f12" />
+                    <span className="lbl">120</span>
+                  </div>
+                </div>
+                <div className="caption">
+                  <b>Holds shape down to 16 px</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>favicon-ready</span>
+                </div>
+              </div>
+            </DCArtboard>
+          </DCSection>
+
+          {/* ───────── Section 4 — in context ───────── */}
+          <DCSection
+            id="context"
+            title="In context"
+            subtitle="How the system reads in the surfaces it was designed for: terminal, GitHub repo header, app icon, browser favicon.">
+
+            {/* Terminal */}
+            <DCArtboard id="term" label="Terminal — CLI session" width={680} height={420}>
+              <div className="tile deep">
+                <div className="term">
+                  <div className="term-bar">
+                    <i></i><i></i><i></i>
+                    <span className="title">~ — kaskas — 96×24</span>
+                  </div>
+                  <div className="term-body">
+                    <div>
+                      <span style={{display:"inline-flex", alignItems:"center", gap:8, verticalAlign:"middle"}}>
+                        <MarkSwipeK size={14} color="#22c55e" />
+                        <span className="accent" style={{fontWeight:600}}>kaskas</span>
+                      </span>
+                      <span className="dim"> v0.4.2 · local-first financial memory</span>
+                    </div>
+                    <div style={{height:8}}></div>
+                    <div><span className="prompt">$</span> <span className="cmd">kaskas log "kaskas 2,500 sa dinner kasama ang team"</span></div>
+                    <div className="ok">✓ remembered · category: meals · split among 4</div>
+                    <div style={{height:6}}></div>
+                    <div><span className="prompt">$</span> <span className="cmd">kaskas ask "saan napunta ang pera ko ngayong linggo?"</span></div>
+                    <div className="dim">…thinking locally (no network)</div>
+                    <div>· <span className="accent">P 12,480</span> meals  &nbsp;· <span className="accent">P 6,200</span> grab  &nbsp;· <span className="accent">P 3,750</span> groceries</div>
+                    <div style={{height:6}}></div>
+                    <div><span className="prompt">$</span> <span className="cmd"></span><span className="cursor"></span></div>
+                  </div>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* GitHub repo */}
+            <DCArtboard id="gh" label="GitHub — repo header" width={680} height={300}>
+              <div className="tile deep">
+                <div className="gh">
+                  <div className="gh-top">
+                    <div className="gh-row">
+                      <AvatarTile size={48} bg="#0b0f12" color="#22c55e" rounded={0.22} />
+                      <div className="gh-path">
+                        <span className="name">kaskas</span><span className="sep">/</span><span className="name">kaskas</span>
+                        <span className="gh-pill">Public</span>
+                      </div>
+                    </div>
+                    <div className="gh-desc">
+                      Local-first financial memory, voiced in Taglish. Hold to speak,
+                      kaskas remembers — your data never leaves your laptop.
+                    </div>
+                    <div className="gh-tags">
+                      <span className="gh-tag">local-first</span>
+                      <span className="gh-tag">finance</span>
+                      <span className="gh-tag">ai</span>
+                      <span className="gh-tag">cli</span>
+                      <span className="gh-tag">privacy</span>
+                    </div>
+                  </div>
+                  <div className="gh-bot">
+                    <span><span className="star">★</span> 2.4k stars</span>
+                    <span>⑂ 184 forks</span>
+                    <span style={{marginLeft:"auto", color:"#22c55e"}}>● MIT</span>
+                  </div>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* iOS / Android app icon */}
+            <DCArtboard id="ios" label="App icon — home screen" width={300} height={400}>
+              <div className="tile midnight">
+                <div className="ios-stage">
+                  <div style={{display:"grid", placeItems:"center"}}>
+                    <div className="ios-icon">
+                      <MarkSwipeK size={78} color="#22c55e" />
+                    </div>
+                    <div className="ios-label">kaskas</div>
+                  </div>
+                </div>
+              </div>
+            </DCArtboard>
+
+            {/* Favicon in browser tab */}
+            <DCArtboard id="fav" label="Favicon — browser tab" width={680} height={200}>
+              <div className="tile light" style={{background:"#e6e9ee", padding:"40px 28px", alignItems:"end", justifyItems:"start"}}>
+                <span className="corner">favicon</span>
+                <div className="fav-row">
+                  <div className="fav-tab light">
+                    <MarkSwipeK size={16} color="#0b0f12" />
+                    <span>kaskas — local-first money memory</span>
+                  </div>
+                  <div className="fav-tab">
+                    <MarkSwipeK size={16} color="#22c55e" />
+                    <span style={{color:"#c9d1d9"}}>kaskas docs</span>
+                  </div>
+                </div>
+              </div>
+            </DCArtboard>
+
+            <PostIt left={0} top={460} width={260} rotate={1.5}>
+              The mark earns its keep in the surfaces this product actually
+              ships on — CLI, GitHub, app icon, favicon — without leaning on
+              gradients, photos, or any 3D treatment.
+            </PostIt>
+          </DCSection>
+
+          {/* ───────── Section 5 — usage notes ───────── */}
+          <DCSection
+            id="usage"
+            title="Usage rules"
+            subtitle="Bare-minimum guardrails so the mark stays itself across surfaces.">
+
+            <DCArtboard id="clear" label="Clear space" width={460} height={300}>
+              <div className="tile paper" style={{padding:30}}>
+                <div style={{position:"relative", display:"inline-block"}}>
+                  {/* clear space guides */}
+                  <div style={{
+                    position:"absolute", inset:"-32px", border:"1.5px dashed rgba(34,197,94,0.55)",
+                    borderRadius:8, pointerEvents:"none",
+                  }}/>
+                  <MarkSwipeK size={120} color="#0b0f12" />
+                </div>
+                <div className="caption">
+                  <b>≥ ½ × mark height on all sides</b>
+                  <span style={{fontFamily:"ui-monospace,Menlo,monospace"}}>do not crowd</span>
+                </div>
+              </div>
+            </DCArtboard>
+
+            <DCArtboard id="palette" label="Color roles" width={460} height={300}>
+              <div className="tile paper" style={{padding:24}}>
+                <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:14, width:"82%"}}>
+                  {[
+                    {bg:"#0b0f12", t:"#22c55e", name:"primary",   hex:"#22C55E on #0B0F12"},
+                    {bg:"#ffffff", t:"#0b0f12", name:"on light",  hex:"#0B0F12 on #FFFFFF"},
+                    {bg:"#22c55e", t:"#0b0f12", name:"on green",  hex:"#0B0F12 on #22C55E"},
+                    {bg:"#050709", t:"#ffffff", name:"mono inv",  hex:"#FFFFFF on #050709"},
+                  ].map(c => (
+                    <div key={c.name} style={{
+                      background:c.bg, borderRadius:10, padding:"14px 14px 12px",
+                      display:"flex", flexDirection:"column", gap:8,
+                      border: c.bg === "#ffffff" ? "1px solid #e5e7eb" : "1px solid rgba(255,255,255,0.06)",
+                    }}>
+                      <MarkSwipeK size={36} color={c.t}/>
+                      <div style={{font:"600 11px var(--font-sans)", color:c.t, opacity:0.9}}>{c.name}</div>
+                      <div style={{font:"500 10px ui-monospace,Menlo,monospace", color:c.t, opacity:0.55}}>{c.hex}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </DCArtboard>
+
+            <DCArtboard id="dont" label="Don'ts" width={460} height={300}>
+              <div className="tile paper" style={{padding:18}}>
+                <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, width:"86%"}}>
+                  <DontBox label="No gradients">
+                    <svg viewBox="0 0 64 64" width={64} height={64}>
+                      <defs>
+                        <linearGradient id="bad1" x1="0" x2="1">
+                          <stop offset="0" stopColor="#60B0F0"/><stop offset="1" stopColor="#B06AB3"/>
+                        </linearGradient>
+                      </defs>
+                      <rect x="12" y="11" width="9" height="42" rx="4.5" fill="url(#bad1)" />
+                      <path d="M21 32 L50 11" stroke="url(#bad1)" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                      <path d="M21 32 L50 53" stroke="url(#bad1)" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                    </svg>
+                  </DontBox>
+                  <DontBox label="No outline">
+                    <svg viewBox="0 0 64 64" width={64} height={64}>
+                      <rect x="12" y="11" width="9" height="42" rx="4.5" fill="none" stroke="#0b0f12" strokeWidth="2"/>
+                      <path d="M21 32 L50 11" stroke="#0b0f12" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                      <path d="M21 32 L50 53" stroke="#0b0f12" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                    </svg>
+                  </DontBox>
+                  <DontBox label="No drop shadow">
+                    <MarkSwipeK size={64} color="#0b0f12" style={{filter:"drop-shadow(0 6px 10px rgba(0,0,0,0.4))"}} />
+                  </DontBox>
+                  <DontBox label="No squish">
+                    <div style={{transform:"scaleX(1.6)", transformOrigin:"center"}}>
+                      <MarkSwipeK size={64} color="#0b0f12" />
+                    </div>
+                  </DontBox>
+                </div>
+              </div>
+            </DCArtboard>
+          </DCSection>
+        </DesignCanvas>
+      );
+    }
+
+    function DontBox({ label, children }) {
+      return (
+        <div style={{
+          border:"1px solid #f3d3d3", background:"#fff8f8", borderRadius:8,
+          padding:"10px 12px",
+          display:"flex", flexDirection:"column", alignItems:"center", gap:6,
+          position:"relative",
+        }}>
+          <div style={{display:"grid", placeItems:"center", height:78}}>{children}</div>
+          <div style={{font:"600 11px var(--font-sans)", color:"#b91c1c"}}>✕ {label}</div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>

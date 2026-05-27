@@ -1,0 +1,89 @@
+<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F172A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1E293B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#06B6D4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+
+    <filter id="cardShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Card background with rounded corners -->
+  <rect x="10" y="10" width="380" height="230" rx="20" fill="url(#cardGradient)" filter="url(#cardShadow)" stroke="#06B6D4" stroke-width="1" opacity="0.3"/>
+
+  <!-- Top accent stripe -->
+  <rect x="10" y="10" width="380" height="8" rx="20" fill="url(#accentGradient)"/>
+
+  <!-- Chip (EMV) - top left -->
+  <g>
+    <rect x="30" y="35" width="35" height="40" rx="3" fill="#FFD700" opacity="0.8"/>
+    <rect x="33" y="38" width="29" height="34" rx="2" fill="#FFA500" opacity="0.6"/>
+    <!-- Chip contacts -->
+    <circle cx="38" cy="42" r="1.5" fill="#333"/>
+    <circle cx="45" cy="42" r="1.5" fill="#333"/>
+    <circle cx="52" cy="42" r="1.5" fill="#333"/>
+    <circle cx="59" cy="42" r="1.5" fill="#333"/>
+    <circle cx="38" cy="68" r="1.5" fill="#333"/>
+    <circle cx="45" cy="68" r="1.5" fill="#333"/>
+    <circle cx="52" cy="68" r="1.5" fill="#333"/>
+    <circle cx="59" cy="68" r="1.5" fill="#333"/>
+  </g>
+
+  <!-- Logo/Icon - top right -->
+  <g transform="translate(340, 35)">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#06B6D4" stroke-width="1.5" opacity="0.5"/>
+    <text x="0" y="8" font-size="20" font-weight="bold" text-anchor="middle" fill="#FFD700" font-family="Arial, sans-serif">₱</text>
+  </g>
+
+  <!-- Cardholder name section -->
+  <text x="30" y="130" font-size="11" fill="#06B6D4" opacity="0.7" font-family="Arial, sans-serif" letter-spacing="1">CARDHOLDER</text>
+  <text x="30" y="150" font-size="16" font-weight="bold" fill="#FFFFFF" font-family="Arial, sans-serif" letter-spacing="1">YOUR NAME</text>
+
+  <!-- Card number (masked) -->
+  <text x="30" y="190" font-size="18" fill="#FFFFFF" font-family="monospace" letter-spacing="3">•••• •••• •••• 1234</text>
+
+  <!-- Expiry date -->
+  <g>
+    <text x="30" y="220" font-size="9" fill="#06B6D4" opacity="0.7" font-family="Arial, sans-serif">VALID THRU</text>
+    <text x="30" y="235" font-size="14" font-weight="bold" fill="#FFFFFF" font-family="monospace">12/26</text>
+  </g>
+
+  <!-- CVV indicator -->
+  <g>
+    <text x="320" y="220" font-size="9" fill="#06B6D4" opacity="0.7" font-family="Arial, sans-serif">CVV</text>
+    <rect x="310" y="225" width="35" height="18" rx="2" fill="#333" opacity="0.5"/>
+    <text x="327" y="237" font-size="10" fill="#999" font-family="monospace" text-anchor="middle">•••</text>
+  </g>
+
+  <!-- Visa/Mastercard style logo area -->
+  <g transform="translate(30, 200)">
+    <circle cx="0" cy="0" r="8" fill="#FF5F00" opacity="0.7"/>
+    <circle cx="12" cy="0" r="8" fill="#EB001B" opacity="0.7"/>
+    <circle cx="6" cy="0" r="8" fill="#F79E1B" opacity="0.7"/>
+  </g>
+
+  <!-- KASKAS branding - bottom right -->
+  <text x="350" y="235" font-size="12" font-weight="bold" text-anchor="end" fill="#06B6D4" font-family="Arial, sans-serif" letter-spacing="1">KASKAS</text>
+
+  <!-- Swipe indicator lines -->
+  <g stroke="#06B6D4" stroke-width="0.5" opacity="0.3">
+    <line x1="50" y1="100" x2="350" y2="100" />
+    <line x1="50" y1="105" x2="350" y2="105" />
+    <line x1="50" y1="110" x2="350" y2="110" />
+  </g>
+
+  <!-- Hologram effect (decorative) -->
+  <g opacity="0.1">
+    <polygon points="360,50 380,50 370,70" fill="#FFD700"/>
+    <polygon points="360,70 380,70 370,90" fill="#06B6D4"/>
+  </g>
+</svg>

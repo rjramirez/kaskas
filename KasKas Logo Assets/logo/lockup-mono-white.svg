@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 84" width="360" height="84" aria-label="kaskas — mono white">
+  <g transform="translate(8, 10)">
+    <rect x="12" y="11" width="9" height="42" rx="4.5" fill="#ffffff"></rect>
+    <path d="M21 32 L50 11" stroke="#ffffff" stroke-width="9" stroke-linecap="round" fill="none"></path>
+    <path d="M21 32 L50 53" stroke="#ffffff" stroke-width="9" stroke-linecap="round" fill="none"></path>
+  </g>
+  <text x="84" y="58" font-family="Inter, -apple-system, BlinkMacSystemFont, &#39;Segoe UI&#39;, Roboto, sans-serif" font-weight="700" font-size="58" letter-spacing="-2.6" fill="#ffffff">kaskas</text>
+</svg>
