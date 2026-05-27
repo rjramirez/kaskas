@@ -46,36 +46,52 @@ banner() {
 }
 
 # ── Update config (JSON) ───────────────────────────────────────────────────────
+# Uses jq if available; falls back to node (same dep as the MCP server itself)
 update_config() {
   local config="$1" action="$2"
 
   if [ ! -f "$config" ]; then
-    [ "$action" = "add" ] && echo '{}' > "$config" || return 0
+    [ "$action" = "add-desktop" ] && echo '{}' > "$config" || return 0
   fi
 
-  node -e "
-    const fs=require('fs'), p=process.env.C, a=process.env.A, sd=process.env.SD;
-    let c=JSON.parse(fs.readFileSync(p,'utf8')||'{}');
-    let changed=false;
-
-    if(a==='add-desktop') {
-      if(!c.mcpServers) c.mcpServers={};
-      c.mcpServers.kaskas={command:'node',args:[sd+'/mcp-server.js']};
-      changed=true;
-    } else if(a==='remove-desktop' && c.mcpServers) {
-      delete c.mcpServers.kaskas;
-      if(!Object.keys(c.mcpServers).length) delete c.mcpServers;
-      changed=true;
-    } else if(a==='remove-code') {
-      if(c.enabledPlugins?.['kaskas@kaskas']) { delete c.enabledPlugins['kaskas@kaskas']; changed=true; }
-      if(c.extraKnownMarketplaces?.kaskas) { delete c.extraKnownMarketplaces.kaskas; changed=true; }
-    }
-
-    if(changed) {
-      fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
-    }
-    console.log('OK');
-  " C="$config" A="$action" SD="$SKILL_DIR" 2>/dev/null || return 1
+  if command -v jq &>/dev/null; then
+    case "$action" in
+      add-desktop)
+        jq --arg sd "$SKILL_DIR" \
+          '.mcpServers.kaskas = {command: "node", args: [$sd + "/mcp-server.js"]}' \
+          "$config" > "$config.tmp" && mv "$config.tmp" "$config"
+        ;;
+      remove-desktop)
+        jq 'del(.mcpServers.kaskas) | if (.mcpServers | length) == 0 then del(.mcpServers) else . end' \
+          "$config" > "$config.tmp" && mv "$config.tmp" "$config"
+        ;;
+      remove-code)
+        jq 'del(.enabledPlugins["kaskas@kaskas"]) | del(.extraKnownMarketplaces.kaskas)' \
+          "$config" > "$config.tmp" && mv "$config.tmp" "$config"
+        ;;
+    esac
+    return 0
+  elif command -v node &>/dev/null; then
+    # Node.js fallback — writes UTF-8 no BOM
+    node -e "
+      const fs=require('fs'), p=process.env.CFG, sd=process.env.SD, action=process.env.ACTION;
+      let c; try{c=JSON.parse(fs.readFileSync(p,'utf8'));}catch(e){c={};}
+      if(action==='add-desktop'){
+        if(!c.mcpServers) c.mcpServers={};
+        c.mcpServers.kaskas={command:'node',args:[sd+'/mcp-server.js']};
+      } else if(action==='remove-desktop'){
+        if(c.mcpServers) delete c.mcpServers.kaskas;
+        if(c.mcpServers&&!Object.keys(c.mcpServers).length) delete c.mcpServers;
+      } else if(action==='remove-code'){
+        if(c.enabledPlugins) delete c.enabledPlugins['kaskas@kaskas'];
+        if(c.extraKnownMarketplaces) delete c.extraKnownMarketplaces.kaskas;
+      }
+      fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n',{encoding:'utf8'});
+    " CFG="$config" SD="$SKILL_DIR" ACTION="$action" 2>/dev/null
+    return $?
+  else
+    return 1
+  fi
 }
 
 # ── Uninstall ──────────────────────────────────────────────────────────────────

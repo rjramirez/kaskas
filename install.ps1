@@ -41,38 +41,62 @@ function Show-Banner {
   Write-Host ""
 }
 
-# ── Update config (JSON) ───────────────────────────────────────────────────────
+# ── Update config (JSON) ──────────────────────────────────────────────────────
+# Uses [System.IO.File]::WriteAllText with UTF8NoBOM -- avoids PS5.1 BOM bug
+$UTF8NoBOM = [System.Text.UTF8Encoding]::new($false)
+
+function Write-JsonFile([string]$path, [object]$obj) {
+  $json = $obj | ConvertTo-Json -Depth 20
+  [System.IO.File]::WriteAllText($path, $json + "`n", $UTF8NoBOM)
+}
+
 function Update-Config([string]$config, [string]$action) {
   if (-not (Test-Path $config)) {
-    if ($action -eq "add") { @{} | ConvertTo-Json | Set-Content $config -Encoding UTF8 }
-    else { return }
+    if ($action -eq "add-desktop") {
+      [System.IO.File]::WriteAllText($config, '{}', $UTF8NoBOM)
+    } else { return $false }
   }
 
-  $result = & node -e "
-    const fs=require('fs'), p=process.env.C, a=process.env.A, sd=process.env.SD;
-    let c=JSON.parse(fs.readFileSync(p,'utf8')||'{}');
-    let changed=false;
+  try {
+    $raw = (Get-Content $config -Raw).Trim()
+    if ([string]::IsNullOrEmpty($raw)) { $raw = '{}' }
+    $c = $raw | ConvertFrom-Json
+    $changed = $false
 
-    if(a==='add-desktop') {
-      if(!c.mcpServers) c.mcpServers={};
-      c.mcpServers.kaskas={command:'node',args:[sd+'/mcp-server.js']};
-      changed=true;
-    } else if(a==='remove-desktop' && c.mcpServers) {
-      delete c.mcpServers.kaskas;
-      if(!Object.keys(c.mcpServers).length) delete c.mcpServers;
-      changed=true;
-    } else if(a==='remove-code') {
-      if(c.enabledPlugins?.['kaskas@kaskas']) { delete c.enabledPlugins['kaskas@kaskas']; changed=true; }
-      if(c.extraKnownMarketplaces?.kaskas) { delete c.extraKnownMarketplaces.kaskas; changed=true; }
+    if ($action -eq "add-desktop") {
+      if (-not $c.PSObject.Properties['mcpServers']) {
+        $c | Add-Member -NotePropertyName "mcpServers" -NotePropertyValue ([PSCustomObject]@{}) -Force
+      }
+      $serverPath = ($SkillDir -replace '\\','/') + "/mcp-server.js"
+      $c.mcpServers | Add-Member -NotePropertyName "kaskas" -NotePropertyValue ([PSCustomObject]@{
+        command = "node"
+        args    = @($serverPath)
+      }) -Force
+      $changed = $true
+    } elseif ($action -eq "remove-desktop" -and $c.PSObject.Properties['mcpServers']) {
+      $c.mcpServers.PSObject.Properties.Remove("kaskas")
+      if (($c.mcpServers.PSObject.Properties | Measure-Object).Count -eq 0) {
+        $c.PSObject.Properties.Remove("mcpServers")
+      }
+      $changed = $true
+    } elseif ($action -eq "remove-code") {
+      if ($c.PSObject.Properties['enabledPlugins'] -and
+          $c.enabledPlugins.PSObject.Properties['kaskas@kaskas']) {
+        $c.enabledPlugins.PSObject.Properties.Remove("kaskas@kaskas")
+        $changed = $true
+      }
+      if ($c.PSObject.Properties['extraKnownMarketplaces'] -and
+          $c.extraKnownMarketplaces.PSObject.Properties['kaskas']) {
+        $c.extraKnownMarketplaces.PSObject.Properties.Remove("kaskas")
+        $changed = $true
+      }
     }
 
-    if(changed) {
-      fs.writeFileSync(p,JSON.stringify(c,null,2)+'\n');
-    }
-    console.log('OK');
-  " C="$config" A="$action" SD="$SkillDir" 2>$null
-
-  return ($result -eq 'OK')
+    if ($changed) { Write-JsonFile $config $c }
+    return $true
+  } catch {
+    return $false
+  }
 }
 
 # ── Uninstall ──────────────────────────────────────────────────────────────────
@@ -143,6 +167,13 @@ function Check-Installed {
 
   if (-not $Wired) { return }
 
+  if ($IsPipe) {
+    Write-Host "  [OK] kaskas already installed." -ForegroundColor Green
+    Write-Host "       Re-run with -Force to update or -Uninstall to remove."
+    Write-Host ""
+    exit 0
+  }
+
   Write-Host ""
   Write-Host "  kaskas is already installed."
   Write-Host "  [1] Update / Reinstall  [2] Uninstall  [3] Cancel"
@@ -156,8 +187,8 @@ function Check-Installed {
 
   switch ($choice) {
     "1" { $script:Force = $true }
-    "2" { Uninstall-Kaskas; Write-Host ""; Write-Host "  Press any key to exit..."; $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown"); exit 0 }
-    default { Write-Host "  Cancelled."; Write-Host ""; Write-Host "  Press any key to exit..."; $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown"); exit 0 }
+    "2" { Uninstall-Kaskas; exit 0 }
+    default { Write-Host "  Cancelled."; Write-Host ""; exit 0 }
   }
 }
 
@@ -180,32 +211,33 @@ $Files = @(
 # ── Download with retry (multiple sources) ────────────────────────────────────
 function Download-File([string]$file, [string]$fullPath, [string]$dest) {
   $urls = @(
-    "$RepoUrl/$fullPath",                                                           # Try jsDelivr first
-    "https://api.github.com/repos/rjramirez/kaskas/contents/$fullPath`?ref=main"    # GitHub API (works for private repos)
+    "$RepoUrl/$fullPath",
+    "https://api.github.com/repos/rjramirez/kaskas/contents/$fullPath`?ref=main"
   )
 
   foreach ($url in $urls) {
     $retries = 2
     $delay = 500
-    while ($retries -gt 0) {
+    $success = $false
+    while ($retries -gt 0 -and -not $success) {
       try {
         Write-Host "    Trying: $url" -ForegroundColor DarkGray
 
         if ($url -like "*api.github.com*") {
-          # GitHub API returns base64-encoded content
           $response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
           $json = $response.Content | ConvertFrom-Json
           if ($json.content) {
             $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($json.content))
-            Set-Content -Path $dest -Value $content -Encoding UTF8
+            [System.IO.File]::WriteAllText($dest, $content, $UTF8NoBOM)
             Write-Host "    ✓ Success: $file" -ForegroundColor Green
-            return $true
+            $success = $true
+          } else {
+            throw "No content in response"
           }
         } else {
-          # Standard download for jsDelivr
           Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing -ErrorAction Stop
           Write-Host "    ✓ Success: $file" -ForegroundColor Green
-          return $true
+          $success = $true
         }
       } catch {
         $retries--
@@ -218,6 +250,7 @@ function Download-File([string]$file, [string]$fullPath, [string]$dest) {
         }
       }
     }
+    if ($success) { return $true }
   }
   return $false
 }
@@ -291,7 +324,7 @@ function Install-Kaskas {
     # Wire Claude Desktop
     if (Test-Path (Split-Path $DesktopConfig -Parent)) {
       if (-not (Test-Path $DesktopConfig)) {
-        @{} | ConvertTo-Json | Set-Content $DesktopConfig -Encoding UTF8
+        [System.IO.File]::WriteAllText($DesktopConfig, '{}', $UTF8NoBOM)
       }
       Copy-Item $DesktopConfig "$DesktopConfig.bak" -Force
 
@@ -303,13 +336,9 @@ function Install-Kaskas {
     }
 
     # Health check
-    try {
-      if (Test-Path "$SkillDir/mcp-server.js") {
-        Info "Health check: OK"
-      } else {
-        Warn "Health check failed (non-critical)"
-      }
-    } catch {
+    if (Test-Path "$SkillDir/mcp-server.js") {
+      Info "Health check: OK"
+    } else {
       Warn "Health check failed (non-critical)"
     }
 
@@ -323,10 +352,6 @@ function Install-Kaskas {
   } finally {
     if (Test-Path $TempDir) { Remove-Item $TempDir -Recurse -Force -ErrorAction SilentlyContinue }
   }
-
-  Write-Host ""
-  Write-Host "  Press Enter to exit..." -ForegroundColor Gray
-  $null = Read-Host ""
 }
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -334,15 +359,9 @@ Show-Banner
 
 if ($Uninstall) {
   Uninstall-Kaskas
-  Write-Host ""
-  Write-Host "  Press Enter to exit..." -ForegroundColor Gray
-  $null = Read-Host ""
   exit 0
 }
 
 Check-Node
 Check-Installed
 Install-Kaskas
-
-Write-Host "  Press any key to exit..."
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
