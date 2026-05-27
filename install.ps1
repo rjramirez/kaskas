@@ -56,9 +56,11 @@ function Update-Config([string]$config, [string]$action) {
     if(a==='add-desktop') {
       if(!c.mcpServers) c.mcpServers={};
       c.mcpServers.kaskas={command:'node',args:[sd+'/mcp-server.js']};
+      changed=true;
     } else if(a==='remove-desktop' && c.mcpServers) {
       delete c.mcpServers.kaskas;
       if(!Object.keys(c.mcpServers).length) delete c.mcpServers;
+      changed=true;
     } else if(a==='remove-code') {
       if(c.enabledPlugins?.['kaskas@kaskas']) { delete c.enabledPlugins['kaskas@kaskas']; changed=true; }
       if(c.extraKnownMarketplaces?.kaskas) { delete c.extraKnownMarketplaces.kaskas; changed=true; }
