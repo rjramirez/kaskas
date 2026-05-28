@@ -82,8 +82,7 @@
     "commands": "commands/",
     "references": "references/",
     "templates": "templates/",
-    "schemas": "schemas/",
-    "agents": "agents/"
+    "schemas": "schemas/"
   },
   "settings": {
     "token_limit": "low",

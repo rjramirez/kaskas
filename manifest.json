@@ -223,7 +223,6 @@
       "references": "references/",
       "templates": "templates/",
       "schemas": "schemas/",
-      "agents": "agents/",
       "data": "data/"
     }
   },
