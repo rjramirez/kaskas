@@ -19,7 +19,10 @@
       "subscriptions",
       "cashback",
       "portable-memory",
-      "caveman"
+      "caveman",
+      "pinoy",
+      "philippines",
+      "filipino"
     ],
     "categories": [
       "finance",
@@ -30,12 +33,20 @@
   "interface": {
     "display_name": "Kaskas",
     "short_description": "Financial memory workflow",
-    "description": "Review statements, track obligations, detect subscriptions, and optimize card usage",
+    "description": "Review statements, track obligations, detect subscriptions, and optimize card usage. Made for Pinoys!",
     "icon": "💰",
     "color": "#22c55e",
     "theme": "light"
   },
   "commands": [
+    {
+      "id": "kaskas",
+      "name": "Kaskas",
+      "description": "Show all Kaskas commands, status, and quick start guide",
+      "icon": "💰",
+      "handler": "commands/kaskas.md",
+      "resources": []
+    },
     {
       "id": "review",
       "name": "Review",
@@ -44,6 +55,8 @@
       "handler": "commands/review.md",
       "resources": [
         "references/merchant-categories.md",
+        "references/ph-expressions.md",
+        "references/ph-spending-patterns.md",
         "templates/summary.md",
         "schemas/transaction.schema.json"
       ]
@@ -56,6 +69,8 @@
       "handler": "commands/due.md",
       "resources": [
         "templates/obligations.md",
+        "references/ph-calendar.md",
+        "references/ph-expressions.md",
         "schemas/obligation.schema.json"
       ]
     },
@@ -78,6 +93,7 @@
       "handler": "commands/offers.md",
       "resources": [
         "references/ph-cards.md",
+        "references/ph-promos.md",
         "schemas/promo.schema.json"
       ]
     },
@@ -127,6 +143,8 @@
       "icon": "🎁",
       "handler": "commands/promos.md",
       "resources": [
+        "references/ph-promos.md",
+        "references/ph-calendar.md",
         "schemas/promo.schema.json"
       ]
     },
@@ -179,6 +197,8 @@
       "icon": "🔔",
       "handler": "commands/remind.md",
       "resources": [
+        "references/ph-calendar.md",
+        "references/ph-expressions.md",
         "schemas/reminder.schema.json"
       ]
     },
@@ -190,7 +210,9 @@
       "handler": "commands/forecast.md",
       "resources": [
         "schemas/forecast.schema.json",
-        "references/forecast-config.md"
+        "references/forecast-config.md",
+        "references/ph-calendar.md",
+        "references/ph-spending-patterns.md"
       ]
     }
   ],
@@ -201,7 +223,8 @@
       "references": "references/",
       "templates": "templates/",
       "schemas": "schemas/",
-      "agents": "agents/"
+      "agents": "agents/",
+      "data": "data/"
     }
   },
   "configuration": {
@@ -211,6 +234,12 @@
     "data_ownership": "user-first",
     "cache_resources": true,
     "validate_schemas": true,
+    "locale": {
+      "language": "en",
+      "taglish": false,
+      "currency": "PHP",
+      "currency_symbol": "₱"
+    },
     "security": {
       "requires_authentication": false,
       "data_storage": "local-only",

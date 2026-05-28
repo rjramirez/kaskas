@@ -1,4 +1,4 @@
-# Financial Summary
+# Financial Summary 💰
 
 ## Overview
 
@@ -45,21 +45,21 @@
 
 (Reference: 0-30% Safe, 31-60% Moderate, 61-85% Risky, 86%+ Dangerous)
 
-## Risks
+## Risks 🚨
 
 - ⚠️ **High utilization** (XX% > 60% threshold)
 - ⚠️ **Installment overload** (X active installments)
 - ⚠️ **Subscription creep** (X recurring charges)
 - ⚠️ **Spending spike** (XX% above average)
 
-## Opportunities
+## Opportunities 💡
 
-- 💡 **Cashback optimization**: Switch to UnionBank Platinum for online spending (est. +PHP XXX/month)
-- 💡 **Subscription review**: Cancel unused services (est. -PHP XXX/month)
-- 💡 **Spending reduction**: Food category highest (XX% of spend)
-- 💡 **Installment consolidation**: Combine X installments into 1
+- 💸 **Cashback optimization**: Switch to UnionBank Platinum for online spending (est. +₱XXX/month)
+- 💸 **Subscription review**: Cancel unused services (est. -₱XXX/month)
+- 💸 **Spending reduction**: Food category highest (XX% of spend)
+- 💸 **Installment consolidation**: Combine X installments into 1
 
-## Recommendations
+## Recommendations 📋
 
 1. **Immediate**: Review subscriptions, cancel unused services
 2. **Short-term**: Reduce utilization below 30%

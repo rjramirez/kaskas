@@ -1,4 +1,4 @@
-# Upcoming Obligations
+# Upcoming Obligations ⏰
 
 ## Next 30 Days
 
@@ -25,13 +25,13 @@
 | Subscription 1 | Subscription | PHP XXX | YYYY-MM-DD | Monthly | Pending |
 | Loan | Loan | PHP X,XXX | YYYY-MM-DD | Monthly | Pending |
 
-## Risk Signals
+## Risk Signals 🚨
 
 ### Overlapping Dues
-- **YYYY-MM-DD**: Credit Card (PHP X,XXX) + Utility (PHP XXX) = PHP X,XXX
-- **YYYY-MM-DD**: Subscription (PHP XXX) + Loan (PHP X,XXX) = PHP X,XXX
+- **YYYY-MM-DD**: Credit Card (₱X,XXX) + Utility (₱XXX) = ₱X,XXX
+- **YYYY-MM-DD**: Subscription (₱XXX) + Loan (₱X,XXX) = ₱X,XXX
 
-⚠️ **Cash flow spike on YYYY-MM-DD** (PHP X,XXX due)
+⚠️ **Cash flow spike on YYYY-MM-DD** (₱X,XXX due)
 
 ### High Recurring Costs
 - **Total Monthly Recurring**: PHP X,XXX
@@ -47,7 +47,7 @@
 - Total monthly installment: PHP X,XXX
 - Status: ⚠️ Monitor
 
-## Recommendations
+## Recommendations 📋
 
 1. **Consolidate payment dates** if possible (reduce overlaps)
 2. **Set reminders** 3 days before due dates

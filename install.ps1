@@ -199,17 +199,20 @@ function Test-KaskasInstalled {
 # ── File list ──────────────────────────────────────────────────────────────────
 $Files = @(
   @("mcp-server.js", "."), @("manifest.json", "."), @("claude.json", "."),
-  @("due.md", "commands"), @("embed.md", "commands"), @("export.md", "commands"), @("forecast.md", "commands"),
+  @("kaskas.md", "commands"), @("due.md", "commands"), @("embed.md", "commands"), @("export.md", "commands"), @("forecast.md", "commands"),
   @("insights.md", "commands"), @("llm.md", "commands"), @("memory.md", "commands"), @("ocr.md", "commands"),
   @("offers.md", "commands"), @("pdf.md", "commands"), @("promos.md", "commands"), @("remind.md", "commands"),
   @("review.md", "commands"), @("safe.md", "commands"), @("subscriptions.md", "commands"),
   @("embedding-config.md", "references"), @("forecast-config.md", "references"), @("llm-config.md", "references"),
   @("merchant-categories.md", "references"), @("ph-cards.md", "references"), @("recurring-patterns.md", "references"),
-  @("utilization-rules.md", "references"),
+  @("utilization-rules.md", "references"), @("ph-calendar.md", "references"), @("ph-expressions.md", "references"),
+  @("ph-financial-terms.md", "references"), @("ph-promos.md", "references"), @("ph-spending-patterns.md", "references"),
   @("obligations.md", "templates"), @("summary.md", "templates"),
   @("embedding.schema.json", "schemas"), @("forecast.schema.json", "schemas"), @("memory.schema.json", "schemas"),
   @("obligation.schema.json", "schemas"), @("promo.schema.json", "schemas"), @("reminder.schema.json", "schemas"),
-  @("transaction.schema.json", "schemas")
+  @("transaction.schema.json", "schemas"),
+  @("merchants.json", "data"), @("cards.json", "data"), @("calendar.json", "data"), @("promos.json", "data"),
+  @("patterns.json", "data"), @("expressions.json", "data"), @("terms.json", "data"), @("spending-patterns.json", "data")
 )
 
 # ── Download with retry (multiple sources) ────────────────────────────────────
