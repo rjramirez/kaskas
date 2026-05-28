@@ -144,11 +144,10 @@ bash install.sh --uninstall
 
 ## Documentation
 
-- [Installation Guide](./docs/install.md)
-- [Command Reference](./docs/commands.md)
-- [Security & Privacy](./docs/security.md)
-- [Troubleshooting](./docs/troubleshooting.md)
-- [FAQ](./docs/faq.md)
+- [📖 User Guide](./user-guide) - Complete guide with examples and workflows
+- [⚡ Command Reference](./commands) - All available commands
+- [🔒 Security & Privacy](./security) - How your data is protected
+- [❓ FAQ](./faq) - Frequently asked questions
 
 ---
 

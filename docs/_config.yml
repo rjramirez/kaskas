@@ -7,12 +7,14 @@ logo: https://raw.githubusercontent.com/rjramirez/kaskas/main/docs/assets/kaskas
 nav_links:
   - title: Home
     url: /
-  - title: Install
-    url: /docs/install.md
+  - title: User Guide
+    url: /user-guide
   - title: Commands
-    url: /docs/commands.md
+    url: /commands
   - title: Security
-    url: /docs/security.md
+    url: /security
+  - title: FAQ
+    url: /faq
   - title: GitHub
     url: https://github.com/rjramirez/kaskas
 
