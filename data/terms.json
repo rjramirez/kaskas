@@ -1,0 +1,102 @@
+{
+  "pinoyTerms": [
+    {"term": "sweldo", "english": "salary/wage", "context": "payday tracking", "example": "Kailan sweldo mo?"},
+    {"term": "sahod", "english": "salary (alt)", "context": "same as sweldo", "example": "Dumating na sahod ko"},
+    {"term": "utang", "english": "debt/loan", "context": "obligation tracking", "example": "May utang ako sa kanya"},
+    {"term": "hulog", "english": "installment", "context": "payment plans", "example": "Monthly hulog ko sa kotse"},
+    {"term": "pautang", "english": "to lend", "context": "lending money", "example": "Pwede pautang?"},
+    {"term": "bayad", "english": "payment", "context": "bill payment", "example": "Bayad na ako sa kuryente"},
+    {"term": "singil", "english": "to collect/bill", "context": "collection", "example": "Siningil na ako ng landlord"},
+    {"term": "ipon", "english": "savings", "context": "savings tracking", "example": "Mag-ipon ka na!"},
+    {"term": "alkansya", "english": "piggy bank", "context": "coin savings", "example": "Lagay mo sa alkansya"},
+    {"term": "gastos", "english": "expenses", "context": "spending", "example": "Ang laki ng gastos ko"},
+    {"term": "puhunan", "english": "capital", "context": "business investment", "example": "Kulang pa puhunan ko"},
+    {"term": "kita", "english": "earnings/profit", "context": "income", "example": "Magkano kita mo?"},
+    {"term": "tubo", "english": "interest/profit", "context": "returns", "example": "Malaki tubo sa negosyo"},
+    {"term": "patong", "english": "markup/interest", "context": "added cost", "example": "May patong yan"},
+    {"term": "paluwagan", "english": "rotating savings", "context": "group savings", "example": "Kasali ako sa paluwagan"},
+    {"term": "remittance", "english": "OFW money", "context": "family support", "example": "Dumating na remittance"},
+    {"term": "padala", "english": "send money", "context": "remittance", "example": "Nagpadala na si tatay"},
+    {"term": "aguinaldo", "english": "Christmas bonus", "context": "13th month", "example": "Malaki aguinaldo ko!"},
+    {"term": "suki", "english": "regular customer", "context": "loyalty", "example": "Suki na ako dyan"},
+    {"term": "tawad", "english": "bargain/discount", "context": "haggling", "example": "Pwede tawad?"},
+    {"term": "libre", "english": "free/to treat", "context": "treating others", "example": "Libre kita!"},
+    {"term": "tingi", "english": "retail/small qty", "context": "small purchases", "example": "Tingi lang bili ko"},
+    {"term": "buo", "english": "wholesale/whole", "context": "bulk purchase", "example": "Buo na lang bilhin mo"},
+    {"term": "piso", "english": "peso", "context": "currency", "example": "Magkano sa piso?"},
+    {"term": "sentimo", "english": "centavo", "context": "small change", "example": "Wala akong sentimo"}
+  ],
+  "bankingTerms": [
+    {"term": "passbook", "meaning": "savings book", "notes": "Traditional savings"},
+    {"term": "ATM", "meaning": "cash withdrawal", "notes": "Mag-withdraw sa ATM"},
+    {"term": "over-the-counter", "meaning": "bank teller", "notes": "OTC deposit"},
+    {"term": "maintaining balance", "meaning": "minimum balance", "notes": "Required to avoid fees"},
+    {"term": "dormant", "meaning": "inactive account", "notes": "No activity 2+ years"},
+    {"term": "ADA", "meaning": "auto-debit arrangement", "notes": "Auto bill payment"},
+    {"term": "PDC", "meaning": "post-dated check", "notes": "Future-dated payment"},
+    {"term": "fund transfer", "meaning": "send money", "notes": "InstaPay, PESONet"}
+  ],
+  "creditTerms": [
+    {"term": "credit limit", "meaning": "maximum borrowing", "notes": "Lumagpas sa limit"},
+    {"term": "available credit", "meaning": "remaining limit", "notes": "Limit minus balance"},
+    {"term": "minimum due", "meaning": "minimum payment", "notes": "Avoid late fees"},
+    {"term": "statement date", "meaning": "billing cycle end", "notes": "Monthly statement"},
+    {"term": "due date", "meaning": "payment deadline", "notes": "Usually 21 days after statement"},
+    {"term": "finance charge", "meaning": "interest", "notes": "If not paid in full"},
+    {"term": "annual fee", "meaning": "yearly card fee", "notes": "Some cards waived"},
+    {"term": "cash advance", "meaning": "ATM withdrawal", "notes": "High interest!"},
+    {"term": "SIP", "meaning": "straight installment", "notes": "0% installment"},
+    {"term": "balance transfer", "meaning": "move debt", "notes": "Lower interest promo"}
+  ],
+  "loanTerms": [
+    {"term": "principal", "meaning": "loan amount", "notes": "Original borrowed"},
+    {"term": "interest rate", "meaning": "cost of borrowing", "notes": "Monthly or annual"},
+    {"term": "amortization", "meaning": "monthly payment", "notes": "Principal + interest"},
+    {"term": "collateral", "meaning": "security", "notes": "For secured loans"},
+    {"term": "co-maker", "meaning": "co-signer", "notes": "Guarantor"},
+    {"term": "promissory note", "meaning": "loan agreement", "notes": "Legal document"},
+    {"term": "restructure", "meaning": "modify terms", "notes": "If struggling to pay"},
+    {"term": "pre-termination", "meaning": "early payoff", "notes": "May have penalty"}
+  ],
+  "investmentTerms": [
+    {"term": "UITF", "meaning": "Unit Investment Trust Fund", "notes": "Bank investment"},
+    {"term": "MF", "meaning": "Mutual Fund", "notes": "Pooled investment"},
+    {"term": "stocks", "meaning": "equities", "notes": "PSE trading"},
+    {"term": "bonds", "meaning": "fixed income", "notes": "Government/corporate"},
+    {"term": "time deposit", "meaning": "fixed savings", "notes": "Higher interest, locked"},
+    {"term": "dividends", "meaning": "profit share", "notes": "Stock returns"},
+    {"term": "NAVpu", "meaning": "Net Asset Value per unit", "notes": "Fund price"},
+    {"term": "peso cost averaging", "meaning": "regular investing", "notes": "Monthly investment"}
+  ],
+  "insuranceTerms": [
+    {"term": "premium", "meaning": "payment", "notes": "Monthly/annual"},
+    {"term": "coverage", "meaning": "protection amount", "notes": "Sum assured"},
+    {"term": "beneficiary", "meaning": "recipient", "notes": "Who gets payout"},
+    {"term": "rider", "meaning": "add-on coverage", "notes": "Extra protection"},
+    {"term": "VUL", "meaning": "Variable Unit-Linked", "notes": "Insurance + investment"},
+    {"term": "term insurance", "meaning": "pure protection", "notes": "No cash value"},
+    {"term": "whole life", "meaning": "lifetime coverage", "notes": "With cash value"},
+    {"term": "claim", "meaning": "request payout", "notes": "When event happens"}
+  ],
+  "governmentTerms": [
+    {"term": "SSS", "meaning": "Social Security System", "notes": "Private employees"},
+    {"term": "GSIS", "meaning": "Gov't Service Insurance", "notes": "Government employees"},
+    {"term": "PhilHealth", "meaning": "health insurance", "notes": "Universal healthcare"},
+    {"term": "Pag-IBIG", "meaning": "housing fund", "notes": "Home loans, savings"},
+    {"term": "BIR", "meaning": "Bureau of Internal Revenue", "notes": "Taxes"},
+    {"term": "TIN", "meaning": "Tax Identification Number", "notes": "Tax ID"},
+    {"term": "ITR", "meaning": "Income Tax Return", "notes": "Annual tax filing"},
+    {"term": "withholding tax", "meaning": "tax deducted", "notes": "From salary"}
+  ],
+  "slang": [
+    {"term": "broke", "meaning": "walang pera", "context": "No money"},
+    {"term": "petsa de peligro", "meaning": "danger days", "context": "Before payday"},
+    {"term": "isang kahig, isang tuka", "meaning": "hand to mouth", "context": "Living paycheck to paycheck"},
+    {"term": "nalugi", "meaning": "lost money", "context": "Bad investment"},
+    {"term": "bawi", "meaning": "recover", "context": "Get money back"},
+    {"term": "jackpot", "meaning": "big win", "context": "Unexpected money"},
+    {"term": "kuripot", "meaning": "stingy", "context": "Very frugal"},
+    {"term": "gastador", "meaning": "big spender", "context": "Spends a lot"},
+    {"term": "maluho", "meaning": "luxurious taste", "context": "Expensive preferences"}
+  ]
+}

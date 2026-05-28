@@ -1,0 +1,128 @@
+{
+  "bankPromos": {
+    "daySpecific": [
+      {"bank": "BDO", "day": "wednesday", "type": "dining", "offer": "Dining discounts at partners"},
+      {"bank": "BPI", "day": "weekend", "type": "shopping", "offer": "Shopping rebates"},
+      {"bank": "Metrobank", "day": "friday", "type": "fuel", "offer": "Fuel discounts"},
+      {"bank": "Security Bank", "day": "various", "type": "travel", "offer": "Travel deals"},
+      {"bank": "UnionBank", "day": "anytime", "type": "online", "offer": "E-commerce cashback"}
+    ],
+    "promoTypes": [
+      {"type": "dining", "typical": "10-50% off at partner restaurants"},
+      {"type": "shopping", "typical": "Rebates at malls, online stores"},
+      {"type": "fuel", "typical": "Peso off per liter"},
+      {"type": "travel", "typical": "Airline/hotel discounts"},
+      {"type": "installment", "typical": "0% interest 3-36 months"},
+      {"type": "cashback", "typical": "% back on spend categories"}
+    ]
+  },
+  "ewalletPromos": {
+    "gcash": [
+      {"type": "bills", "offer": "Cashback on utilities"},
+      {"type": "card", "offer": "Discounts at partners"},
+      {"type": "gcredit", "offer": "Buy now pay later deals"},
+      {"type": "gsave", "offer": "Higher interest savings"},
+      {"type": "scan-to-pay", "offer": "Merchant discounts"}
+    ],
+    "maya": [
+      {"type": "card", "offer": "Cashback on purchases"},
+      {"type": "bills", "offer": "Rebates on utilities"},
+      {"type": "savings", "offer": "Competitive interest"},
+      {"type": "qr", "offer": "Merchant deals"},
+      {"type": "credit", "offer": "BNPL offers"}
+    ],
+    "shopeepay": [
+      {"type": "coins", "offer": "Cashback in Shopee coins"},
+      {"type": "vouchers", "offer": "Discount codes"},
+      {"type": "shipping", "offer": "Free shipping vouchers"},
+      {"type": "flash", "offer": "Limited time offers"}
+    ]
+  },
+  "groceryPromos": [
+    {"store": "SM Supermarket", "program": "SM Advantage Card", "offer": "Points per purchase"},
+    {"store": "Puregold", "program": "Tindahan ni Aling Puring", "offer": "Member deals"},
+    {"store": "Robinsons", "program": "Robinsons Rewards", "offer": "Points rewards"},
+    {"store": "S&R", "program": "Membership", "offer": "Members-only pricing"},
+    {"store": "Landers", "program": "Membership", "offer": "Membership deals"}
+  ],
+  "foodPromos": [
+    {"chain": "Jollibee", "typical": "Bucket meals, app deals"},
+    {"chain": "McDonald's", "typical": "McDelivery promos"},
+    {"chain": "KFC", "typical": "Bucket deals"},
+    {"chain": "Chowking", "typical": "Lauriat specials"},
+    {"chain": "Mang Inasal", "typical": "Unli rice, PM Treat"},
+    {"chain": "Greenwich", "typical": "Barkada deals"}
+  ],
+  "deliveryPromos": [
+    {"platform": "GrabFood", "typical": "Free delivery, % off"},
+    {"platform": "Foodpanda", "typical": "Voucher codes"},
+    {"platform": "Pick.A.Roo", "typical": "New user promos"}
+  ],
+  "fuelPromos": [
+    {"station": "Shell", "program": "V-Power Club", "offer": "Points, discounts"},
+    {"station": "Petron", "program": "Petron Value Card", "offer": "Peso off per liter"},
+    {"station": "Caltex", "program": "Star Rewards", "offer": "Points redemption"},
+    {"station": "Phoenix", "program": "SUPER Card", "offer": "Rebates"},
+    {"station": "Seaoil", "program": "Price Leader", "offer": "Lower base price"}
+  ],
+  "travelPromos": {
+    "airlines": [
+      {"airline": "Cebu Pacific", "typical": "Piso fare (limited), seat sales"},
+      {"airline": "Philippine Airlines", "typical": "Seat sales, miles redemption"},
+      {"airline": "AirAsia", "typical": "Big sale events"}
+    ],
+    "hotels": [
+      {"platform": "Agoda", "typical": "Flash deals, secret prices"},
+      {"platform": "Booking.com", "typical": "Genius discounts"},
+      {"platform": "Traveloka", "typical": "Voucher codes"}
+    ]
+  },
+  "subscriptionPromos": [
+    {"service": "Netflix", "typical": "Free trial (new users)"},
+    {"service": "Spotify", "typical": "Student discount, family plan"},
+    {"service": "YouTube Premium", "typical": "Free trial"},
+    {"service": "Disney+", "typical": "Annual plan discount"}
+  ],
+  "telcoPromos": [
+    {"telco": "Globe", "typical": "GoSURF + streaming bundles"},
+    {"telco": "Smart", "typical": "Giga promos"},
+    {"telco": "DITO", "typical": "Data deals"},
+    {"telco": "Converge", "typical": "FiberX bundles"}
+  ],
+  "stackStrategy": {
+    "description": "How to maximize savings by stacking promos",
+    "steps": [
+      "1. Use credit card with category bonus",
+      "2. Pay via e-wallet for additional cashback",
+      "3. Apply voucher code",
+      "4. Use loyalty card for points",
+      "5. Shop during sale dates"
+    ],
+    "example": {
+      "purchase": 1000,
+      "breakdown": [
+        {"source": "11.11 Sale", "discount": 150, "percent": 15},
+        {"source": "Shopee Voucher", "discount": 50, "percent": 5},
+        {"source": "ShopeePay coins", "discount": 40, "percent": 4},
+        {"source": "Credit Card cashback", "discount": 16, "percent": 1.6}
+      ],
+      "totalSavings": 256,
+      "totalPercent": 25.6
+    }
+  },
+  "promoSources": [
+    {"name": "Bank apps", "type": "push notifications"},
+    {"name": "E-wallet apps", "type": "in-app"},
+    {"name": "CreditCardsPH", "type": "website"},
+    {"name": "MoneyMax.ph", "type": "website"},
+    {"name": "Loopme.ph", "type": "website"},
+    {"name": "Brand social media", "type": "social"},
+    {"name": "Viber/Telegram groups", "type": "community"}
+  ],
+  "redFlags": [
+    "Too good to be true offers",
+    "Unverified promo codes",
+    "Phishing links",
+    "Expired promos still circulating"
+  ]
+}

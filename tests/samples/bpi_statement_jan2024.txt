@@ -1,0 +1,44 @@
+# BPI Credit Card Statement
+# Card Number: **** **** **** 5678
+# Statement Date: January 31, 2024
+# Credit Limit: PHP 80,000.00
+# Outstanding Balance: PHP 23,456.00
+# Minimum Amount Due: PHP 1,200.00
+# Due Date: February 20, 2024
+
+TRANSACTION HISTORY
+-------------------
+
+01/03/2024  YOUTUBE PREMIUM              PHP     239.00
+01/05/2024  ROBINSONS SUPERMARKET        PHP   1,876.00
+01/06/2024  MERCURY DRUG QC              PHP     456.00
+01/08/2024  FOODPANDA *ORDER123          PHP     345.00
+01/09/2024  CALTEX C5 LIBIS              PHP   1,800.00
+01/11/2024  APPLE.COM/BILL               PHP     159.00
+01/12/2024  DECATHLON PHILIPPINES        PHP   2,345.00
+01/14/2024  GREENWICH DELIVERY           PHP     399.00
+01/15/2024  PLDT HOME FIBR               PHP   1,699.00
+01/17/2024  NATIONAL BOOKSTORE           PHP     567.00
+01/18/2024  SHAKEY'S PIZZA               PHP     789.00
+01/20/2024  SHELL SLEX MAMPLASAN         PHP   2,100.00
+01/22/2024  S&R MEMBERSHIP               PHP     700.00
+01/23/2024  S&R NUVALI                   PHP   4,234.00
+01/25/2024  JOLLIBEE DRIVE THRU          PHP     412.00
+01/26/2024  LALAMOVE *DELIVERY           PHP     150.00
+01/27/2024  MINISO PHILIPPINES           PHP     399.00
+01/28/2024  CHATGPT PLUS                 PHP   1,100.00
+01/29/2024  BONCHON CHICKEN              PHP     567.00
+01/30/2024  GCASH CASHIN FEE             PHP      15.00
+01/31/2024  INSTALLMENT 6/24 LAPTOP      PHP   2,105.00
+
+-------------------
+TOTAL NEW CHARGES:           PHP  22,456.00
+PREVIOUS BALANCE:            PHP   1,000.00
+PAYMENTS - THANK YOU:        PHP  -1,000.00
+-------------------
+CURRENT BALANCE:             PHP  23,456.00
+
+REWARDS POINTS EARNED: 224 pts
+TOTAL REWARDS BALANCE: 5,678 pts
+
+For 24/7 assistance: 02-889-10000

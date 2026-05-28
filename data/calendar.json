@@ -1,0 +1,79 @@
+{
+  "paydays": [
+    {"day": 15, "type": "mid-month", "name": "Mid-month sweldo"},
+    {"day": 30, "type": "end-month", "name": "End-month sweldo"},
+    {"day": 31, "type": "end-month", "name": "End-month sweldo (31-day months)"}
+  ],
+  "holidays": [
+    {"date": "01-01", "name": "New Year's Day", "type": "regular", "impact": "low", "notes": "Recovery from Dec spending"},
+    {"date": "02-14", "name": "Valentine's Day", "type": "special", "impact": "medium", "notes": "Dining, gifts, flowers"},
+    {"date": "02-25", "name": "EDSA Revolution Anniversary", "type": "special", "impact": "low"},
+    {"date": "04-09", "name": "Araw ng Kagitingan", "type": "regular", "impact": "low"},
+    {"date": "05-01", "name": "Labor Day", "type": "regular", "impact": "medium", "notes": "Sales, promos"},
+    {"date": "06-12", "name": "Independence Day", "type": "regular", "impact": "low"},
+    {"date": "08-21", "name": "Ninoy Aquino Day", "type": "regular", "impact": "low"},
+    {"date": "08-26", "name": "National Heroes Day", "type": "regular", "impact": "medium", "notes": "Long weekend travel"},
+    {"date": "10-31", "name": "Halloween", "type": "special", "impact": "medium", "notes": "Costumes, parties"},
+    {"date": "11-01", "name": "All Saints' Day", "type": "regular", "impact": "high", "notes": "Travel to province, flowers, candles"},
+    {"date": "11-02", "name": "All Souls' Day", "type": "special", "impact": "medium", "notes": "Cemetery visits"},
+    {"date": "11-30", "name": "Bonifacio Day", "type": "regular", "impact": "low"},
+    {"date": "12-08", "name": "Immaculate Conception", "type": "regular", "impact": "low"},
+    {"date": "12-24", "name": "Christmas Eve", "type": "special", "impact": "very-high", "notes": "Noche Buena, big food spending"},
+    {"date": "12-25", "name": "Christmas Day", "type": "regular", "impact": "very-high", "notes": "Gifts, aguinaldo"},
+    {"date": "12-30", "name": "Rizal Day", "type": "regular", "impact": "low"},
+    {"date": "12-31", "name": "New Year's Eve", "type": "special", "impact": "very-high", "notes": "Media Noche, fireworks"}
+  ],
+  "movableHolidays": [
+    {"name": "Chinese New Year", "month": 1, "type": "special", "impact": "high", "notes": "Ang pao, tikoy, family gatherings"},
+    {"name": "Maundy Thursday", "month": 3, "type": "regular", "impact": "high", "notes": "Holy Week travel"},
+    {"name": "Good Friday", "month": 4, "type": "regular", "impact": "high", "notes": "Holy Week travel"},
+    {"name": "Easter Sunday", "month": 4, "type": "special", "impact": "medium", "notes": "Family gatherings"},
+    {"name": "Mother's Day", "week": 2, "weekday": "sunday", "month": 5, "type": "special", "impact": "medium", "notes": "Gifts, dining"},
+    {"name": "Father's Day", "week": 3, "weekday": "sunday", "month": 6, "type": "special", "impact": "medium", "notes": "Gifts, dining"},
+    {"name": "Eid'l Fitr", "type": "regular", "impact": "medium", "notes": "Muslim holiday"},
+    {"name": "Eid'l Adha", "type": "regular", "impact": "medium", "notes": "Muslim holiday"}
+  ],
+  "berMonths": {
+    "months": [9, 10, 11, 12],
+    "warning": "Ber months - Christmas spending season!",
+    "patterns": [
+      {"month": 9, "name": "September", "behavior": "Christmas decorations start"},
+      {"month": 10, "name": "October", "behavior": "Gift planning begins"},
+      {"month": 11, "name": "November", "behavior": "Early shopping, 11.11 sales"},
+      {"month": 12, "name": "December", "behavior": "Peak spending month, 13th month pay"}
+    ]
+  },
+  "fiestas": [
+    {"name": "Sinulog", "location": "Cebu", "month": 1, "impact": "high"},
+    {"name": "Dinagyang", "location": "Iloilo", "month": 1, "impact": "high"},
+    {"name": "Ati-Atihan", "location": "Kalibo", "month": 1, "impact": "high"},
+    {"name": "Feast of Black Nazarene", "location": "Manila", "month": 1, "impact": "high"},
+    {"name": "Pahiyas", "location": "Lucban", "month": 5, "impact": "medium"},
+    {"name": "Kadayawan", "location": "Davao", "month": 8, "impact": "high"}
+  ],
+  "saleDates": [
+    {"date": "01-01", "name": "1.1 New Year Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "02-02", "name": "2.2 Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "03-03", "name": "3.3 Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "04-04", "name": "4.4 Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "05-05", "name": "5.5 Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "06-06", "name": "6.6 Mid-Year Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "07-07", "name": "7.7 Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "08-08", "name": "8.8 Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "09-09", "name": "9.9 Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "10-10", "name": "10.10 Sale", "platforms": ["Shopee", "Lazada"]},
+    {"date": "11-11", "name": "11.11 Singles Day", "platforms": ["Shopee", "Lazada"], "major": true},
+    {"date": "12-12", "name": "12.12 Christmas Sale", "platforms": ["Shopee", "Lazada"], "major": true}
+  ],
+  "paydaySales": [
+    {"day": 15, "name": "Mid-month Payday Sale"},
+    {"day": 25, "name": "Pre-payday Sale"},
+    {"day": 30, "name": "End-month Payday Sale"}
+  ],
+  "remittancePatterns": [
+    {"day": 1, "name": "Start of month remittance"},
+    {"day": 15, "name": "Mid-month remittance"},
+    {"event": "before-holidays", "name": "Pre-holiday remittance"},
+    {"event": "school-opening", "months": [6, 8], "name": "School opening remittance"}
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "subscriptionServices": [
+    {"name": "Netflix", "category": "streaming", "typical_amount": {"min": 149, "max": 549}},
+    {"name": "Spotify", "category": "streaming", "typical_amount": {"min": 59, "max": 194}},
+    {"name": "YouTube Premium", "category": "streaming", "typical_amount": {"min": 159, "max": 239}},
+    {"name": "Disney+", "category": "streaming", "typical_amount": {"min": 159, "max": 369}},
+    {"name": "Amazon Prime", "category": "streaming", "typical_amount": {"min": 149, "max": 149}},
+    {"name": "HBO Go", "category": "streaming", "typical_amount": {"min": 149, "max": 299}},
+    {"name": "Viu", "category": "streaming", "typical_amount": {"min": 49, "max": 149}},
+    {"name": "iWantTFC", "category": "streaming", "typical_amount": {"min": 99, "max": 299}},
+    {"name": "Vivamax", "category": "streaming", "typical_amount": {"min": 99, "max": 149}},
+    {"name": "Apple TV+", "category": "streaming", "typical_amount": {"min": 199, "max": 199}},
+    {"name": "Canva", "category": "productivity", "typical_amount": {"min": 499, "max": 999}},
+    {"name": "ChatGPT Plus", "category": "productivity", "typical_amount": {"min": 1100, "max": 1200}},
+    {"name": "Microsoft 365", "category": "productivity", "typical_amount": {"min": 299, "max": 499}},
+    {"name": "Adobe Creative Cloud", "category": "productivity", "typical_amount": {"min": 800, "max": 3000}},
+    {"name": "Notion", "category": "productivity", "typical_amount": {"min": 400, "max": 800}},
+    {"name": "Figma", "category": "productivity", "typical_amount": {"min": 700, "max": 1400}},
+    {"name": "Grammarly", "category": "productivity", "typical_amount": {"min": 500, "max": 1500}},
+    {"name": "Zoom", "category": "productivity", "typical_amount": {"min": 700, "max": 1200}},
+    {"name": "Slack", "category": "productivity", "typical_amount": {"min": 400, "max": 800}},
+    {"name": "Google One", "category": "storage", "typical_amount": {"min": 89, "max": 499}},
+    {"name": "iCloud", "category": "storage", "typical_amount": {"min": 49, "max": 499}},
+    {"name": "Dropbox", "category": "storage", "typical_amount": {"min": 500, "max": 1000}}
+  ],
+  "detectionRules": {
+    "highConfidence": {
+      "description": "All 3 criteria match",
+      "criteria": [
+        "Same merchant appears 2+ times",
+        "Monthly cadence: charges ±5 days apart",
+        "Similar amounts: variance ±10%"
+      ],
+      "confidence": 0.9
+    },
+    "mediumConfidence": {
+      "description": "2 of 3 criteria match",
+      "criteria": [
+        "Known subscription service (even if only 1 charge)",
+        "Merchant name contains keywords: subscription, membership, premium",
+        "Quarterly or annual pattern (every 3 or 12 months)"
+      ],
+      "confidence": 0.7
+    },
+    "lowConfidence": {
+      "description": "1 indicator only",
+      "criteria": [
+        "Single charge from merchant",
+        "Infrequent pattern (6+ months apart)",
+        "Merchant name suggests subscription but no pattern"
+      ],
+      "confidence": 0.4
+    }
+  },
+  "frequencyPatterns": {
+    "monthly": {"days": 30, "tolerance": 5, "description": "Most common subscription pattern"},
+    "quarterly": {"days": 90, "tolerance": 5, "description": "Insurance, some memberships"},
+    "annual": {"days": 365, "tolerance": 10, "description": "Domain registration, annual memberships"},
+    "biweekly": {"days": 14, "tolerance": 2, "description": "Some services, payroll-aligned"}
+  },
+  "amountVariance": {
+    "high": {"percent": 10, "confidence": "high", "description": "Same subscription"},
+    "medium": {"percent": 15, "confidence": "medium", "description": "Possible price increase"},
+    "low": {"percent": 20, "confidence": "low", "description": "Different service or variable billing"}
+  },
+  "keywords": {
+    "subscription": ["subscription", "membership", "premium", "pro", "plus", "annual", "renewal", "recurring"],
+    "installment": ["installment", "0%", "EMI", "payment plan", "monthly payment", "hulog", "SIP"]
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "patterns": [
+    {
+      "id": "sweldo_syndrome",
+      "name": "Sweldo Syndrome",
+      "description": "Overspending 1-3 days after payday",
+      "risk": "medium",
+      "detection": {
+        "condition": "transaction_date IN (payday + 1 to 3 days) AND amount > average_daily_spend * 2",
+        "triggers": ["large_purchases_15th_17th", "large_purchases_30th_2nd", "dining_spike_after_payday"]
+      },
+      "signs": [
+        "Large purchases on 15th-17th or 30th-2nd",
+        "Dining out spikes after sweldo",
+        "Shopping sprees post-payday",
+        "Treat yourself mentality"
+      ],
+      "advice": {
+        "en": "Consider budgeting before spending your salary",
+        "taglish": "Beh, baka pwedeng i-budget muna bago gastusin lahat?"
+      }
+    },
+    {
+      "id": "tingi_culture",
+      "name": "Tingi Culture",
+      "description": "Small, frequent purchases instead of bulk",
+      "risk": "low",
+      "detection": {
+        "condition": "same_merchant_count > 5 per week AND average_amount < 100",
+        "triggers": ["multiple_small_transactions", "daily_convenience_store", "sachet_purchases"]
+      },
+      "signs": [
+        "Multiple small transactions same merchant",
+        "Daily sari-sari store visits",
+        "Sachet purchases (shampoo, coffee, etc.)",
+        "Load purchases in small amounts"
+      ],
+      "advice": {
+        "en": "Buying in bulk is more cost-effective",
+        "taglish": "Mas tipid kung buo ang bilhin mo, beh!"
+      }
+    },
+    {
+      "id": "utang_culture",
+      "name": "Utang Culture",
+      "description": "Borrowing from friends/family, informal loans",
+      "risk": "high",
+      "detection": {
+        "condition": "recurring_transfer to same_person AND frequency = monthly",
+        "triggers": ["gcash_maya_transfers_same_person", "pautang_notes", "paluwagan"]
+      },
+      "signs": [
+        "GCash/Maya transfers to same person monthly",
+        "Pautang or utang in transaction notes",
+        "Regular small transfers out",
+        "Paluwagan participation"
+      ],
+      "advice": {
+        "en": "Track informal debts carefully. Paluwagan can be a savings tool.",
+        "taglish": "I-track mo utang mo, beh. Paluwagan pwede ring pang-ipon."
+      }
+    },
+    {
+      "id": "libre_culture",
+      "name": "Libre Culture",
+      "description": "Treating others, pasalubong, handaan",
+      "risk": "medium",
+      "detection": {
+        "condition": "dining_amount > average * 3 AND date NEAR (birthday, holiday, payday)",
+        "triggers": ["large_food_transactions", "multiple_items_same_receipt", "celebration_dates"]
+      },
+      "signs": [
+        "Large food/dining transactions",
+        "Multiple items same receipt",
+        "Transactions during celebrations",
+        "Libre or treat patterns"
+      ],
+      "advice": {
+        "en": "It's okay to treat others, but budget for it",
+        "taglish": "Okay lang mag-libre, pero budget din!"
+      }
+    },
+    {
+      "id": "ber_months",
+      "name": "Ber Months Spending",
+      "description": "Increased spending Sep-Dec",
+      "risk": "high",
+      "detection": {
+        "condition": "month IN (9, 10, 11, 12) AND spending > yearly_average * 1.3",
+        "triggers": ["shopping_spike_september", "christmas_decor", "gift_buying", "party_expenses"]
+      },
+      "signs": [
+        "Shopping spike starting September",
+        "Christmas decor purchases",
+        "Gift buying increases",
+        "Party/celebration expenses"
+      ],
+      "advice": {
+        "en": "Ber months are here! Budget for Christmas now.",
+        "taglish": "Ber months na! Mag-budget para sa Pasko!"
+      }
+    },
+    {
+      "id": "remittance_pattern",
+      "name": "Remittance Day Pattern",
+      "description": "OFW families - spending after padala arrives",
+      "risk": "medium",
+      "detection": {
+        "condition": "large_deposit detected AND spending_spike within 3 days",
+        "triggers": ["large_deposits_mid_month", "western_union_remitly_wise", "spending_after_deposit"]
+      },
+      "signs": [
+        "Large deposits mid-month or month-end",
+        "Spending spike 1-2 days after deposit",
+        "Regular international transfers in",
+        "Western Union, Remitly, Wise transactions"
+      ],
+      "advice": {
+        "en": "Budget the remittance before spending",
+        "taglish": "I-budget muna ang padala bago gastusin, beh!"
+      }
+    },
+    {
+      "id": "fiesta_spending",
+      "name": "Fiesta Spending",
+      "description": "Large expenses during local fiestas",
+      "risk": "medium",
+      "detection": {
+        "condition": "date NEAR known_fiesta_date AND (food + travel) spending > average * 2",
+        "triggers": ["food_spike", "travel_to_province", "donations", "party_supplies"]
+      },
+      "signs": [
+        "Food purchases spike",
+        "Travel expenses to province",
+        "Donations/contributions",
+        "Party supplies"
+      ],
+      "advice": {
+        "en": "Budget for fiesta expenses in advance",
+        "taglish": "Mag-budget para sa fiesta, beh!"
+      }
+    },
+    {
+      "id": "petsa_de_peligro",
+      "name": "Petsa de Peligro",
+      "description": "Low funds before payday",
+      "risk": "high",
+      "detection": {
+        "condition": "days_to_payday < 5 AND daily_spending < average * 0.3",
+        "triggers": ["very_small_transactions", "odd_atm_withdrawals", "no_spending_before_payday"]
+      },
+      "signs": [
+        "Very small transactions",
+        "ATM withdrawals of odd amounts (last money)",
+        "Declined transactions",
+        "No spending 3-5 days before payday"
+      ],
+      "advice": {
+        "en": "Build an emergency fund for these days",
+        "taglish": "Konting tiis na lang, malapit na sweldo!"
+      }
+    },
+    {
+      "id": "installment_addiction",
+      "name": "Installment Addiction",
+      "description": "Multiple active installments",
+      "risk": "high",
+      "detection": {
+        "condition": "active_installments > 3",
+        "triggers": ["multiple_sip_plans", "new_installment_while_ongoing", "small_item_installments"]
+      },
+      "signs": [
+        "3+ active SIP/installment plans",
+        "New installment while others ongoing",
+        "Installment for small items",
+        "0% interest attraction"
+      ],
+      "advice": {
+        "en": "Finish current installments before adding new ones",
+        "taglish": "Dami mo na hulugan, beh. Tapusin muna bago mag-add!"
+      }
+    },
+    {
+      "id": "sale_hunting",
+      "name": "Sale Hunting",
+      "description": "Buying during sales even if not needed",
+      "risk": "medium",
+      "detection": {
+        "condition": "transaction_date IN (sale_dates) AND category NOT IN (essentials)",
+        "triggers": ["11_11_purchases", "12_12_purchases", "bulk_unnecessary"]
+      },
+      "signs": [
+        "Purchases on 11.11, 12.12, etc.",
+        "Sale merchants frequent",
+        "Bulk unnecessary purchases",
+        "Baka kailanganin buying"
+      ],
+      "advice": {
+        "en": "Even on sale, if you don't need it, it's still an expense",
+        "taglish": "Sale man yan, kung di naman kailangan, gastos pa rin!"
+      }
+    }
+  ],
+  "positivePatterns": [
+    {
+      "id": "ipon_habit",
+      "name": "Ipon Habit",
+      "description": "Regular savings behavior",
+      "indicators": ["regular_transfers_to_savings", "alkansya_deposits", "investment_contributions", "emergency_fund_building"]
+    },
+    {
+      "id": "tipid_lifestyle",
+      "name": "Tipid Lifestyle",
+      "description": "Frugal spending habits",
+      "indicators": ["consistent_low_spending", "bulk_buying", "home_cooking_vs_dining", "generic_vs_branded"]
+    },
+    {
+      "id": "suki_benefits",
+      "name": "Suki Benefits",
+      "description": "Loyalty-based savings",
+      "indicators": ["loyalty_to_merchants", "tawad_discounts", "relationship_based_savings"]
+    }
+  ],
+  "riskScoring": [
+    {"pattern": "sweldo_syndrome", "risk": "medium", "action": "budget_reminder"},
+    {"pattern": "tingi_culture", "risk": "low", "action": "bulk_buying_tip"},
+    {"pattern": "utang_culture", "risk": "high", "action": "debt_tracking"},
+    {"pattern": "libre_culture", "risk": "medium", "action": "celebration_budget"},
+    {"pattern": "ber_months", "risk": "high", "action": "christmas_fund"},
+    {"pattern": "petsa_de_peligro", "risk": "high", "action": "emergency_fund"},
+    {"pattern": "installment_addiction", "risk": "high", "action": "consolidation_advice"},
+    {"pattern": "sale_hunting", "risk": "medium", "action": "needs_vs_wants"}
+  ]
+}

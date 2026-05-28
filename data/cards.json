@@ -1,0 +1,88 @@
+{
+  "cards": [
+    {"bank": "BDO", "name": "BDO Gold", "type": "credit", "tier": "gold", "focus": "installments", "rewards": "0% SIP, flexible terms", "categories": ["general"]},
+    {"bank": "BDO", "name": "BDO Platinum", "type": "credit", "tier": "platinum", "focus": "premium", "rewards": "Higher limits, lounge access", "categories": ["travel", "general"]},
+    {"bank": "BDO", "name": "BDO ShopMore", "type": "credit", "tier": "gold", "focus": "shopping", "rewards": "SM/Shopee rebates", "categories": ["shopping"]},
+    {"bank": "BDO", "name": "BDO Titanium", "type": "credit", "tier": "titanium", "focus": "travel", "rewards": "Miles, travel insurance", "categories": ["travel"]},
+    {"bank": "BPI", "name": "BPI Amore", "type": "credit", "tier": "gold", "focus": "groceries", "rewards": "5% cashback groceries", "cashback": {"groceries": 5, "dining": 2, "other": 1}, "categories": ["groceries", "dining"]},
+    {"bank": "BPI", "name": "BPI Gold", "type": "credit", "tier": "gold", "focus": "general", "rewards": "Points on all spend", "categories": ["general"]},
+    {"bank": "BPI", "name": "BPI Platinum", "type": "credit", "tier": "platinum", "focus": "premium", "rewards": "Higher rewards, perks", "categories": ["general", "travel"]},
+    {"bank": "BPI", "name": "BPI Blue", "type": "credit", "tier": "classic", "focus": "entry", "rewards": "Basic rewards", "categories": ["general"]},
+    {"bank": "BPI", "name": "BPI Edge", "type": "credit", "tier": "gold", "focus": "lifestyle", "rewards": "Lifestyle rewards", "categories": ["dining", "shopping"]},
+    {"bank": "Metrobank", "name": "M Liter", "type": "credit", "tier": "gold", "focus": "fuel", "rewards": "5% fuel cashback", "cashback": {"fuel": 5, "transport": 2, "other": 1}, "categories": ["fuel", "transport"]},
+    {"bank": "Metrobank", "name": "M Free", "type": "credit", "tier": "classic", "focus": "no-fee", "rewards": "No annual fee, basic rewards", "categories": ["general"]},
+    {"bank": "Metrobank", "name": "Metrobank Platinum", "type": "credit", "tier": "platinum", "focus": "premium", "rewards": "Travel, dining perks", "categories": ["travel", "dining"]},
+    {"bank": "Metrobank", "name": "Metrobank World", "type": "credit", "tier": "world", "focus": "ultra-premium", "rewards": "Concierge, lounge access", "categories": ["travel", "lifestyle"]},
+    {"bank": "Metrobank", "name": "Toyota Mastercard", "type": "credit", "tier": "gold", "focus": "auto", "rewards": "Toyota rewards", "categories": ["auto"]},
+    {"bank": "Security Bank", "name": "Complete Cashback", "type": "credit", "tier": "gold", "focus": "cashback", "rewards": "Up to 6% cashback", "cashback": {"dining": 6, "shopping": 3, "other": 1}, "categories": ["dining", "shopping"]},
+    {"bank": "Security Bank", "name": "Security Bank Platinum", "type": "credit", "tier": "platinum", "focus": "travel", "rewards": "Miles, travel perks", "categories": ["travel"]},
+    {"bank": "Security Bank", "name": "Security Bank Gold", "type": "credit", "tier": "gold", "focus": "general", "rewards": "Points rewards", "categories": ["general"]},
+    {"bank": "Security Bank", "name": "Security Bank Classic", "type": "credit", "tier": "classic", "focus": "entry", "rewards": "Basic rewards", "categories": ["general"]},
+    {"bank": "UnionBank", "name": "UnionBank Platinum", "type": "credit", "tier": "platinum", "focus": "online", "rewards": "3-5% online cashback", "cashback": {"online": 5, "dining": 2, "other": 1}, "categories": ["online", "ecommerce"]},
+    {"bank": "UnionBank", "name": "UnionBank Gold", "type": "credit", "tier": "gold", "focus": "general", "rewards": "Points rewards", "categories": ["general"]},
+    {"bank": "UnionBank", "name": "UnionBank Classic", "type": "credit", "tier": "classic", "focus": "entry", "rewards": "Basic rewards", "categories": ["general"]},
+    {"bank": "UnionBank", "name": "Miles+", "type": "credit", "tier": "platinum", "focus": "travel", "rewards": "Airline miles", "categories": ["travel"]},
+    {"bank": "UnionBank", "name": "Lazada Card", "type": "credit", "tier": "gold", "focus": "ecommerce", "rewards": "Lazada rebates", "categories": ["online", "ecommerce"]},
+    {"bank": "RCBC", "name": "Flex Visa", "type": "credit", "tier": "gold", "focus": "flexible", "rewards": "Choose reward type", "categories": ["general"]},
+    {"bank": "RCBC", "name": "Hexagon", "type": "credit", "tier": "platinum", "focus": "wealth", "rewards": "Wealth perks", "categories": ["premium"]},
+    {"bank": "RCBC", "name": "RCBC Gold", "type": "credit", "tier": "gold", "focus": "general", "rewards": "Points rewards", "categories": ["general"]},
+    {"bank": "RCBC", "name": "JCB Platinum", "type": "credit", "tier": "platinum", "focus": "japan", "rewards": "JCB perks, Japan travel", "categories": ["travel"]},
+    {"bank": "EastWest", "name": "EastWest Platinum", "type": "credit", "tier": "platinum", "focus": "premium", "rewards": "Higher rewards", "categories": ["general"]},
+    {"bank": "EastWest", "name": "EastWest Gold", "type": "credit", "tier": "gold", "focus": "general", "rewards": "Points rewards", "categories": ["general"]},
+    {"bank": "EastWest", "name": "Komo Card", "type": "debit", "tier": "digital", "focus": "digital", "rewards": "E-wallet integration", "categories": ["digital"]},
+    {"bank": "PNB", "name": "Visa Signature", "type": "credit", "tier": "signature", "focus": "premium", "rewards": "Travel, dining perks", "categories": ["travel", "dining"]},
+    {"bank": "PNB", "name": "PNB Platinum", "type": "credit", "tier": "platinum", "focus": "general", "rewards": "Points rewards", "categories": ["general"]},
+    {"bank": "PNB", "name": "Ze-Lo", "type": "credit", "tier": "classic", "focus": "low-interest", "rewards": "Lower interest rates", "categories": ["general"]},
+    {"bank": "Chinabank", "name": "Chinabank Platinum", "type": "credit", "tier": "platinum", "focus": "premium", "rewards": "Higher rewards", "categories": ["general"]},
+    {"bank": "Chinabank", "name": "Chinabank Gold", "type": "credit", "tier": "gold", "focus": "general", "rewards": "Points rewards", "categories": ["general"]},
+    {"bank": "AUB", "name": "AUB Platinum", "type": "credit", "tier": "platinum", "focus": "premium", "rewards": "Higher rewards", "categories": ["general"]},
+    {"bank": "AUB", "name": "Easy Mastercard", "type": "credit", "tier": "classic", "focus": "easy-approval", "rewards": "Basic rewards", "categories": ["general"]},
+    {"bank": "Robinsons Bank", "name": "Robinsons Rewards", "type": "credit", "tier": "gold", "focus": "robinsons", "rewards": "Mall rewards, points", "categories": ["shopping"]},
+    {"bank": "HSBC", "name": "Gold Cashback", "type": "credit", "tier": "gold", "focus": "dining", "rewards": "5-10% dining cashback", "cashback": {"dining": 10, "groceries": 3, "other": 1}, "categories": ["dining"]},
+    {"bank": "HSBC", "name": "HSBC Platinum", "type": "credit", "tier": "platinum", "focus": "premium", "rewards": "Travel, lifestyle perks", "categories": ["travel", "lifestyle"]},
+    {"bank": "HSBC", "name": "Red Mastercard", "type": "credit", "tier": "classic", "focus": "entry", "rewards": "Basic cashback", "categories": ["general"]},
+    {"bank": "Citibank", "name": "Citi Rewards", "type": "credit", "tier": "gold", "focus": "flexible", "rewards": "Convertible points", "categories": ["general"]},
+    {"bank": "Citibank", "name": "Citi Cashback", "type": "credit", "tier": "gold", "focus": "cashback", "rewards": "% back on spend", "categories": ["general"]},
+    {"bank": "Citibank", "name": "PremierMiles", "type": "credit", "tier": "platinum", "focus": "travel", "rewards": "Airline miles", "categories": ["travel"]}
+  ],
+  "ewallets": [
+    {"name": "GCash", "operator": "Globe Fintech", "services": ["send", "pay", "bills", "invest", "borrow"], "features": {"card": "GCash Mastercard", "savings": "GSave", "invest": "GInvest", "credit": "GCredit"}},
+    {"name": "Maya", "operator": "Maya Philippines", "services": ["send", "pay", "bills", "save", "invest"], "features": {"card": "Maya Card", "savings": "Maya Savings", "invest": "Maya Invest", "credit": "Maya Credit"}},
+    {"name": "ShopeePay", "operator": "Shopee", "services": ["shopee payments", "bills"], "features": {"cashback": "Shopee coins"}},
+    {"name": "GrabPay", "operator": "Grab", "services": ["grab services", "merchants"], "features": {"cashback": "GrabRewards points"}},
+    {"name": "Coins.ph", "operator": "Coins.ph", "services": ["send", "pay", "bills", "crypto"], "features": {"crypto": true}}
+  ],
+  "digitalBanks": [
+    {"name": "Tonik", "type": "digital-only", "features": {"savings": "Up to 5% p.a.", "stash": "Goal-based savings", "loans": true, "card": "Tonik Debit Card"}},
+    {"name": "CIMB", "type": "digital", "features": {"savings": "Competitive rates", "integration": "GCash GSave", "card": "CIMB Debit Card"}},
+    {"name": "GoTyme", "type": "digital", "features": {"savings": "Competitive rates", "card": "GoTyme Debit Card", "branches": "In-mall kiosks"}},
+    {"name": "UnionDigital", "type": "digital", "features": {"savings": "Competitive rates", "card": "UnionDigital Debit"}},
+    {"name": "Seabank", "type": "digital", "features": {"savings": "High interest rates", "integration": "Shopee, ShopeePay"}},
+    {"name": "Komo", "type": "digital", "parent": "EastWest", "features": {"savings": "Competitive rates", "card": "Komo Visa Debit"}},
+    {"name": "OwnBank", "type": "digital", "features": {"savings": "Competitive rates", "card": "OwnBank Debit"}}
+  ],
+  "categoryBestCards": {
+    "dining": [
+      {"card": "HSBC Gold Cashback", "reward": "5-10% cashback"},
+      {"card": "Security Bank Complete", "reward": "Up to 6% cashback"},
+      {"card": "BPI Amore", "reward": "2% cashback"}
+    ],
+    "groceries": [
+      {"card": "BPI Amore", "reward": "5% cashback"},
+      {"card": "BDO ShopMore", "reward": "SM rebates"},
+      {"card": "Robinsons Rewards", "reward": "Robinsons points"}
+    ],
+    "online": [
+      {"card": "UnionBank Platinum", "reward": "3-5% cashback"},
+      {"card": "Lazada Card", "reward": "Lazada rebates"}
+    ],
+    "fuel": [
+      {"card": "Metrobank M Liter", "reward": "5% fuel cashback"}
+    ],
+    "travel": [
+      {"card": "Security Bank Platinum", "reward": "Miles"},
+      {"card": "BDO Titanium", "reward": "Travel insurance"},
+      {"card": "UnionBank Miles+", "reward": "Airline miles"}
+    ]
+  }
+}

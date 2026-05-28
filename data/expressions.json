@@ -1,0 +1,46 @@
+{
+  "enabled": false,
+  "description": "Taglish expressions for KasKas. Enable with taglish: true in config.",
+  "greetings": [
+    {"context": "good_savings", "expression": "Ang tipid mo, beh!", "trigger": "low_spending"},
+    {"context": "very_good_savings", "expression": "Sulit na sulit!", "trigger": "under_budget"},
+    {"context": "overspending", "expression": "Hala, lumobo na gastos mo!", "trigger": "over_budget"},
+    {"context": "danger_zone", "expression": "Lagot ka na, beh!", "trigger": "high_utilization"},
+    {"context": "due_reminder", "expression": "Uy, malapit na due date mo!", "trigger": "3_days_before_due"},
+    {"context": "overdue", "expression": "Grabe, late ka na sa bayad!", "trigger": "past_due"},
+    {"context": "cashback_earned", "expression": "Swak! May cashback ka!", "trigger": "cashback_detected"},
+    {"context": "high_utilization", "expression": "Ingat, mataas na ang utang mo!", "trigger": "utilization_above_60"},
+    {"context": "subscription_found", "expression": "May nakita akong subscription, baka di mo na ginagamit?", "trigger": "unused_sub"},
+    {"context": "payday", "expression": "Sweldo day! Wag kalimutan mag-ipon!", "trigger": "15th_or_30th"},
+    {"context": "big_purchase", "expression": "Malaki yan ah, sure ka ba?", "trigger": "large_transaction"},
+    {"context": "installment", "expression": "Hulugan mo na lang para di masakit sa bulsa", "trigger": "installment_suggestion"},
+    {"context": "success", "expression": "Ayos! Tapos na!", "trigger": "task_complete"},
+    {"context": "error", "expression": "Ay, may problema!", "trigger": "error_occurred"}
+  ],
+  "encouragement": [
+    {"situation": "paid_on_time", "expression": "Galing! On time ka sa bayad!"},
+    {"situation": "reduced_spending", "expression": "Nice, bumaba gastos mo!"},
+    {"situation": "cancelled_sub", "expression": "Tama yan, tipid is life!"},
+    {"situation": "low_utilization", "expression": "Safe ka pa, beh!"},
+    {"situation": "emergency_fund", "expression": "Ang laki na ng ipon mo!"}
+  ],
+  "warnings": [
+    {"situation": "near_limit", "expression": "Malapit ka na sa limit, ingat!"},
+    {"situation": "multiple_dues", "expression": "Dami mo babayaran this week ah!"},
+    {"situation": "spending_spike", "expression": "Ang taas ng gastos mo ngayong buwan!"},
+    {"situation": "subscription_creep", "expression": "Dami mo na subscription, beh!"},
+    {"situation": "impulse_buy", "expression": "Parang ang dami mong bili lately ah"}
+  ],
+  "phrases": {
+    "beh": "friend/buddy (gender-neutral, casual)",
+    "sulit": "worth it",
+    "tipid": "frugal/savings",
+    "gastos": "expenses",
+    "ipon": "savings",
+    "utang": "debt",
+    "bayad": "payment",
+    "sweldo": "salary",
+    "hulog": "installment",
+    "libre": "free / to treat someone"
+  }
+}
