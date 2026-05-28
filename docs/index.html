@@ -333,6 +333,18 @@
       border: 1px solid var(--border);
       border-radius: 0.75rem;
       background: var(--bg2);
+      transition: all 0.2s;
+    }
+
+    .why-card:hover {
+      border-color: var(--green-dark);
+      background: var(--bg3);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.05);
+      transform: translateY(-2px);
+    }
+
+    a.why-card:hover .why-title {
+      color: var(--green);
     }
 
     .why-icon {
@@ -552,8 +564,10 @@
     <a href="#" class="nav-logo">KASKAS</a>
     <ul class="nav-links">
       <li><a href="#install">Install</a></li>
-      <li><a href="#commands">Commands</a></li>
-      <li><a href="#security">Security</a></li>
+      <li><a href="./user-guide">User Guide</a></li>
+      <li><a href="./commands">Commands</a></li>
+      <li><a href="./security">Security</a></li>
+      <li><a href="./faq">FAQ</a></li>
       <li><a href="https://github.com/rjramirez/kaskas">GitHub</a></li>
     </ul>
   </nav>
@@ -769,6 +783,38 @@
         </a>
       </div>
 
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- Documentation -->
+  <section id="docs">
+    <p class="section-label">// documentation</p>
+    <h2>Learn <span class="accent">more.</span></h2>
+    <p class="section-desc">Everything you need to get started and master kaskas.</p>
+
+    <div class="why-grid">
+      <a href="./user-guide" class="why-card" style="text-decoration: none; transition: all 0.2s;">
+        <span class="why-icon">[GUIDE]</span>
+        <div class="why-title">User Guide</div>
+        <div class="why-desc">Complete guide with examples, workflows, and real-world scenarios.</div>
+      </a>
+      <a href="./commands" class="why-card" style="text-decoration: none; transition: all 0.2s;">
+        <span class="why-icon">[CMD]</span>
+        <div class="why-title">Command Reference</div>
+        <div class="why-desc">All 15 slash commands with detailed usage and examples.</div>
+      </a>
+      <a href="./security" class="why-card" style="text-decoration: none; transition: all 0.2s;">
+        <span class="why-icon">[LOCK]</span>
+        <div class="why-title">Security & Privacy</div>
+        <div class="why-desc">How your data is protected and what kaskas stores.</div>
+      </a>
+      <a href="./faq" class="why-card" style="text-decoration: none; transition: all 0.2s;">
+        <span class="why-icon">[FAQ]</span>
+        <div class="why-title">FAQ</div>
+        <div class="why-desc">Frequently asked questions and troubleshooting tips.</div>
+      </a>
     </div>
   </section>
 
