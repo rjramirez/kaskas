@@ -1,0 +1,65 @@
+# BDO Credit Card Statement
+# Account: **** **** **** 1234
+# Statement Period: January 1-31, 2024
+# Credit Limit: PHP 150,000.00
+# Available Credit: PHP 98,456.00
+# Minimum Payment Due: PHP 2,500.00
+# Payment Due Date: February 15, 2024
+
+## Transaction Details
+
+| Date       | Description                          | Amount (PHP) |
+|------------|--------------------------------------|--------------|
+| 2024-01-02 | NETFLIX.COM 866-579-7172             | 499.00       |
+| 2024-01-03 | JOLLIBEE SM NORTH EDSA               | 523.50       |
+| 2024-01-05 | SHOPEE PAY *GADGETS                  | 2,499.00     |
+| 2024-01-07 | GRAB *RIDE A1B2C3                    | 187.00       |
+| 2024-01-08 | GRAB *RIDE D4E5F6                    | 245.00       |
+| 2024-01-10 | MERALCO ONLINE PAYMENT               | 4,523.00     |
+| 2024-01-10 | MAYNILAD ONLINE                      | 856.00       |
+| 2024-01-12 | SPOTIFY P1234567890                  | 194.00       |
+| 2024-01-13 | MCDONALD'S DELIVERY                  | 456.00       |
+| 2024-01-14 | LAZADA *ELECTRONICS                  | 5,999.00     |
+| 2024-01-15 | PETRON EDSA BALINTAWAK               | 2,500.00     |
+| 2024-01-16 | SM SUPERMARKET MEGAMALL              | 3,245.00     |
+| 2024-01-17 | UNIQLO SM MEGAMALL                   | 1,999.00     |
+| 2024-01-18 | GRAB *FOOD G7H8I9                    | 389.00       |
+| 2024-01-19 | STARBUCKS BGCORP                     | 345.00       |
+| 2024-01-20 | GLOBE POSTPAID                       | 1,299.00     |
+| 2024-01-21 | CONVERGE ICT BILL                    | 1,500.00     |
+| 2024-01-22 | PUREGOLD COMMONWEALTH                | 2,876.00     |
+| 2024-01-23 | GRAB *RIDE J0K1L2                    | 156.00       |
+| 2024-01-24 | AMAZON PRIME *MEMBERSHIP             | 149.00       |
+| 2024-01-25 | KENNY ROGERS SM FAIRVIEW             | 567.00       |
+| 2024-01-26 | WATSONS PERSONAL CARE                | 789.00       |
+| 2024-01-27 | TIMEZONE SM NORTH                    | 500.00       |
+| 2024-01-28 | ANGKAS *RIDE M3N4O5                  | 120.00       |
+| 2024-01-29 | YELLOW CAB DELIVERY                  | 699.00       |
+| 2024-01-30 | SMART POSTPAID                       | 999.00       |
+| 2024-01-31 | BDO INSTALLMENT 3/12 IPHONE          | 4,999.00     |
+
+## Summary
+
+| Category      | Amount (PHP) | % of Total |
+|---------------|--------------|------------|
+| Food & Dining | 2,979.50     | 7.2%       |
+| Shopping      | 10,497.00    | 25.4%      |
+| Transport     | 708.00       | 1.7%       |
+| Ride Hailing  | 1,097.00     | 2.7%       |
+| Utilities     | 8,178.00     | 19.8%      |
+| Subscriptions | 842.00       | 2.0%       |
+| Groceries     | 6,121.00     | 14.8%      |
+| Fuel          | 2,500.00     | 6.1%       |
+| Entertainment | 500.00       | 1.2%       |
+| Installment   | 4,999.00     | 12.1%      |
+| Other         | 2,788.00     | 6.8%       |
+|---------------|--------------|------------|
+| **TOTAL**     | **41,209.50**| **100%**   |
+
+## Previous Balance: PHP 10,334.50
+## Payments Received: PHP 10,334.50 (Thank you!)
+## New Balance: PHP 41,209.50
+
+---
+Statement generated: February 1, 2024
+For inquiries: 02-8631-8000

@@ -29,7 +29,7 @@ function Warn([string]$msg) { Write-Host "  [!] $msg" -ForegroundColor Yellow }
 function Err([string]$msg) { 
   Write-Host "  ERROR: $msg" -ForegroundColor Red
   $null = Read-Host "  Press Enter to exit"
-  exit 1 
+  Stop-Process -Id $PID
 }
 
 # ── Banner ─────────────────────────────────────────────────────────────────────
@@ -185,13 +185,13 @@ function Test-KaskasInstalled {
     "2" { 
       Uninstall-Kaskas
       $null = Read-Host "  Press Enter to exit"
-      exit 0 
+      Stop-Process -Id $PID
     }
     default { 
       Write-Host "  Cancelled."
       Write-Host ""
       $null = Read-Host "  Press Enter to exit"
-      exit 0 
+      Stop-Process -Id $PID
     }
   }
 }
@@ -371,10 +371,11 @@ Show-Banner
 if ($Uninstall) {
   Uninstall-Kaskas
   $null = Read-Host "  Press Enter to exit"
-  exit 0
+  Stop-Process -Id $PID
 }
 
 Test-Node
 Test-KaskasInstalled
 Install-Kaskas
 $null = Read-Host "  Press Enter to exit"
+Stop-Process -Id $PID
