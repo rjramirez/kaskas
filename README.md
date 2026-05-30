@@ -62,16 +62,6 @@ Restart Claude Desktop and Claude Code.
 
 ---
 
-## Install location
-
-| Platform | Path |
-|----------|------|
-| Windows | `%APPDATA%\Claude\kaskas` |
-| macOS | `~/Library/Application Support/Claude/kaskas` |
-| Linux | `~/.config/Claude/kaskas` |
-
----
-
 ## Security
 
 **What kaskas stores:**
