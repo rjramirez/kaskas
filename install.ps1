@@ -1,5 +1,6 @@
 # kaskas -- optimized installer for Windows
 # Fast, safe, clean installation and uninstall
+# Supports both regular Claude Desktop and Windows Store (MSIX) version
 
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
@@ -11,6 +12,17 @@ $SkillDir = Join-Path $env:APPDATA "Claude\kaskas"
 $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
 $CodeSettings = Join-Path $env:USERPROFILE ".claude\settings.json"
 $LogFile = Join-Path $SkillDir "install.log"
+
+# ── Windows Store (MSIX) detection ─────────────────────────────────────────────
+# Windows Store apps use sandboxed paths under LocalAppData\Packages
+$StorePackagePath = $null
+$StoreConfig = $null
+$ClaudePackages = Get-ChildItem "$env:LOCALAPPDATA\Packages" -Filter "*Claude*" -ErrorAction SilentlyContinue
+if ($ClaudePackages) {
+  $StorePackagePath = $ClaudePackages[0].FullName
+  # Windows Store Claude uses Claude-3p subfolder for config
+  $StoreConfig = Join-Path $StorePackagePath "LocalCache\Roaming\Claude-3p\claude_desktop_config.json"
+}
 
 # ── Parse args ─────────────────────────────────────────────────────────────────
 $Force = $args -contains "-Force" -or $args -contains "--force"
@@ -41,6 +53,10 @@ function Show-Banner {
   Write-Host "  |  Local-only | No external API calls | Your data stays    |" -ForegroundColor Cyan
   Write-Host "  +-----------------------------------------------------------+" -ForegroundColor Cyan
   Write-Host ""
+  if ($StorePackagePath) {
+    Write-Host "  Detected: Windows Store (MSIX) version" -ForegroundColor Yellow
+    Write-Host ""
+  }
 }
 
 # ── Update config (JSON) ──────────────────────────────────────────────────────
@@ -55,6 +71,11 @@ function Write-JsonFile([string]$path, [object]$obj) {
 function Update-Config([string]$config, [string]$action) {
   if (-not (Test-Path $config)) {
     if ($action -eq "add-desktop") {
+      # Ensure parent directory exists
+      $parentDir = Split-Path $config -Parent
+      if (-not (Test-Path $parentDir)) {
+        New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
+      }
       [System.IO.File]::WriteAllText($config, '{}', $UTF8NoBOM)
     } else { return $false }
   }
@@ -112,9 +133,14 @@ function Uninstall-Kaskas {
     Log "Backup: $DesktopConfig.bak"
   }
 
-  # Remove from configs
+  # Remove from configs (both regular and Store)
   if (Update-Config $DesktopConfig "remove-desktop") { Info "Removed from claude_desktop_config.json" }
   else { Warn "Could not update desktop config" }
+
+  # Also remove from Windows Store config if present
+  if ($StoreConfig -and (Test-Path $StoreConfig)) {
+    if (Update-Config $StoreConfig "remove-desktop") { Info "Removed from Windows Store config" }
+  }
 
   if (Update-Config $CodeSettings "remove-code") { Info "Removed from settings.json" }
 
@@ -160,11 +186,17 @@ function Test-KaskasInstalled {
   if (-not (Test-Path "$SkillDir\mcp-server.js")) { return }
 
   $Wired = $false
-  if (Test-Path $DesktopConfig) {
-    try {
-      $cfg = Get-Content $DesktopConfig -Raw | ConvertFrom-Json
-      $Wired = $null -ne $cfg.mcpServers -and $null -ne $cfg.mcpServers.kaskas
-    } catch {}
+  # Check both regular and Store configs
+  foreach ($cfg in @($DesktopConfig, $StoreConfig)) {
+    if ($cfg -and (Test-Path $cfg)) {
+      try {
+        $cfgData = Get-Content $cfg -Raw | ConvertFrom-Json
+        if ($null -ne $cfgData.mcpServers -and $null -ne $cfgData.mcpServers.kaskas) {
+          $Wired = $true
+          break
+        }
+      } catch {}
+    }
   }
 
   if (-not $Wired) { return }
@@ -334,23 +366,49 @@ function Install-Kaskas {
     Move-Item $TempDir $SkillDir -Force
     Info "Installed"
 
-    # Wire Claude Desktop
+    # Wire Claude Desktop (regular version)
+    $configuredRegular = $false
     try {
       $ConfigParent = Split-Path $DesktopConfig -Parent
-      if (Test-Path $ConfigParent) {
-        if (-not (Test-Path $DesktopConfig)) {
-          [System.IO.File]::WriteAllText($DesktopConfig, '{}', $UTF8NoBOM)
-        }
-        Copy-Item $DesktopConfig "$DesktopConfig.bak" -Force
+      if (-not (Test-Path $ConfigParent)) {
+        New-Item -ItemType Directory -Path $ConfigParent -Force | Out-Null
+      }
+      if (-not (Test-Path $DesktopConfig)) {
+        [System.IO.File]::WriteAllText($DesktopConfig, '{}', $UTF8NoBOM)
+      }
+      Copy-Item $DesktopConfig "$DesktopConfig.bak" -Force
 
-        if (Update-Config $DesktopConfig "add-desktop") {
-          Info "Configured"
-        } else {
-          Err "Could not wire config"
-        }
+      if (Update-Config $DesktopConfig "add-desktop") {
+        Info "Configured (regular)"
+        $configuredRegular = $true
       }
     } catch {
-      Warn "Could not wire Claude Desktop config (non-critical)"
+      Warn "Could not wire regular Claude Desktop config"
+    }
+
+    # Wire Claude Desktop (Windows Store version)
+    $configuredStore = $false
+    if ($StoreConfig) {
+      try {
+        $StoreConfigParent = Split-Path $StoreConfig -Parent
+        if (-not (Test-Path $StoreConfigParent)) {
+          New-Item -ItemType Directory -Path $StoreConfigParent -Force | Out-Null
+        }
+        if (-not (Test-Path $StoreConfig)) {
+          [System.IO.File]::WriteAllText($StoreConfig, '{}', $UTF8NoBOM)
+        }
+        
+        if (Update-Config $StoreConfig "add-desktop") {
+          Info "Configured (Windows Store)"
+          $configuredStore = $true
+        }
+      } catch {
+        Warn "Could not wire Windows Store Claude config"
+      }
+    }
+
+    if (-not $configuredRegular -and -not $configuredStore) {
+      Err "Could not wire any Claude Desktop config"
     }
 
     # Health check
@@ -364,9 +422,15 @@ function Install-Kaskas {
     Info "Installation complete!"
     Write-Host ""
     Write-Host "  Next steps:"
-    Write-Host "  1. Restart Claude Desktop"
-    Write-Host "  2. Try: /due, /insights, /review, /forecast"
+    Write-Host "  1. Restart Claude Desktop (close completely, then reopen)"
+    Write-Host "  2. Look for 'kaskas' in the MCP tools menu (hammer icon)"
+    Write-Host "  3. Try: /kaskas, /due, /review, /forecast"
     Write-Host ""
+    if ($StoreConfig) {
+      Write-Host "  Note: Windows Store version detected." -ForegroundColor Yellow
+      Write-Host "  Config path: $StoreConfig" -ForegroundColor Gray
+      Write-Host ""
+    }
   } finally {
     if (Test-Path $TempDir) { Remove-Item $TempDir -Recurse -Force -ErrorAction SilentlyContinue }
   }
