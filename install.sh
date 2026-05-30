@@ -175,10 +175,9 @@ FILES=(
   "transaction.schema.json:schemas"
 )
 
-# ── Download with retry (multiple sources) ────────────────────────────────────
+# ── Download file silently ─────────────────────────────────────────────────────
 download_file() {
   local file="$1" dest="$2"
-  # Try jsDelivr first (works for public repos), then GitHub API (works for private repos)
   local urls=(
     "$REPO_URL/$file"
     "https://api.github.com/repos/rjramirez/kaskas/contents/$file?ref=main"
@@ -187,36 +186,28 @@ download_file() {
   for url in "${urls[@]}"; do
     local retries=2 delay=1
     while [ $retries -gt 0 ]; do
-      echo "    Trying: $url" >&2
-
-      # If GitHub API, extract content and decode base64
       if [[ "$url" == *"api.github.com"* ]]; then
         if curl -fsSL "$url" 2>/dev/null | grep -q '"content"'; then
-          curl -fsSL "$url" 2>/dev/null | grep '"content"' | sed 's/.*"content": "\(.*\)".*/\1/' | base64 -d > "$dest" 2>/dev/null && {
-            echo "    ✓ Success: $file" >&2
-            return 0
-          }
+          curl -fsSL "$url" 2>/dev/null | grep '"content"' | sed 's/.*"content": "\(.*\)".*/\1/' | base64 -d > "$dest" 2>/dev/null && return 0
         fi
       else
-        # Standard download for jsDelivr
-        if curl -fsSL "$url" -o "$dest" 2>/dev/null; then
-          echo "    ✓ Success: $file" >&2
-          return 0
-        fi
+        curl -fsSL "$url" -o "$dest" 2>/dev/null && return 0
       fi
-
       retries=$((retries - 1))
-      if [ $retries -gt 0 ]; then
-        echo "    ✗ Failed, retrying... ($retries left)" >&2
-        sleep $delay
-        delay=$((delay * 2))
-      else
-        echo "    ✗ Failed: $url" >&2
-      fi
+      [ $retries -gt 0 ] && sleep $delay && delay=$((delay * 2))
     done
   done
-
   return 1
+}
+
+# ── Progress bar helper ────────────────────────────────────────────────────────
+show_progress() {
+  local percent=$1
+  local bar_width=30
+  local filled=$((bar_width * percent / 100))
+  local empty=$((bar_width - filled))
+  local bar=$(printf "%${filled}s" | tr ' ' '=')$(printf "%${empty}s" | tr ' ' '-')
+  printf "\r  Downloading: [%s] %d%%" "$bar" "$percent"
 }
 
 # ── Install ────────────────────────────────────────────────────────────────────
@@ -236,56 +227,83 @@ install() {
 
   # Download files
   FAILED=0
+  COUNT=0
+  TOTAL=${#FILES[@]}
   FAILED_FILES=()
+  
+  show_progress 0
+  
   for entry in "${FILES[@]}"; do
     IFS=: read -r file dir <<< "$entry"
     mkdir -p "$TEMP_DIR/$dir"
 
     FULL_PATH="$dir/$file"
     if download_file "$FULL_PATH" "$TEMP_DIR/$dir/$file"; then
-      echo -ne "\r  Downloaded: ${#FILES[@]} files"
+      COUNT=$((COUNT + 1))
     else
-      echo ""
-      warn "Failed to download $FULL_PATH (after 3 retries)"
       FAILED_FILES+=("$FULL_PATH")
       FAILED=$((FAILED + 1))
     fi
+    
+    PERCENT=$(( (COUNT + FAILED) * 100 / TOTAL ))
+    show_progress $PERCENT
   done
   echo ""
 
   if [ $FAILED -gt 0 ]; then
     echo ""
-    warn "Failed files:"
-    for f in "${FAILED_FILES[@]}"; do
-      echo "  - $f"
-    done
-    err "Failed to download $FAILED file(s). Check network and try again."
+    warn "Some files failed to download. Check network and try again."
+    err "Installation failed."
   fi
 
-  # Verify count
+  # Verify
   ACTUAL=$(find "$TEMP_DIR" -type f | wc -l)
-  [ $ACTUAL -ne ${#FILES[@]} ] && err "Incomplete download: $ACTUAL/${#FILES[@]} files"
-  info "Verified: $ACTUAL/${#FILES[@]} files"
+  [ $ACTUAL -ne ${#FILES[@]} ] && err "Incomplete download. Please try again."
+  info "Download complete"
 
   # Validate JSON
   for json in "$TEMP_DIR"/*.json "$TEMP_DIR"/schemas/*.json; do
     [ -f "$json" ] && ! node -e "JSON.parse(require('fs').readFileSync(process.env.F,'utf8'))" F="$json" 2>/dev/null && err "Invalid JSON: $(basename "$json")"
   done
-  info "Validated: JSON syntax OK"
+  info "Validated"
 
   # Move to final location
   rm -rf "$SKILL_DIR"
   mv "$TEMP_DIR" "$SKILL_DIR"
-  info "Installed: $SKILL_DIR"
+  info "Installed"
 
   # Wire Claude Desktop
   if [ -d "$CLAUDE_DIR" ]; then
     [ -f "$DESKTOP_CONFIG" ] && cp "$DESKTOP_CONFIG" "$DESKTOP_CONFIG.bak"
     [ -f "$DESKTOP_CONFIG" ] || echo '{}' > "$DESKTOP_CONFIG"
 
-    update_config "$DESKTOP_CONFIG" "add-desktop" && info "Wired: claude_desktop_config.json" || err "Could not wire config"
+    update_config "$DESKTOP_CONFIG" "add-desktop" && info "Configured" || err "Could not wire config"
   fi
 
   # Health check
   if timeout 2 node "$SKILL_DIR/mcp-server.js" <<< '{"jsonrpc":"2.0","id":1,"method":"initialize"}' 2>/dev/null | grep -q "kaskas"; then
-    inf
+    info "Ready"
+  else
+    warn "Health check failed (non-critical)"
+  fi
+
+  echo ""
+  info "Installation complete!"
+  echo ""
+  echo "  Next steps:"
+  echo "  1. Restart Claude Desktop"
+  echo "  2. Try: /due, /insights, /review, /forecast"
+  echo ""
+}
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+banner
+
+if [ "$UNINSTALL" = true ]; then
+  uninstall
+  exit 0
+fi
+
+check_node
+check_installed
+install
