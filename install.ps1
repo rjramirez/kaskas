@@ -215,7 +215,7 @@ $Files = @(
   @("patterns.json", "data"), @("expressions.json", "data"), @("terms.json", "data"), @("spending-patterns.json", "data")
 )
 
-# ── Download with retry (multiple sources) ────────────────────────────────────
+# ── Download file silently ────────────────────────────────────────────────────
 function Get-RemoteFile([string]$file, [string]$fullPath, [string]$dest) {
   $urls = @(
     "$RepoUrl/$fullPath",
@@ -228,8 +228,6 @@ function Get-RemoteFile([string]$file, [string]$fullPath, [string]$dest) {
     $success = $false
     while ($retries -gt 0 -and -not $success) {
       try {
-        Write-Host "    Trying: $url" -ForegroundColor DarkGray
-
         if ($url -like "*api.github.com*") {
           $response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
           $json = $response.Content | ConvertFrom-Json
@@ -237,30 +235,34 @@ function Get-RemoteFile([string]$file, [string]$fullPath, [string]$dest) {
             $base64 = $json.content -replace '\s', ''
             $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64))
             [System.IO.File]::WriteAllText($dest, $content, $UTF8NoBOM)
-            Write-Host "    [OK] $file" -ForegroundColor Green
             $success = $true
           } else {
             throw "No content in response"
           }
         } else {
           Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing -ErrorAction Stop
-          Write-Host "    [OK] $file" -ForegroundColor Green
           $success = $true
         }
       } catch {
         $retries--
         if ($retries -gt 0) {
-          Write-Host "    [!] Failed, retrying... ($retries left)" -ForegroundColor Yellow
           Start-Sleep -Milliseconds $delay
           $delay = $delay * 2
-        } else {
-          Write-Host "    [!] Failed: $url" -ForegroundColor Red
         }
       }
     }
     if ($success) { return $true }
   }
   return $false
+}
+
+# ── Progress bar helper ────────────────────────────────────────────────────────
+function Show-Progress([int]$percent) {
+  $barWidth = 30
+  $filled = [math]::Floor($barWidth * $percent / 100)
+  $empty = $barWidth - $filled
+  $bar = ("=" * $filled) + ("-" * $empty)
+  Write-Host -NoNewline "`r  Downloading: [$bar] $percent%"
 }
 
 # ── Install ────────────────────────────────────────────────────────────────────
@@ -283,7 +285,11 @@ function Install-Kaskas {
     # Download files
     $Failed = 0
     $Count = 0
+    $Total = $Files.Count
     $FailedFiles = @()
+    
+    Show-Progress 0
+    
     foreach ($entry in $Files) {
       $file, $dir = $entry
       $destDir = Join-Path $TempDir $dir
@@ -292,28 +298,26 @@ function Install-Kaskas {
       $fullPath = if ($dir -eq ".") { $file } else { "$dir/$file" }
       if (Get-RemoteFile $file $fullPath (Join-Path $destDir $file)) {
         $Count++
-        Write-Host -NoNewline "`r  Downloaded: $Count/$($Files.Count) files"
       } else {
-        Write-Host ""
-        Warn "Failed to download $fullPath (after 3 retries)"
         $FailedFiles += $fullPath
         $Failed++
       }
+      
+      $percent = [math]::Floor(($Count + $Failed) * 100 / $Total)
+      Show-Progress $percent
     }
     Write-Host ""
 
     if ($Failed -gt 0) {
       Write-Host ""
-      Warn "Failed files:"
-      foreach ($f in $FailedFiles) { Write-Host "  - $f" -ForegroundColor Yellow }
-      Err "Failed to download $Failed file(s). Check network and try again."
+      Warn "Some files failed to download. Check network and try again."
+      Err "Installation failed."
     }
 
-    # Verify count
-
+    # Verify
     $Actual = (Get-ChildItem $TempDir -Recurse -File | Measure-Object).Count
-    if ($Actual -ne $Files.Count) { Err "Incomplete download: $Actual/$($Files.Count) files" }
-    Info "Verified: $Actual/$($Files.Count) files"
+    if ($Actual -ne $Files.Count) { Err "Incomplete download. Please try again." }
+    Info "Download complete"
 
     # Validate JSON
     foreach ($json in Get-ChildItem $TempDir -Recurse -Filter "*.json") {
@@ -323,12 +327,12 @@ function Install-Kaskas {
         Err "Invalid JSON: $($json.Name)"
       }
     }
-    Info "Validated: JSON syntax OK"
+    Info "Validated"
 
     # Move to final location
     if (Test-Path $SkillDir) { Remove-Item $SkillDir -Recurse -Force }
     Move-Item $TempDir $SkillDir -Force
-    Info "Installed: $SkillDir"
+    Info "Installed"
 
     # Wire Claude Desktop
     try {
@@ -340,7 +344,7 @@ function Install-Kaskas {
         Copy-Item $DesktopConfig "$DesktopConfig.bak" -Force
 
         if (Update-Config $DesktopConfig "add-desktop") {
-          Info "Wired: claude_desktop_config.json"
+          Info "Configured"
         } else {
           Err "Could not wire config"
         }
@@ -351,7 +355,7 @@ function Install-Kaskas {
 
     # Health check
     if (Test-Path "$SkillDir/mcp-server.js") {
-      Info "Health check: OK"
+      Info "Ready"
     } else {
       Warn "Health check failed (non-critical)"
     }
