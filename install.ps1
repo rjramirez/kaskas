@@ -13,16 +13,25 @@ $DesktopConfig = Join-Path $env:APPDATA "Claude\claude_desktop_config.json"
 $CodeSettings = Join-Path $env:USERPROFILE ".claude\settings.json"
 $LogFile = Join-Path $SkillDir "install.log"
 
-# ── Windows Store (MSIX) detection ─────────────────────────────────────────────
-# Windows Store apps use sandboxed paths under LocalAppData\Packages
-$StorePackagePath = $null
-$StoreConfig = $null
+# ── Windows Store (MSIX) / Claude-3p detection ────────────────────────────────
+# Windows Store apps may use different config paths
+$StoreConfigs = @()
+
+# Path 1: Claude-3p in LocalAppData (primary for Windows Store)
+$Claude3pConfig = Join-Path $env:LOCALAPPDATA "Claude-3p\claude_desktop_config.json"
+if (Test-Path (Split-Path $Claude3pConfig -Parent)) {
+  $StoreConfigs += $Claude3pConfig
+}
+
+# Path 2: Sandboxed package path (fallback)
 $ClaudePackages = Get-ChildItem "$env:LOCALAPPDATA\Packages" -Filter "*Claude*" -ErrorAction SilentlyContinue
 if ($ClaudePackages) {
   $StorePackagePath = $ClaudePackages[0].FullName
-  # Windows Store Claude uses Claude-3p subfolder for config
-  $StoreConfig = Join-Path $StorePackagePath "LocalCache\Roaming\Claude-3p\claude_desktop_config.json"
+  $SandboxedConfig = Join-Path $StorePackagePath "LocalCache\Roaming\Claude-3p\claude_desktop_config.json"
+  $StoreConfigs += $SandboxedConfig
 }
+
+$IsStoreVersion = $StoreConfigs.Count -gt 0
 
 # ── Parse args ─────────────────────────────────────────────────────────────────
 $Force = $args -contains "-Force" -or $args -contains "--force"
@@ -53,8 +62,8 @@ function Show-Banner {
   Write-Host "  |  Local-only | No external API calls | Your data stays    |" -ForegroundColor Cyan
   Write-Host "  +-----------------------------------------------------------+" -ForegroundColor Cyan
   Write-Host ""
-  if ($StorePackagePath) {
-    Write-Host "  Detected: Windows Store (MSIX) version" -ForegroundColor Yellow
+  if ($IsStoreVersion) {
+    Write-Host "  Detected: Windows Store / Claude-3p version" -ForegroundColor Yellow
     Write-Host ""
   }
 }
@@ -137,9 +146,11 @@ function Uninstall-Kaskas {
   if (Update-Config $DesktopConfig "remove-desktop") { Info "Removed from claude_desktop_config.json" }
   else { Warn "Could not update desktop config" }
 
-  # Also remove from Windows Store config if present
-  if ($StoreConfig -and (Test-Path $StoreConfig)) {
-    if (Update-Config $StoreConfig "remove-desktop") { Info "Removed from Windows Store config" }
+  # Also remove from Windows Store / Claude-3p configs if present
+  foreach ($storeConfig in $StoreConfigs) {
+    if (Test-Path $storeConfig) {
+      if (Update-Config $storeConfig "remove-desktop") { Info "Removed from: $storeConfig" }
+    }
   }
 
   if (Update-Config $CodeSettings "remove-code") { Info "Removed from settings.json" }
@@ -186,8 +197,9 @@ function Test-KaskasInstalled {
   if (-not (Test-Path "$SkillDir\mcp-server.js")) { return }
 
   $Wired = $false
-  # Check both regular and Store configs
-  foreach ($cfg in @($DesktopConfig, $StoreConfig)) {
+  # Check all config locations (regular + Store configs)
+  $allConfigs = @($DesktopConfig) + $StoreConfigs
+  foreach ($cfg in $allConfigs) {
     if ($cfg -and (Test-Path $cfg)) {
       try {
         $cfgData = Get-Content $cfg -Raw | ConvertFrom-Json
@@ -386,24 +398,24 @@ function Install-Kaskas {
       Warn "Could not wire regular Claude Desktop config"
     }
 
-    # Wire Claude Desktop (Windows Store version)
+    # Wire Claude Desktop (Windows Store / Claude-3p versions)
     $configuredStore = $false
-    if ($StoreConfig) {
+    foreach ($storeConfig in $StoreConfigs) {
       try {
-        $StoreConfigParent = Split-Path $StoreConfig -Parent
+        $StoreConfigParent = Split-Path $storeConfig -Parent
         if (-not (Test-Path $StoreConfigParent)) {
           New-Item -ItemType Directory -Path $StoreConfigParent -Force | Out-Null
         }
-        if (-not (Test-Path $StoreConfig)) {
-          [System.IO.File]::WriteAllText($StoreConfig, '{}', $UTF8NoBOM)
+        if (-not (Test-Path $storeConfig)) {
+          [System.IO.File]::WriteAllText($storeConfig, '{}', $UTF8NoBOM)
         }
         
-        if (Update-Config $StoreConfig "add-desktop") {
-          Info "Configured (Windows Store)"
+        if (Update-Config $storeConfig "add-desktop") {
+          Info "Configured: $storeConfig"
           $configuredStore = $true
         }
       } catch {
-        Warn "Could not wire Windows Store Claude config"
+        Warn "Could not wire: $storeConfig"
       }
     }
 
@@ -426,9 +438,13 @@ function Install-Kaskas {
     Write-Host "  2. Look for 'kaskas' in the MCP tools menu (hammer icon)"
     Write-Host "  3. Try: /kaskas, /due, /review, /forecast"
     Write-Host ""
-    if ($StoreConfig) {
-      Write-Host "  Note: Windows Store version detected." -ForegroundColor Yellow
-      Write-Host "  Config path: $StoreConfig" -ForegroundColor Gray
+    if ($IsStoreVersion) {
+      Write-Host "  Note: Windows Store / Claude-3p version detected." -ForegroundColor Yellow
+      foreach ($sc in $StoreConfigs) {
+        if (Test-Path $sc) {
+          Write-Host "  Config: $sc" -ForegroundColor Gray
+        }
+      }
       Write-Host ""
     }
   } finally {
