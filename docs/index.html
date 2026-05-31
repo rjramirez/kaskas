@@ -316,6 +316,54 @@
       border-radius: 3px;
       margin-top: 0.5rem;
     }
+
+    /* ── Demo embed ── */
+    .demo-container {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background: var(--bg2);
+      box-shadow: 0 0 60px rgba(0, 255, 65, 0.08);
+    }
+
+    .demo-container iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      display: block;
+    }
+
+    .demo-fullscreen {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0, 255, 65, 0.1);
+      border: 1px solid var(--green-dark);
+      color: var(--green);
+      font-size: 0.75rem;
+      font-family: monospace;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.2s;
+      z-index: 10;
+    }
+
+    .demo-fullscreen:hover {
+      background: var(--green);
+      color: var(--bg);
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .demo-container iframe {
+        height: 450px;
+      }
+    }
     .badge-core    { background: rgba(0,200,83,0.1);  color: #00c853;  border: 1px solid #00c853; }
     .badge-ocr     { background: rgba(0,188,212,0.1); color: #00bcd4;  border: 1px solid #00bcd4; }
     .badge-memory  { background: rgba(156,39,176,0.1);color: #ce93d8;  border: 1px solid #9c27b0; }
@@ -564,10 +612,10 @@
     <a href="#" class="nav-logo">KASKAS</a>
     <ul class="nav-links">
       <li><a href="#install">Install</a></li>
+      <li><a href="#demo">Demo</a></li>
       <li><a href="./user-guide">User Guide</a></li>
       <li><a href="./commands">Commands</a></li>
       <li><a href="./security">Security</a></li>
-      <li><a href="./faq">FAQ</a></li>
       <li><a href="https://github.com/rjramirez/kaskas">GitHub</a></li>
     </ul>
   </nav>
@@ -599,6 +647,20 @@
 
     <p class="hero-note fade-in">Restart Claude Desktop after install &nbsp;&bull;&nbsp; Requires Node.js</p>
   </div>
+
+  <hr class="divider">
+
+  <!-- Demo -->
+  <section id="demo">
+    <p class="section-label">// live demo</p>
+    <h2>See it in <span class="accent">action.</span></h2>
+    <p class="section-desc">Interactive product demo. No install needed.</p>
+
+    <div class="demo-container">
+      <iframe src="./KasKas Demo.html" title="Kaskas Demo" loading="lazy"></iframe>
+      <a href="./KasKas Demo.html" target="_blank" class="demo-fullscreen">Open Fullscreen ↗</a>
+    </div>
+  </section>
 
   <hr class="divider">
 
