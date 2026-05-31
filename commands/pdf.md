@@ -1,42 +1,40 @@
 # /pdf
 
-Extract transactions from PDF statements.
+Read PDF. Get txn.
 
-## Input
-- Credit card statements (PDF)
-- Bank statements (PDF)
-- Utility bills (PDF)
-- Invoice PDFs
+## in
+- credit card PDF
+- bank PDF
+- utility PDF
+- invoice PDF
 
-## Process
+## do
+1. parse PDF → text + table
+2. detect type → card/bank/utility
+3. extract row → merchant, amount, date
+4. normalize name, date, amount
+5. validate schema
+6. dedupe
 
-1. **Parse PDF** → extract text + tables
-2. **Detect layout** → statement type (credit card, bank, utility)
-3. **Extract rows** → merchant, amount, date from tables
-4. **Normalize** → standardize merchant names, dates, amounts
-5. **Validate** → check against schemas
-6. **Deduplicate** → remove duplicates from prior uploads
+## out
 
-## Output
+| merchant | amount | date | cat |
+|----------|--------|------|-----|
 
-**Extracted Transactions**
-| Merchant | Amount | Date | Category |
-|---|---|---|---|
+## info
+- type: card/bank/utility
+- period: start to end
+- txn count
+- total PHP
 
-**Statement Info**
-- Type: credit card / bank / utility
-- Period: YYYY-MM-DD to YYYY-MM-DD
-- Total transactions: X
-- Total amount: PHP X,XXX
+## confidence
+- high: clear table
+- medium: partial
+- low: unstructured
 
-**Confidence**
-- High: clear table, valid format
-- Medium: partial extraction, inferred fields
-- Low: unstructured text, uncertain values
+## next
+- review
+- fix error
+- add to /review
 
-**Next Steps**
-- Review extracted data
-- Correct errors
-- Add to `/review` analysis
-
-No hallucination. Extract only.
+no hallucinate. extract only.

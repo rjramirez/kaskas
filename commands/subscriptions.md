@@ -1,45 +1,36 @@
 # /subscriptions
 
-Find recurring charges. Monthly obligations.
+Find recurring. Monthly cost.
 
-## Detection Rules
+## detect
 
-**High Confidence** (all 3):
-- Same merchant 2+ times
-- Monthly cadence ±5 days
-- Amount ±10% variance
+| confidence | rule |
+|------------|------|
+| high | same merchant 2x, monthly ±5d, amount ±10% |
+| medium | known service (netflix/spotify) OR "subscription" keyword |
+| low | single charge OR quarterly/annual |
 
-**Medium Confidence** (2 of 3):
-- Known service (Netflix, Spotify, etc.)
-- "subscription" keyword in name
+## do
+1. get txn from /review
+2. group by merchant
+3. check days between, amount var, known service
+4. score confidence
+5. est monthly (annual÷12, quarterly÷3)
+6. sum total
 
-**Low Confidence** (1 indicator):
-- Single charge
-- Quarterly/annual pattern
+## out
 
-## Process
+| merchant | monthly | freq | confidence |
+|----------|---------|------|------------|
 
-1. **Extract** → transactions from `/review` or new input
-2. **Group** → by merchant
-3. **Analyze** → days between charges, amount variance, known services
-4. **Score** → high/medium/low confidence
-5. **Estimate monthly** → if annual divide by 12, if quarterly by 3
-6. **Sum** → total monthly recurring
+## summary
+- total monthly
+- sub count
+- savings if cancel
 
-## Output
+## review
+- low confidence → verify
+- unused → ask user
+- duplicate cat → consolidate
 
-**Recurring Charges**
-| Merchant | Monthly | Frequency | Confidence |
-|---|---|---|---|
-
-**Summary**
-- Total monthly recurring
-- Subscription count
-- Potential savings (cancellation candidates)
-
-**Review**
-- Low-confidence items (verify)
-- Unused services (ask user)
-- Duplicates (same category)
-
-Concise. Flag uncertain.
+flag uncertain.

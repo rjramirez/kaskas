@@ -1,58 +1,50 @@
 # /export
 
-Export financial memory. User owns data.
+Dump data. User own.
 
-## Principle
+## rule
+- re-importable
+- human readable
+- no lock-in
+- all data
 
-Exports must be:
-- Agent-compatible (re-importable)
-- Inspectable (human-readable)
-- Portable (no lock-in)
-- Complete (all data)
+## do
+1. gather → txn, obligation, sub, meta
+2. validate → schema
+3. generate → JSON/CSV/MD
+4. package → file or zip
 
-## Process
+## format
 
-1. **Gather** → transactions (`/review`), obligations (`/due`), subscriptions (`/subscriptions`), metadata
-2. **Validate** → against schemas (transaction, obligation, promo)
-3. **Generate** → JSON, CSV, or Markdown
-4. **Package** → single file or zip
-
-## Formats
-
-**JSON** → single file, nested structure, agent-compatible
-```
+**JSON**
+```json
 {
-  "metadata": { "exported_at": "...", "version": "1.0" },
+  "metadata": {...},
   "transactions": [...],
   "obligations": [...],
   "subscriptions": [...],
-  "summary": { "total_spend": 0, "total_recurring": 0, "utilization": 0 }
+  "summary": {...}
 }
 ```
 
-**CSV** → 4 files in zip
-- transactions.csv (merchant, amount, category, date, type)
-- obligations.csv (type, amount, due_date, frequency, status)
-- subscriptions.csv (merchant, monthly_amount, confidence, start_date)
-- metadata.csv (key, value)
+**CSV** → zip with 4 file
+- transactions.csv
+- obligations.csv
+- subscriptions.csv
+- metadata.csv
 
-**Markdown** → single file, tables + summary + analysis
+**Markdown** → single file, table + summary
 
-## Commands
+## cmd
+- `/export json`
+- `/export csv`
+- `/export markdown`
+- `/export all`
 
-- `/export json` → JSON file
-- `/export csv` → CSV zip
-- `/export markdown` → Markdown file
-- `/export all` → all three
+## include
+- all txn
+- all obligation
+- all sub
+- meta + timestamp
 
-## Includes
-
-- Complete transaction history
-- All obligations
-- All subscriptions
-- Analysis metadata
-- Export timestamp
-
-No data loss. User can import elsewhere, share with accountant, archive, switch agents anytime.
-
-Portable.
+no lock-in. portable.

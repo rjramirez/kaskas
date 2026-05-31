@@ -1,62 +1,62 @@
 ---
 name: kaskas
-description: >
-  Financial memory skill. Analyze credit card statements, track obligations,
-  find cashback opportunities. Trigger when user shares statements, asks about
-  spending, dues, subscriptions, card rewards, or uploads receipts/PDFs.
-  Commands: /review /due /subscriptions /offers /safe /export /ocr /pdf
-  /promos /memory /embed /insights /llm /remind /forecast
+description: Money brain. Track spend. Find due. Get cashback. Local only.
 ---
 
-Kaskas: financial memory for Claude. Local-only. Zero external calls.
+# kaskas
 
-## Commands
+Money memory. No cloud. PHP only.
 
-| Command | What |
-|---------|------|
-| `/review` | Analyze statements, extract spend, find patterns |
-| `/due` | Track upcoming dues, bills, subscriptions |
-| `/subscriptions` | Detect recurring charges with confidence scoring |
-| `/offers` | Best card for each spending category (PH cards) |
-| `/safe` | Utilization risk score, safe spend threshold |
-| `/export` | Export data as JSON/CSV/Markdown |
-| `/ocr` | Extract text from images, screenshots, receipts |
-| `/pdf` | Extract transactions from PDF statements |
-| `/promos` | Parse card promotional offers |
-| `/memory` | SQLite persistent storage, deduplication |
-| `/embed` | Semantic search on transactions |
-| `/insights` | Pattern analysis, anomaly detection |
-| `/llm` | Local LLM financial analysis (no API calls) |
-| `/remind` | Set proactive payment reminders |
-| `/forecast` | Spending forecasts, what-if scenarios |
+## cmd
 
-## Behavior
+| cmd | do |
+|-----|-----|
+| /review | read statement, find spend |
+| /due | show bills, when pay |
+| /subscriptions | find recurring |
+| /offers | best card for buy |
+| /safe | how much safe spend |
+| /export | dump JSON/CSV/MD |
+| /ocr | read receipt pic |
+| /pdf | read PDF statement |
+| /promos | card deals |
+| /memory | save to SQLite |
+| /embed | search old txn |
+| /insights | find patterns |
+| /llm | local AI ask |
+| /remind | set alert |
+| /forecast | predict spend |
+| /reset | clear test data |
 
-Output concise. Tables only — no prose blocks. Amounts in PHP. Tactical.
-Never: long paragraphs, vague advice, external API calls, invented rates.
-Always: validate data against schemas, reference merchant-categories and utilization-rules.
+## rules
 
-Auto-trigger when user:
-- Pastes credit card statement text
-- Asks "how much did I spend"
-- Mentions due dates, bills, overdue payments
-- Uploads receipt, statement image, or PDF
-- Asks about best card for a category
+- table only. no prose
+- PHP peso. no USD
+- short answer. no fluff
+- no external call. local only
+- validate schema always
 
-## Data Schemas
+## trigger
 
-All extracted data validates against:
-- `schemas/transaction.schema.json` (merchant, amount, date, category, type)
-- `schemas/obligation.schema.json` (type, amount, due_date, frequency, status)
+wake when user:
+- paste statement
+- ask "how much spend"
+- say "due" or "bill"
+- upload receipt/PDF
+- ask "best card"
 
-## References
+## schema
 
-- `references/merchant-categories.md` — category mapping (Food/Shopping/Utilities/Transport/Entertainment/Healthcare/Education)
-- `references/ph-cards.md` — 8 PH credit card reward patterns
-- `references/utilization-rules.md` — risk thresholds (0-30% healthy, 31-60% moderate, 61-85% risky, 86%+ danger)
-- `references/recurring-patterns.md` — subscription detection patterns
+- `schemas/transaction.schema.json` → merchant, amount, date, cat
+- `schemas/obligation.schema.json` → type, amount, due, freq
 
-## Output Templates
+## ref
 
-- `templates/summary.md` — financial summary layout
-- `templates/obligations.md` — dues tracking layout
+- `references/merchant-categories.md` → cat map
+- `references/ph-cards.md` → 8 PH card rewards
+- `references/utilization-rules.md` → 0-30 good, 31-60 ok, 61-85 bad, 86+ danger
+
+## template
+
+- `templates/summary.md` → spend summary
+- `templates/obligations.md` → due list

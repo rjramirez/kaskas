@@ -174,7 +174,6 @@ Kaskas is open source. You can:
 ## Questions?
 
 - [FAQ](./faq.md)
-- [Troubleshooting](./troubleshooting.md)
 - [GitHub Issues](https://github.com/rjramirez/kaskas/issues)
 
 ---

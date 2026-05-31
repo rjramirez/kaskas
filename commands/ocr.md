@@ -1,35 +1,33 @@
 # /ocr
 
-Extract text from images. Parse statements.
+Read pic. Get text.
 
-## Input
-- Screenshots
-- Photos
-- Scanned receipts
-- Statement images
+## in
+- screenshot
+- photo
+- receipt
+- statement pic
 
-## Process
+## do
+1. detect text (claude vision)
+2. extract → merchant, amount, date, cat
+3. normalize format
+4. validate schema
+5. merge with existing
 
-1. **Detect text** → use vision API (Claude)
-2. **Extract fields** → merchant, amount, date, category
-3. **Normalize** → standardize format
-4. **Validate** → check against schemas
-5. **Merge** → combine with existing transactions
+## out
 
-## Output
+| merchant | amount | date | cat |
+|----------|--------|------|-----|
 
-**Extracted Transactions**
-| Merchant | Amount | Date | Category |
-|---|---|---|---|
+## confidence
+- high: clear, valid
+- medium: partial, inferred
+- low: blurry, uncertain
 
-**Confidence**
-- High: clear text, valid format
-- Medium: partial text, inferred fields
-- Low: blurry, uncertain values
+## next
+- review data
+- fix error
+- add to /review
 
-**Next Steps**
-- Review extracted data
-- Correct errors
-- Add to `/review` analysis
-
-Caveman mode. No hallucination.
+no hallucinate. extract only.

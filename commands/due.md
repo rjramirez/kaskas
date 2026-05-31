@@ -1,42 +1,40 @@
 # /due
 
-Track dues. Subscriptions. Loans. Bills.
+Track due. Bill. Subscription. Loan.
 
-## Input
-- Obligation type (credit card, subscription, loan, bill)
-- Amount
-- Due date
-- Frequency (one-time, monthly, quarterly, annual)
+## in
+- type: card/sub/loan/bill
+- amount
+- due date
+- freq: once/monthly/quarterly/annual
 
-## Process
+## do
+1. extract → type, amount, due, freq
+2. normalize → YYYY-MM-DD, calc days left
+3. find overlap → dues ±3d = cash spike
+4. sum monthly → total outflow
+5. flag risk → overdue, overlap, >30% income, 5+ items
+6. sort → nearest first
 
-1. **Extract** → type, amount, due date, frequency
-2. **Normalize dates** → YYYY-MM-DD, calc days left
-3. **Detect overlaps** → dues within 3 days = cash flow spike
-4. **Sum recurring** → total monthly outflow
-5. **Flag risks** → overdue, overlapping, high cost (>30% income), 5+ obligations
-6. **Sort** → by due date (nearest first)
+## out
 
-## Output
+| item | type | amount | due | days |
+|------|------|--------|-----|------|
 
-**Upcoming (Next 30 Days)**
-| Item | Type | Amount | Due | Days |
-|---|---|---|---|---|
+## summary
+- monthly total
+- next due
+- overdue count
 
-**Summary**
-- Total monthly recurring
-- Next due date
-- Overdue count
+## risk
+- overlap ±3d
+- >50% income
+- overdue
+- 5+ obligations
 
-**Risks**
-- Overlapping dues (±3 days)
-- High recurring (>50% income)
-- Overdue items
-- Complexity (5+ obligations)
+## tip
+- consolidate dates
+- remind 3d before
+- cancel unused
 
-**Tips**
-- Consolidate payment dates
-- Reminders 3 days before
-- Cancel unused subscriptions
-
-Tactical. Tables only.
+table only.

@@ -1,45 +1,38 @@
 # /review
 
-Parse statements. Extract spend. Find patterns.
+Read statement. Find spend. Show pattern.
 
-## Input
-- PDF statements
-- Pasted transactions
-- Screenshots
-- Receipts
+## in
+- PDF / paste / screenshot / receipt
 
-## Process
+## do
+1. extract → merchant, amount, date
+2. match cat → `references/merchant-categories.md`
+3. find recurring → same merchant 2x, monthly ±5d, amount ±10%
+4. flag installment → "0%", sequential
+5. calc util → spend/limit (`references/utilization-rules.md`)
+6. output → `templates/summary.md`
 
-1. **Extract** → merchant, amount, date
-2. **Normalize** → match categories (see `references/merchant-categories.md`)
-3. **Detect recurring** → same merchant 2+ times, monthly cadence ±5 days, amount ±10%
-4. **Flag installments** → "installment" keyword, "0%", sequential charges
-5. **Calculate utilization** → spend / limit (see `references/utilization-rules.md`)
-6. **Summarize** → use `templates/summary.md`
+## out
 
-## Output
+| show | what |
+|------|------|
+| total | sum spend |
+| count | txn count |
+| range | date start-end |
+| top cat | by amount |
+| top merchant | by freq+spend |
+| recurring | merchant, monthly est, confidence |
 
-**Summary**
-- Total spend
-- Transaction count
-- Date range
-- Top categories (by amount)
-- Top merchants (by frequency + spend)
+## risk
+- util >60%
+- 3+ installment
+- 5+ subscription
+- spike >20%
 
-**Recurring**
-- Merchant
-- Est. monthly
-- Confidence (high/medium/low)
+## opp
+- better card → `/offers`
+- cut spend
+- cancel unused
 
-**Risks**
-- Utilization >60%
-- 3+ installments active
-- 5+ subscriptions
-- Spending spike >20%
-
-**Opportunities**
-- Cashback optimization → `/offers`
-- Spending cuts
-- Cancel unused subscriptions
-
-Concise. Tables only.
+table only. no prose.

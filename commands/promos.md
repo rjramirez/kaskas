@@ -1,43 +1,41 @@
 # /promos
 
-Parse promotional offers. Extract card rewards.
+Parse promo. Get card deal.
 
-## Input
-- Promo emails
-- Bank websites (pasted text)
-- Card offer screenshots
-- Promotional materials
+## in
+- promo email
+- bank site text
+- card offer pic
+- promo material
 
-## Process
+## do
+1. extract text
+2. detect card + bank
+3. parse reward → cat, rate, condition
+4. get dates → start/end
+5. validate `schemas/promo.schema.json`
+6. store
 
-1. **Extract offer text** → from input
-2. **Detect card** → identify card name + issuer
-3. **Parse reward** → category, rate, conditions
-4. **Extract dates** → promo start/end dates
-5. **Validate** → check against `schemas/promo.schema.json`
-6. **Store** → add to promo database
+## out
 
-## Output
+| card | cat | reward | valid til |
+|------|-----|--------|-----------|
 
-**Parsed Promos**
-| Card | Category | Reward | Valid Until |
-|---|---|---|---|
+## detail
+- card + bank
+- type: cashback/points/miles/rebate
+- rate: % or value
+- condition: min spend, merchant
+- valid: start to end
 
-**Details**
-- Card: name + issuer
-- Reward type: cashback / points / miles / rebate
-- Reward rate: percentage or value
-- Conditions: minimum spend, merchant restrictions
-- Validity: start date to end date
+## confidence
+- high: clear, valid date
+- medium: partial
+- low: unclear
 
-**Confidence**
-- High: clear offer, valid dates
-- Medium: partial info, inferred dates
-- Low: unclear terms, uncertain validity
+## next
+- review
+- fix error
+- use in /offers
 
-**Next Steps**
-- Review parsed promos
-- Correct errors
-- Use in `/offers` recommendations
-
-Extract only. No assumptions.
+extract only. no assume.

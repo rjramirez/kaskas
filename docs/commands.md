@@ -177,6 +177,22 @@ Set proactive payment reminders and alerts.
 
 ---
 
+### `/reset` - Clear or Load Test Data
+Clear test data or load sample data for demo purposes.
+
+**Options:**
+- Clear test data only
+- Clear all data (test + user)
+- Load sample data for demo
+
+**Example:**
+```
+/reset
+Clear test data and start fresh
+```
+
+---
+
 ## Tips
 
 - **Combine commands** - Use `/review` then `/offers` to optimize
@@ -190,5 +206,5 @@ Set proactive payment reminders and alerts.
 ## Need Help?
 
 - [Security & Privacy](./security.md)
-- [Troubleshooting](./troubleshooting.md)
 - [FAQ](./faq.md)
+- [GitHub Issues](https://github.com/rjramirez/kaskas/issues)

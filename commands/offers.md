@@ -1,52 +1,46 @@
 # /offers
 
-Match cards to spending. Find cashback.
+Match card to spend. Find cashback.
 
-## Rules
+## rule
+- use `references/ph-cards.md`
+- match category + merchant
+- NO invented rate. historical only.
 
-Use:
-- Category matching (`references/ph-cards.md`)
-- Merchant matching (transaction history)
-- Known rewards (no live promos)
+## do
+1. load cards from ref
+2. get spend from /review
+3. match % spend to reward cat
+4. est monthly + annual cashback
+5. rank by annual
+6. find gap → suggest 2nd card
+7. calc missed if user has diff card
 
-NO invented rates. Historical patterns only.
+## out
 
-## Process
+**best card**
+- name + bank
+- monthly cashback
+- annual cashback
+- coverage %
 
-1. **Load cards** → from `references/ph-cards.md`
-2. **Analyze spend** → from `/review` (top categories, merchants, total)
-3. **Match** → % of spend in each card's reward categories
-4. **Estimate** → monthly + annual cashback per card
-5. **Rank** → by annual cashback potential
-6. **Identify gaps** → categories not covered, suggest secondary card
-7. **Calculate missed** → if user has different card, show difference
+| cat | spend | reward | cashback |
+|-----|-------|--------|----------|
 
-## Output
+**2nd card** (if gap)
+- name
+- cover what cat
+- extra annual
 
-**Best Card**
-- Card name + issuer
-- Est. monthly cashback
-- Est. annual cashback
-- Coverage % (spend in reward categories)
+**missed** (if user card diff)
+- current earn
+- potential earn
+- diff
 
-**Breakdown**
-| Category | Spend | Reward | Est. Cashback |
-|---|---|---|---|
+## note
+- rate = historical
+- verify with bank
+- no live promo
+- assume same spend
 
-**Secondary Card** (if gaps exist)
-- Card name
-- Coverage (categories)
-- Est. additional annual
-
-**Missed Rewards** (if current card provided)
-- Current earnings
-- Potential earnings
-- Annual difference
-
-**Notes**
-- Rates = historical patterns
-- Verify with issuer
-- No live promos
-- Assumes consistent spend
-
-Tactical. Show math.
+show math.
