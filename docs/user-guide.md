@@ -102,6 +102,7 @@ Then **restart Claude Desktop**.
 | `/llm` | Local LLM analysis (no API calls) |
 | `/remind` | Set payment reminders |
 | `/forecast` | Spending forecasts & scenarios |
+| `/reset` | Clear test data or load samples |
 
 ---
 
@@ -479,6 +480,7 @@ Enable Taglish mode:
 /llm           → Local LLM
 /remind        → Payment reminders
 /forecast      → Spending forecasts
+/reset         → Clear test data
 ```
 
 ### Installation Paths

@@ -183,8 +183,8 @@ curl -fsSL https://raw.githubusercontent.com/rjramirez/kaskas/main/install.sh | 
 
 ### Q: How do I get help?
 **A:** 
-- Check [Troubleshooting](./troubleshooting.md)
 - Read [Security](./security.md)
+- Check [FAQ](./faq.md)
 - Open [GitHub issue](https://github.com/rjramirez/kaskas/issues)
 
 ---
