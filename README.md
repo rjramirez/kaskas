@@ -50,6 +50,7 @@ Restart Claude Desktop and Claude Code.
 | `/llm` | Local LLM analysis (no API calls) |
 | `/remind` | Set payment reminders |
 | `/forecast` | Spending forecasts + scenarios |
+| `/reset` | Clear test data or load sample data |
 
 ---
 
