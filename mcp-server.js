@@ -34,6 +34,7 @@ const COMMANDS = [
   { name: 'llm',           description: 'Local LLM financial analysis — no external API calls' },
   { name: 'remind',        description: 'Set proactive payment reminders and smart alerts' },
   { name: 'forecast',      description: 'Spending forecasts, what-if scenarios, confidence intervals' },
+  { name: 'reset',         description: 'Clear test data or load sample data for demo' },
 ];
 
 // Reference files to inline for commands that need them
@@ -56,6 +57,7 @@ const CMD_REFS = {
   llm:           ['llm-config.md'],
   remind:        [],
   forecast:      ['forecast-config.md'],
+  reset:         [],
 };
 
 function readFile(filePath) {
@@ -200,6 +202,79 @@ function getSubscriptionServices() {
   if (!data) return [];
   
   return data.subscriptionServices;
+}
+
+// ── Test data functions ───────────────────────────────────────────────────────
+
+function getTestData() {
+  return loadJSON('test-transactions.json');
+}
+
+function getTestDataStatus() {
+  const testData = loadJSON('test-transactions.json');
+  const userDataPath = path.join(DATA_DIR, 'user-transactions.json');
+  const userData = fs.existsSync(userDataPath) ? loadJSON('user-transactions.json') : null;
+  
+  return {
+    testData: {
+      exists: !!testData,
+      transactions: testData?.transactions?.length || 0,
+      obligations: testData?.obligations?.length || 0,
+      cards: testData?.cards?.length || 0
+    },
+    userData: {
+      exists: !!userData,
+      transactions: userData?.transactions?.length || 0,
+      obligations: userData?.obligations?.length || 0,
+      cards: userData?.cards?.length || 0
+    }
+  };
+}
+
+function clearTestData() {
+  const testDataPath = path.join(DATA_DIR, 'test-transactions.json');
+  if (fs.existsSync(testDataPath)) {
+    // Keep the file but clear the data arrays
+    const emptyData = {
+      _meta: {
+        description: "Test data cleared. Use /reset load to reload sample data.",
+        version: "1.0.0",
+        cleared: new Date().toISOString()
+      },
+      cards: [],
+      transactions: [],
+      obligations: [],
+      summary: {}
+    };
+    fs.writeFileSync(testDataPath, JSON.stringify(emptyData, null, 2), 'utf8');
+    return { success: true, message: 'Test data cleared' };
+  }
+  return { success: false, message: 'No test data found' };
+}
+
+function clearAllData() {
+  const files = ['test-transactions.json', 'user-transactions.json'];
+  const results = [];
+  
+  for (const file of files) {
+    const filePath = path.join(DATA_DIR, file);
+    if (fs.existsSync(filePath)) {
+      const emptyData = {
+        _meta: {
+          description: "Data cleared via /reset all",
+          cleared: new Date().toISOString()
+        },
+        cards: [],
+        transactions: [],
+        obligations: [],
+        summary: {}
+      };
+      fs.writeFileSync(filePath, JSON.stringify(emptyData, null, 2), 'utf8');
+      results.push({ file, cleared: true });
+    }
+  }
+  
+  return { success: true, results, message: 'All data cleared' };
 }
 
 function loadCommand(name) {
@@ -424,6 +499,41 @@ function handle(req) {
               type: 'object',
               properties: {}
             }
+          },
+          {
+            name: 'get_test_data',
+            description: 'Get sample test transactions, cards, and obligations for demo',
+            inputSchema: {
+              type: 'object',
+              properties: {}
+            }
+          },
+          {
+            name: 'get_data_status',
+            description: 'Check what data exists (test data vs user data)',
+            inputSchema: {
+              type: 'object',
+              properties: {}
+            }
+          },
+          {
+            name: 'clear_test_data',
+            description: 'Remove test/sample data only, keep user data',
+            inputSchema: {
+              type: 'object',
+              properties: {}
+            }
+          },
+          {
+            name: 'clear_all_data',
+            description: 'Remove ALL data (test + user) - fresh start. Use with caution!',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                confirm: { type: 'boolean', description: 'Must be true to confirm deletion' }
+              },
+              required: ['confirm']
+            }
           }
         ]
       });
@@ -470,6 +580,22 @@ function handle(req) {
           break;
         case 'get_subscription_services':
           result = getSubscriptionServices();
+          break;
+        case 'get_test_data':
+          result = getTestData();
+          break;
+        case 'get_data_status':
+          result = getTestDataStatus();
+          break;
+        case 'clear_test_data':
+          result = clearTestData();
+          break;
+        case 'clear_all_data':
+          if (args.confirm === true) {
+            result = clearAllData();
+          } else {
+            result = { success: false, message: 'Must set confirm: true to delete all data' };
+          }
           break;
         default:
           err(id, -32602, 'Unknown tool: ' + toolName);
