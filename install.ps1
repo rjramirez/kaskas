@@ -256,7 +256,9 @@ $Files = @(
   @("obligation.schema.json", "schemas"), @("promo.schema.json", "schemas"), @("reminder.schema.json", "schemas"),
   @("transaction.schema.json", "schemas"),
   @("merchants.json", "data"), @("cards.json", "data"), @("calendar.json", "data"), @("promos.json", "data"),
-  @("patterns.json", "data"), @("expressions.json", "data"), @("terms.json", "data"), @("spending-patterns.json", "data")
+  @("patterns.json", "data"), @("expressions.json", "data"), @("terms.json", "data"), @("spending-patterns.json", "data"),
+  @("test-transactions.json", "data"),
+  @("reset.md", "commands")
 )
 
 # ── Download file silently ────────────────────────────────────────────────────

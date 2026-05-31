@@ -1,0 +1,619 @@
+{
+  "_meta": {
+    "description": "Sample test data for kaskas demo. Use /reset to clear.",
+    "version": "1.0.0",
+    "generated": "2024-01-15"
+  },
+  "cards": [
+    {
+      "id": "bdo-gold-1234",
+      "name": "BDO Gold Mastercard",
+      "last4": "1234",
+      "bank": "BDO",
+      "type": "credit",
+      "creditLimit": 150000,
+      "statementDate": 15,
+      "dueDate": 8
+    },
+    {
+      "id": "bpi-blue-5678",
+      "name": "BPI Blue Mastercard",
+      "last4": "5678",
+      "bank": "BPI",
+      "type": "credit",
+      "creditLimit": 80000,
+      "statementDate": 20,
+      "dueDate": 12
+    },
+    {
+      "id": "security-platinum-9012",
+      "name": "Security Bank Platinum",
+      "last4": "9012",
+      "bank": "Security Bank",
+      "type": "credit",
+      "creditLimit": 200000,
+      "statementDate": 25,
+      "dueDate": 18
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn-001",
+      "date": "2024-01-02",
+      "merchant": "Jollibee",
+      "category": "Food & Dining",
+      "amount": 385.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-002",
+      "date": "2024-01-03",
+      "merchant": "Shell",
+      "category": "Transport",
+      "amount": 2500.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-003",
+      "date": "2024-01-05",
+      "merchant": "SM Supermarket",
+      "category": "Shopping",
+      "amount": 4250.75,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-004",
+      "date": "2024-01-05",
+      "merchant": "Netflix",
+      "category": "Entertainment",
+      "amount": 549.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-005",
+      "date": "2024-01-06",
+      "merchant": "Grab",
+      "category": "Transport",
+      "amount": 287.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-006",
+      "date": "2024-01-07",
+      "merchant": "Starbucks",
+      "category": "Food & Dining",
+      "amount": 425.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-007",
+      "date": "2024-01-08",
+      "merchant": "Meralco",
+      "category": "Utilities",
+      "amount": 4850.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-008",
+      "date": "2024-01-08",
+      "merchant": "Globe",
+      "category": "Utilities",
+      "amount": 1899.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-009",
+      "date": "2024-01-09",
+      "merchant": "Shopee",
+      "category": "Shopping",
+      "amount": 1299.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-010",
+      "date": "2024-01-10",
+      "merchant": "McDonald's",
+      "category": "Food & Dining",
+      "amount": 520.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-011",
+      "date": "2024-01-10",
+      "merchant": "Spotify",
+      "category": "Entertainment",
+      "amount": 194.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-012",
+      "date": "2024-01-11",
+      "merchant": "Puregold",
+      "category": "Shopping",
+      "amount": 3150.50,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-013",
+      "date": "2024-01-12",
+      "merchant": "Petron",
+      "category": "Transport",
+      "amount": 1800.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-014",
+      "date": "2024-01-12",
+      "merchant": "Anytime Fitness",
+      "category": "Healthcare",
+      "amount": 2500.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-015",
+      "date": "2024-01-13",
+      "merchant": "Lazada",
+      "category": "Shopping",
+      "amount": 2450.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-016",
+      "date": "2024-01-14",
+      "merchant": "Converge",
+      "category": "Utilities",
+      "amount": 1500.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-017",
+      "date": "2024-01-14",
+      "merchant": "GrabFood",
+      "category": "Food & Dining",
+      "amount": 650.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-018",
+      "date": "2024-01-15",
+      "merchant": "Uniqlo",
+      "category": "Shopping",
+      "amount": 3990.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-019",
+      "date": "2024-01-15",
+      "merchant": "Manila Water",
+      "category": "Utilities",
+      "amount": 850.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-020",
+      "date": "2024-01-16",
+      "merchant": "Watsons",
+      "category": "Shopping",
+      "amount": 1250.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-021",
+      "date": "2024-01-17",
+      "merchant": "Coffee Bean & Tea Leaf",
+      "category": "Food & Dining",
+      "amount": 380.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-022",
+      "date": "2024-01-18",
+      "merchant": "SM Cinema",
+      "category": "Entertainment",
+      "amount": 800.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-023",
+      "date": "2024-01-19",
+      "merchant": "Mercury Drug",
+      "category": "Shopping",
+      "amount": 1450.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-024",
+      "date": "2024-01-20",
+      "merchant": "Cebu Pacific",
+      "category": "Transport",
+      "amount": 4500.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-025",
+      "date": "2024-01-20",
+      "merchant": "Agoda",
+      "category": "Transport",
+      "amount": 6500.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-026",
+      "date": "2024-01-21",
+      "merchant": "Goldilocks",
+      "category": "Food & Dining",
+      "amount": 850.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-027",
+      "date": "2024-01-22",
+      "merchant": "DataBlitz",
+      "category": "Shopping",
+      "amount": 2995.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-028",
+      "date": "2024-01-23",
+      "merchant": "Ace Hardware",
+      "category": "Shopping",
+      "amount": 1875.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-029",
+      "date": "2024-01-24",
+      "merchant": "Vikings",
+      "category": "Food & Dining",
+      "amount": 2800.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-030",
+      "date": "2024-01-25",
+      "merchant": "Autosweep",
+      "category": "Transport",
+      "amount": 500.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-031",
+      "date": "2024-01-26",
+      "merchant": "Mang Inasal",
+      "category": "Food & Dining",
+      "amount": 450.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-032",
+      "date": "2024-01-27",
+      "merchant": "National Bookstore",
+      "category": "Shopping",
+      "amount": 1200.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-033",
+      "date": "2024-01-28",
+      "merchant": "Gong Cha",
+      "category": "Food & Dining",
+      "amount": 185.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-034",
+      "date": "2024-01-29",
+      "merchant": "S&R",
+      "category": "Shopping",
+      "amount": 5500.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-035",
+      "date": "2024-01-30",
+      "merchant": "Angkas",
+      "category": "Transport",
+      "amount": 150.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-036",
+      "date": "2024-01-30",
+      "merchant": "YouTube Premium",
+      "category": "Entertainment",
+      "amount": 239.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-037",
+      "date": "2024-01-31",
+      "merchant": "Robinsons Supermarket",
+      "category": "Shopping",
+      "amount": 2850.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-038",
+      "date": "2024-02-01",
+      "merchant": "Jollibee",
+      "category": "Food & Dining",
+      "amount": 425.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-039",
+      "date": "2024-02-02",
+      "merchant": "Shell",
+      "category": "Transport",
+      "amount": 2200.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-040",
+      "date": "2024-02-03",
+      "merchant": "Shakey's",
+      "category": "Food & Dining",
+      "amount": 1200.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-041",
+      "date": "2024-02-04",
+      "merchant": "Netflix",
+      "category": "Entertainment",
+      "amount": 549.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-042",
+      "date": "2024-02-05",
+      "merchant": "SM Supermarket",
+      "category": "Shopping",
+      "amount": 3800.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-043",
+      "date": "2024-02-06",
+      "merchant": "Grab",
+      "category": "Transport",
+      "amount": 320.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-044",
+      "date": "2024-02-07",
+      "merchant": "Meralco",
+      "category": "Utilities",
+      "amount": 5200.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-045",
+      "date": "2024-02-08",
+      "merchant": "Globe",
+      "category": "Utilities",
+      "amount": 1899.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-046",
+      "date": "2024-02-09",
+      "merchant": "Spotify",
+      "category": "Entertainment",
+      "amount": 194.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-047",
+      "date": "2024-02-10",
+      "merchant": "Anytime Fitness",
+      "category": "Healthcare",
+      "amount": 2500.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-048",
+      "date": "2024-02-11",
+      "merchant": "Converge",
+      "category": "Utilities",
+      "amount": 1500.00,
+      "cardId": "bpi-blue-5678",
+      "type": "purchase",
+      "recurring": true
+    },
+    {
+      "id": "txn-049",
+      "date": "2024-02-12",
+      "merchant": "Shopee",
+      "category": "Shopping",
+      "amount": 1850.00,
+      "cardId": "bdo-gold-1234",
+      "type": "purchase"
+    },
+    {
+      "id": "txn-050",
+      "date": "2024-02-13",
+      "merchant": "Tim Hortons",
+      "category": "Food & Dining",
+      "amount": 350.00,
+      "cardId": "security-platinum-9012",
+      "type": "purchase"
+    }
+  ],
+  "obligations": [
+    {
+      "id": "obl-001",
+      "type": "credit_card",
+      "name": "BDO Gold Mastercard",
+      "cardId": "bdo-gold-1234",
+      "amount": 15420.00,
+      "minimumDue": 1542.00,
+      "dueDate": "2024-02-08",
+      "status": "pending"
+    },
+    {
+      "id": "obl-002",
+      "type": "credit_card",
+      "name": "BPI Blue Mastercard",
+      "cardId": "bpi-blue-5678",
+      "amount": 28749.25,
+      "minimumDue": 2874.93,
+      "dueDate": "2024-02-12",
+      "status": "pending"
+    },
+    {
+      "id": "obl-003",
+      "type": "credit_card",
+      "name": "Security Bank Platinum",
+      "cardId": "security-platinum-9012",
+      "amount": 32115.00,
+      "minimumDue": 3211.50,
+      "dueDate": "2024-02-18",
+      "status": "pending"
+    },
+    {
+      "id": "obl-004",
+      "type": "subscription",
+      "name": "Netflix",
+      "amount": 549.00,
+      "dueDate": "2024-03-05",
+      "frequency": "monthly",
+      "status": "active"
+    },
+    {
+      "id": "obl-005",
+      "type": "subscription",
+      "name": "Spotify",
+      "amount": 194.00,
+      "dueDate": "2024-03-10",
+      "frequency": "monthly",
+      "status": "active"
+    },
+    {
+      "id": "obl-006",
+      "type": "subscription",
+      "name": "YouTube Premium",
+      "amount": 239.00,
+      "dueDate": "2024-03-01",
+      "frequency": "monthly",
+      "status": "active"
+    },
+    {
+      "id": "obl-007",
+      "type": "subscription",
+      "name": "Anytime Fitness",
+      "amount": 2500.00,
+      "dueDate": "2024-03-12",
+      "frequency": "monthly",
+      "status": "active"
+    },
+    {
+      "id": "obl-008",
+      "type": "utility",
+      "name": "Globe Postpaid",
+      "amount": 1899.00,
+      "dueDate": "2024-02-25",
+      "frequency": "monthly",
+      "status": "pending"
+    },
+    {
+      "id": "obl-009",
+      "type": "utility",
+      "name": "Converge Internet",
+      "amount": 1500.00,
+      "dueDate": "2024-02-20",
+      "frequency": "monthly",
+      "status": "pending"
+    },
+    {
+      "id": "obl-010",
+      "type": "installment",
+      "name": "iPhone 15 Pro (Home Credit)",
+      "amount": 3500.00,
+      "totalRemaining": 28000.00,
+      "monthsRemaining": 8,
+      "dueDate": "2024-02-15",
+      "frequency": "monthly",
+      "status": "pending"
+    }
+  ],
+  "summary": {
+    "totalSpend": {
+      "january2024": 76284.25,
+      "february2024": 21762.00
+    },
+    "byCategory": {
+      "Food & Dining": 9620.00,
+      "Shopping": 32260.25,
+      "Transport": 18757.00,
+      "Utilities": 16698.00,
+      "Entertainment": 2525.00,
+      "Healthcare": 5000.00
+    },
+    "byCard": {
+      "bdo-gold-1234": 28420.00,
+      "bpi-blue-5678": 28749.25,
+      "security-platinum-9012": 32115.00
+    },
+    "recurringMonthly": 7381.00
+  }
+}

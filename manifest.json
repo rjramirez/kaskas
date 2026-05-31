@@ -214,6 +214,16 @@
         "references/ph-calendar.md",
         "references/ph-spending-patterns.md"
       ]
+    },
+    {
+      "id": "reset",
+      "name": "Reset",
+      "description": "Clear test data or load sample data for demo",
+      "icon": "🔄",
+      "handler": "commands/reset.md",
+      "resources": [
+        "data/test-transactions.json"
+      ]
     }
   ],
   "resources": {
